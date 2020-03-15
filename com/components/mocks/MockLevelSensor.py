@@ -9,7 +9,7 @@ class MockLevelSensor:
         self.name = name
         self.level = 20
 
-    def get_level(self):
+    def get_level(self) -> int:
         print(f"{self.name} water level is {self.level}")
         self.level += 1
         return self.level
