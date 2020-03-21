@@ -1,7 +1,7 @@
 import time
 
 from components.Switch import Switch
-from components.LevelDetector import LevelDetector, UnexpectedWaterLevel, SumpTooFull
+from components.LevelDetector import LevelDetector, UnexpectedWaterLevel
 from components.TemperatureDetector import TemperatureDetector
 
 
@@ -69,8 +69,8 @@ class Controller:
         try:
             while not self.water_detector.is_sump_full():
                 time.sleep(self.level_delay)
-        except SumpTooFull:
-            print("SumpTooFull ex caught")
+        except UnexpectedWaterLevel:
+            print("UnexpectedWaterLevel ex caught while refilling")
             self.pump_in.off()
             self.pump_out.off()
             exit(1)

@@ -9,7 +9,7 @@ import time
 import schedule
 
 water_sensor = MockLevelSensor('water sensor')
-water_detector = LevelDetector('water sensor', water_sensor, 20, 60)
+water_detector = LevelDetector('water sensor', water_sensor, 20, 60, 2)
 
 sump_temp = MockSumpTemperatureSensor('mock sump temperature')
 tank_temp = MockTankTemperatureSensor('mock tank temperature')
