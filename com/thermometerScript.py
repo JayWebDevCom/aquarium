@@ -1,11 +1,15 @@
-__package__ = "components"
+#!/usr/bin/env python3
+import time
+
+# device_id = "28-0300a2792070"
+device_id = "28-0300a279088e"
 
 
-class TemperatureSensor:
+class TempSensor:
     name: str
     db_device_id_location: str
 
-    def __init__(self, name, db_device_id: str):
+    def __init__(self, name: str, db_device_id: str):
         self.name = name
         self.db_device_id_location = '/sys/bus/w1/devices/' + db_device_id + '/w1_slave'
 
@@ -18,3 +22,10 @@ class TemperatureSensor:
         temperature = float(temperature_data[2:])
         celsius = temperature / 1000
         return celsius
+
+
+temperature_sensor = TempSensor("test sensor", device_id)
+
+for i in range(0, 10):
+    time.sleep(1)
+    print(temperature_sensor.get_temp())
