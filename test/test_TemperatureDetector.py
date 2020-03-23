@@ -8,8 +8,8 @@ from com.components.TemperatureSensor import TemperatureSensor
 class TestTemperatureDetector(TestCase):
 
     def test_within_range(self):
-        sump_temp = TemperatureSensor("sump")
-        tank_temp = TemperatureSensor("tank")
+        sump_temp = TemperatureSensor("sump", "foo")
+        tank_temp = TemperatureSensor("tank", "bar")
         temperature_detector = TemperatureDetector("test temperature detector", sump_temp, tank_temp)
 
         params = {

@@ -2,11 +2,11 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from com.components.LevelDetector import LevelDetector, UnexpectedWaterLevel
-from com.components.mocks.MockLevelSensor import MockLevelSensor
+from components.LevelSensor import LevelSensor
 
 
 class TestWaterLevelDetector(TestCase):
-    water_sensor = MockLevelSensor('water sensor')
+    water_sensor = LevelSensor('water sensor')
     water_detector = LevelDetector('water detector', water_sensor, 20, 60, 1)
 
     def test_percentage_changed_parameterized(self):
