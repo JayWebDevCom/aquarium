@@ -17,8 +17,9 @@ def main():
 
     pump_out = Switch('pump_out', 1)
     pump_in = Switch('pump_in', 2)
+    sump_pump = Switch('sump pump', 2)
 
-    controller = Controller("some name", water_detector, temperature_detector, pump_out, pump_in)
+    controller = Controller("some name", water_detector, temperature_detector, pump_out, pump_in, sump_pump)
     controller.water_change(50.0)
 
 
