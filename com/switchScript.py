@@ -6,7 +6,7 @@ import time
 from components.Switch import Switch
 
 GPIO.setmode(GPIO.BOARD)
-channel = 6
+channel = 3
 GPIO.setup(channel, GPIO.OUT)
 
 switch = Switch("test switch", channel)
