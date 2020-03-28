@@ -18,12 +18,14 @@ class LevelDetector:
             sensor: LevelSensor,
             full_level: int,
             empty_level: int,
-            times_to_check_level: int = 5):
+            times_to_check_level: int = 5,
+            acceptable_band: int = 2):
         self.name = name
         self.sensor = sensor
         self.full_level = full_level
         self.empty_level = empty_level
         self.times_to_check_level = times_to_check_level
+        self.acceptable_band = acceptable_band
 
     def percentage_changed(self) -> float:
         total_level = self.empty_level - self.full_level
@@ -45,17 +47,23 @@ class LevelDetector:
         sump_level = 0
         sump_level_count_range = range(0, self.times_to_check_level)
 
+        temperatures_returned = []
         for i in sump_level_count_range:
-            sump_level += self.sensor.get_level()
+            one_of_temp_readings = self.sensor.get_level()
+            temperatures_returned.append(one_of_temp_readings)
+            sump_level += one_of_temp_readings
+
+        print(f"level readings returned: {temperatures_returned}")
 
         sump_level = int(sump_level/len(sump_level_count_range))
         self._check(sump_level)
         return sump_level
 
     def is_sump_full(self) -> bool:
-        acceptable_band = 2
-        acceptable_range = range(self.full_level - acceptable_band, self.full_level + acceptable_band)
+        acceptable_range = range(self.full_level - self.acceptable_band, self.full_level + self.acceptable_band)
         sump_level = self._get_checked_sump_level()
+
         print(f"sump level is {sump_level}")
         print(f"necessary full level is {self.full_level}")
+
         return sump_level in acceptable_range
