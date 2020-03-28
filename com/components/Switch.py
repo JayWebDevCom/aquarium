@@ -1,4 +1,4 @@
-__package__ = "components"
+import RPi.GPIO as GPIO
 
 
 class Switch:
@@ -12,9 +12,11 @@ class Switch:
 
     def on(self):
         print(f"switching on {self.name}")
+        GPIO.output(self.pin, 1)
 
     def off(self):
         print(f"switching off {self.name}")
+        GPIO.output(self.pin, 0)
 
     def __eq__(self, other):
         """Overrides the default implementation"""
