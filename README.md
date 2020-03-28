@@ -1,4 +1,4 @@
-## aquarium
+## aquarium  ![](https://github.com/JayWebDevCom/aquarium/workflows/Python%20CI/badge.svg)
 
 ### A water change management application for aquariums to be run on a raspberry pi
 - A python3 learning project
