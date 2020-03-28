@@ -7,7 +7,7 @@ from components.LevelSensor import LevelSensor
 
 class TestWaterLevelDetector(TestCase):
     water_sensor = LevelSensor('water sensor')
-    water_detector = LevelDetector('water detector', water_sensor, 20, 60, 1)
+    water_detector = LevelDetector('water detector', water_sensor, 20, 60, 1, 2)
 
     def test_percentage_changed_parameterized(self):
         params = {30: 25.0, 40: 50.0, 55: 87.5}
