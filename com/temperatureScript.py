@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
-import time
 
+import time
 from components.TemperatureSensor import TemperatureSensor
 
 device_id = "28-0300a279088e"

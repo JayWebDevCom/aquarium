@@ -1,13 +1,14 @@
-__package__ = "components"
+from components import LevelStrategy
+from components.DefaultLevelStrategy import DefaultLevelStrategy
 
 
 class LevelSensor:
     name: str
+    level_strategy: LevelStrategy
 
-    def __init__(self, name):
+    def __init__(self, name: str, level_strategy: LevelStrategy = DefaultLevelStrategy()):
         self.name = name
-        self.level = 1000
+        self.strategy = level_strategy
 
     def get_level(self) -> int:
-        print(f"{self.name} water level is {self.level}")
-        return self.level
+        return self.strategy.get_level()
