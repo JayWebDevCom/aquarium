@@ -1,14 +1,14 @@
-#__package__ = "components"
+from components import LevelStrategy
+from components.DefaultLevelStrategy import DefaultLevelStrategy
 
-from components.dependencies import VL53L0X
 
 class LevelSensor:
     name: str
+    level_strategy: LevelStrategy
 
-    def __init__(self, name):
+    def __init__(self, name: str, level_strategy: LevelStrategy = DefaultLevelStrategy()):
         self.name = name
-        self.tof = VL53L0X.VL53L0X()
-        self.tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+        self.strategy = level_strategy
 
     def get_level(self) -> int:
-        return int(self.tof.get_distance()/10)
+        return self.strategy.get_level()

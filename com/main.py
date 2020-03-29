@@ -1,18 +1,21 @@
 from Controller import Controller
 from components.LevelDetector import LevelDetector
-from components.mocks.MockLevelSensor import MockLevelSensor
+from components.LevelSensor import LevelSensor
+from components.TemperatureSensor import TemperatureSensor
+from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
-from components.mocks.MockSumpTemperatureSensor import MockSumpTemperatureSensor
-from components.mocks.MockTankTemperatureSensor import MockTankTemperatureSensor
 import time
 import schedule
 
-water_sensor = MockLevelSensor('water sensor')
+water_sensor = LevelSensor('water sensor', TimeOfFlightLevelStrategy())
 water_detector = LevelDetector('water sensor', water_sensor, 20, 60, 2)
 
-sump_temp = MockSumpTemperatureSensor('mock sump temperature')
-tank_temp = MockTankTemperatureSensor('mock tank temperature')
+sump_temp_device_id = "28-0300a279088e"
+tank_temp_device_id = "28-0300a2792070"
+
+sump_temp = TemperatureSensor("sump temperature sensor", sump_temp_device_id)
+tank_temp = TemperatureSensor("tank temperature sensor", tank_temp_device_id)
 temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp, 1.0)
 
 pump_out = Switch('pump_out', 1)
