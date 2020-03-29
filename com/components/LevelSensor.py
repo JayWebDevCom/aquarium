@@ -1,13 +1,14 @@
-__package__ = "components"
+#__package__ = "components"
 
+from components.dependencies import VL53L0X
 
 class LevelSensor:
     name: str
 
     def __init__(self, name):
         self.name = name
-        self.level = 1000
+        self.tof = VL53L0X.VL53L0X()
+        self.tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
 
     def get_level(self) -> int:
-        print(f"{self.name} water level is {self.level}")
-        return self.level
+        return int(self.tof.get_distance()/10)
