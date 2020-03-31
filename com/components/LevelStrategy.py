@@ -1,4 +1,3 @@
-
 class LevelStrategy:
     name: str
 
@@ -6,4 +5,8 @@ class LevelStrategy:
         self.name = name
 
     def get_level(self) -> int:
-        pass
+        raise IllegalArgumentError
+
+
+class IllegalArgumentError(ValueError):
+    pass
