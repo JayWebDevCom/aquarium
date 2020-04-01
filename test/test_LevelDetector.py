@@ -21,8 +21,10 @@ class TestWaterLevelDetector(TestCase):
             self.water_sensor.get_level = MagicMock(return_value=water_level)
             self.assertEqual(expected, self.water_detector.is_sump_full())
 
-    def test_unexpected_water_level(self):
-        for level in [0, 1, 2, 3, 4, 17, 17.5]:
+    def test_unexpected_water_level_error_raised(self):
+        too_high = [0, 1, 10, 17, 18, 19]
+        too_low = [61, 80]
+        for level in too_high + too_low:
             self.water_sensor.get_level = MagicMock(return_value=level)
             with self.assertRaises(UnexpectedWaterLevel):
                 self.water_detector.is_sump_full()

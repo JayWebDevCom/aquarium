@@ -38,7 +38,7 @@ class LevelDetector:
         return change * 100
 
     def _check(self, level):
-        if level not in range(self.full_level, self.empty_level):
+        if level not in range(self.full_level, self.empty_level + 1):
             print(f"raising UnexpectedWaterLevel: {level}")
             raise UnexpectedWaterLevel(level)
         pass
