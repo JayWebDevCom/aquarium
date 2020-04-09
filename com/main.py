@@ -6,7 +6,10 @@ from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
 import time
+import RPi.GPIO as GPIO
 import schedule
+
+GPIO.setmode(GPIO.BOARD)
 
 water_sensor = LevelSensor('water sensor', TimeOfFlightLevelStrategy())
 water_detector = LevelDetector('water sensor', water_sensor, 20, 60, 2)
