@@ -21,6 +21,8 @@ pump_out_channel = 17
 pump_in_channel = 27
 sump_pump_channel = 22
 
+GPIO.setup([pump_out_channel, pump_in_channel, sump_pump_channel], GPIO.OUT)
+
 sump_temp = TemperatureSensor("sump temperature sensor", sump_temp_device_id)
 tank_temp = TemperatureSensor("tank temperature sensor", tank_temp_device_id)
 temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp, 1.0)
@@ -31,14 +33,4 @@ sump_pump = Switch('sump pump', sump_pump_channel)
 
 controller = Controller("some name", water_detector, temperature_detector, pump_out, pump_in, sump_pump)
 
-
-def job():
-    print("Water change beginning...")
-    controller.water_change(50.0)
-
-
-schedule.every().day.at("20:00").do(job)
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)
+controller.water_change(50.0)
