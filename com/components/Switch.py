@@ -17,9 +17,3 @@ class Switch:
     def off(self):
         print(f"switching off {self.name}")
         GPIO.output(self.pin, 0)
-
-    def __eq__(self, other):
-        """Overrides the default implementation"""
-        if isinstance(other, Switch):
-            return self.name == other.name and self.pin == other.pin
-        return False
