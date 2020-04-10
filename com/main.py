@@ -21,6 +21,8 @@ pump_out_channel = 17
 pump_in_channel = 27
 sump_pump_channel = 22
 
+GPIO.setup([pump_out_channel, pump_in_channel, sump_pump_channel], GPIO.OUT)
+
 sump_temp = TemperatureSensor("sump temperature sensor", sump_temp_device_id)
 tank_temp = TemperatureSensor("tank temperature sensor", tank_temp_device_id)
 temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp, 1.0)
