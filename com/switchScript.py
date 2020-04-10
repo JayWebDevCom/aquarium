@@ -6,6 +6,7 @@ import time
 from components.Switch import Switch
 
 GPIO.setmode(GPIO.BCM)
+# BCM mode GPIO channels 17, 27, 22
 channel = 17
 GPIO.setup(channel, GPIO.OUT)
 
