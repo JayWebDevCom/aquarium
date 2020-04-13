@@ -1,6 +1,8 @@
 import logging.config
 import yaml
 
+from components.CustomFormatter import CustomFormatter
+
 
 class AquariumLogger:
 
@@ -9,7 +11,11 @@ class AquariumLogger:
             config = yaml.safe_load(f.read())
             logging.config.dictConfig(config)
             self.logger = logging.getLogger(__name__)
-    
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.DEBUG)
+            ch.setFormatter(CustomFormatter())
+            self.logger.addHandler(ch)
+
     def info(self, message):
         self.logger.info(message)
 

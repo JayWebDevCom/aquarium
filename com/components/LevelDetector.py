@@ -1,3 +1,4 @@
+from components.CustomFormatter import CustomFormatter
 from components.LevelSensor import LevelSensor
 import logging.config
 import yaml
@@ -30,6 +31,10 @@ class LevelDetector:
             config = yaml.safe_load(f.read())
             logging.config.dictConfig(config)
             self.logger = logging.getLogger(__name__)
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.DEBUG)
+            ch.setFormatter(CustomFormatter())
+            self.logger.addHandler(ch)
 
     def percentage_changed(self) -> float:
         total_level = self.empty_level - self.full_level

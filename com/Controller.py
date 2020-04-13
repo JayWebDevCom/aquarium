@@ -1,5 +1,6 @@
 import time
 
+from components.CustomFormatter import CustomFormatter
 from components.Switch import Switch
 from components.LevelDetector import LevelDetector, UnexpectedWaterLevel
 from components.TemperatureDetector import TemperatureDetector
@@ -39,6 +40,10 @@ class Controller:
             config = yaml.safe_load(f.read())
             logging.config.dictConfig(config)
             self.logger = logging.getLogger(__name__)
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.DEBUG)
+            ch.setFormatter(CustomFormatter())
+            self.logger.addHandler(ch)
 
     def get_name(self):
         return self.name
