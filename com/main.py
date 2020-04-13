@@ -1,3 +1,4 @@
+from AquariumLogger import AquariumLogger
 from Controller import Controller
 from components.LevelDetector import LevelDetector
 from components.LevelSensor import LevelSensor
@@ -10,6 +11,7 @@ import time
 import schedule
 
 GPIO.setmode(GPIO.BCM)
+logger = AquariumLogger()
 
 water_sensor = LevelSensor('water sensor', TimeOfFlightLevelStrategy())
 water_detector = LevelDetector('water sensor', water_sensor, 20, 60, 2)
@@ -35,7 +37,7 @@ controller = Controller("some name", water_detector, temperature_detector, pump_
 
 
 def job():
-    print("Water change beginning...")
+    logger.info("Water change beginning...")
     controller.water_change(50.0)
 
 
