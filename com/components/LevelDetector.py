@@ -1,6 +1,7 @@
-__package__ = "components"
-
+from components.CustomFormatter import CustomFormatter
 from components.LevelSensor import LevelSensor
+import logging.config
+import yaml
 
 
 class UnexpectedWaterLevel(Exception):
@@ -26,6 +27,14 @@ class LevelDetector:
         self.empty_level = empty_level
         self.times_to_check_level = times_to_check_level
         self.acceptable_band = acceptable_band
+        with open('log-config.yaml', 'r') as f:
+            config = yaml.safe_load(f.read())
+            logging.config.dictConfig(config)
+            self.logger = logging.getLogger(__name__)
+            ch = logging.StreamHandler()
+            ch.setLevel(logging.DEBUG)
+            ch.setFormatter(CustomFormatter())
+            self.logger.addHandler(ch)
 
     def percentage_changed(self) -> float:
         total_level = self.empty_level - self.full_level
@@ -39,7 +48,7 @@ class LevelDetector:
 
     def _check(self, level):
         if level not in range(self.full_level, self.empty_level + 1):
-            print(f"raising UnexpectedWaterLevel: {level}")
+            self.logger.error(f"raising UnexpectedWaterLevel: {level}")
             raise UnexpectedWaterLevel(level)
         pass
 
@@ -53,7 +62,7 @@ class LevelDetector:
             temperatures_returned.append(one_of_temp_readings)
             sump_level += one_of_temp_readings
 
-        print(f"level readings returned: {temperatures_returned}")
+        self.logger.info(f"level readings returned: {temperatures_returned}")
 
         sump_level = int(sump_level/len(sump_level_count_range))
         self._check(sump_level)
@@ -63,7 +72,7 @@ class LevelDetector:
         acceptable_range = range(self.full_level - self.acceptable_band, self.full_level + self.acceptable_band)
         sump_level = self._get_checked_sump_level()
 
-        print(f"sump level is {sump_level}")
-        print(f"necessary full level is {self.full_level}")
+        self.logger.info(f"sump level is {sump_level}")
+        self.logger.info(f"necessary full level is {self.full_level}")
 
         return sump_level in acceptable_range

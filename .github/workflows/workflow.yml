@@ -17,4 +17,5 @@ jobs:
         with:
           python-version: '3.7'
           architecture: 'x64'
+      - run: pip3 install pyyaml
       - run: python3 -m unittest discover
