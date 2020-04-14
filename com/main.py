@@ -43,7 +43,7 @@ def job():
     controller.water_change(50.0)
 
 
-schedule.every().day.at("20:00").do(job)
+schedule.every().day.at("20:00").do(job).tag("aquarium")
 
 while True:
     schedule.run_pending()
