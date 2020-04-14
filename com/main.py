@@ -11,17 +11,19 @@ import time
 import schedule
 
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
+
 logger = AquariumLogger()
 
 water_sensor = LevelSensor('water sensor', TimeOfFlightLevelStrategy())
-water_detector = LevelDetector('water sensor', water_sensor, 20, 60, 2)
+water_detector = LevelDetector('water sensor', water_sensor, 27, 27+15, 5)
 
-sump_temp_device_id = "28-0300a279088e"
-tank_temp_device_id = "28-0300a2792070"
+sump_temp_device_id = "28-0300a2792070"
+tank_temp_device_id = "28-0300a279088e"
 
-pump_out_channel = 17
-pump_in_channel = 27
-sump_pump_channel = 22
+pump_out_channel = 27
+pump_in_channel = 23
+sump_pump_channel = 17
 
 GPIO.setup([pump_out_channel, pump_in_channel, sump_pump_channel], GPIO.OUT)
 
