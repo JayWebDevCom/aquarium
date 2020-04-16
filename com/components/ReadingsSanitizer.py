@@ -10,8 +10,9 @@ class ReadingsSanitizer:
     lower_bound: int
 
     def __init__(self, aquarium_level: AquariumLevels, percentage_bound: float):
-        self.upper_bound = int(aquarium_level.empty_level * (1 + percentage_bound))
-        self.lower_bound = int(aquarium_level.full_level * (1 - percentage_bound))
+        upper_bound = int(aquarium_level.empty_level * (1 + percentage_bound))
+        lower_bound = int(aquarium_level.full_level * (1 - percentage_bound))
+        self.acceptable_range = range(lower_bound, upper_bound)
         with open('log-config.yaml', 'r') as f:
             config = yaml.safe_load(f.read())
             logging.config.dictConfig(config)
@@ -22,14 +23,12 @@ class ReadingsSanitizer:
             self.logger.addHandler(ch)
 
     def sanitize(self, readings_list) -> int:
-        copy_list = readings_list.copy()
         removed_readings = []
 
-        for item in copy_list:
-
-            if (item < self.lower_bound) or (item > self.upper_bound):
-                copy_list.remove(item)
+        for item in readings_list[:]:
+            if item not in self.acceptable_range:
+                readings_list.remove(item)
                 removed_readings.append(item)
 
         self.logger.info(f"removed {len(removed_readings)} reading(s) {removed_readings}")
-        return int(sum(copy_list) / len(copy_list))
+        return int(sum(readings_list) / len(readings_list))

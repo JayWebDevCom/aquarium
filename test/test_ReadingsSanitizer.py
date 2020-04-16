@@ -14,9 +14,10 @@ class TestReadingsSanitizer(TestCase):
 
     def test_sanitize(self):
         params = [
-            TestReadings(30, [30, 30, 30, 30, 30, 30, 30, 30, 500]),
+            TestReadings(30, [30, 30, 30, 501, 30, 30, 30, 600, 30, 30, 500, 30, 30, 30, 700, 78, 30, 30, 30]),
+            TestReadings(31, [0, 0, 0, 0, 1, 1, 1, 1, 3, 4, 5, 20, 30, 40, 34, 66]),
+            TestReadings(30, [30, 30, 30, 30, 30, 30, 30, 30, 500, 819, 819]),
             TestReadings(30, [30, 30, 30, 30, 30, 30, 30, 30]),
-            TestReadings(31, [20, 30, 40, 34, 66]),
             TestReadings(35, [28, 39, 40, 34])
         ]
 
