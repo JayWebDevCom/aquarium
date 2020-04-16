@@ -14,12 +14,12 @@ GPIO.setup(channel, GPIO.OUT)
 
 switch = Switch("test switch", channel)
 
-for i in range(0, 2):
+for i in range(0, 1):
     logger.info("activating switch…")
     switch.on()
-    time.sleep(7)
+    time.sleep(30)
     logger.info("de-activating switch…")
     switch.off()
-    time.sleep(7)
+#    time.sleep(7)
 
 GPIO.cleanup(channel)
