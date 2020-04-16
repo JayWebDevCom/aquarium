@@ -17,8 +17,9 @@ GPIO.setwarnings(False)
 
 logger = AquariumLogger()
 
-full_level = 27
-empty_level = 27+15
+full_level = 20
+water_change_range = 15
+empty_level = full_level + water_change_range
 
 aquarium_levels = AquariumLevels(full_level, empty_level)
 sanitizer = ReadingsSanitizer(aquarium_levels, 0.1)
