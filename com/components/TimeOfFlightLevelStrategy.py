@@ -1,14 +1,16 @@
 from components.LevelStrategy import LevelStrategy
-from components.dependencies import VL53L0X
+import board
+import busio
+import adafruit_vl53l0x
 
 
 class TimeOfFlightLevelStrategy(LevelStrategy):
     name: str
 
-    def __init__(self, name: str = "time of flight VL53L0X"):
+    def __init__(self, name: str = "time of flight VL53L0X adafruit"):
         super().__init__(name)
-        self.tof = VL53L0X.VL53L0X()
-        self.tof.start_ranging(VL53L0X.VL53L0X_BETTER_ACCURACY_MODE)
+        i2c = busio.I2C(board.SCL, board.SDA)
+        self.vl53 = adafruit_vl53l0x.VL53L0X(i2c)
 
     def get_level(self) -> int:
-        return int(self.tof.get_distance()/10)
+        return int(self.vl53.range / 10)

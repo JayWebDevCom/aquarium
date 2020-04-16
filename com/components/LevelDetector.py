@@ -59,8 +59,10 @@ class LevelDetector:
         temperatures_returned = []
         for i in sump_level_count_range:
             one_of_temp_readings = self.sensor.get_level()
-            temperatures_returned.append(one_of_temp_readings)
-            sump_level += one_of_temp_readings
+
+            if one_of_temp_readings < 100:
+              temperatures_returned.append(one_of_temp_readings)
+              sump_level += one_of_temp_readings
 
         self.logger.info(f"level readings returned: {temperatures_returned}")
 
@@ -76,3 +78,4 @@ class LevelDetector:
         self.logger.info(f"necessary full level is {self.full_level}")
 
         return sump_level in acceptable_range
+
