@@ -16,7 +16,7 @@ GPIO.setwarnings(False)
 logger = AquariumLogger()
 
 water_sensor = LevelSensor('water sensor', TimeOfFlightLevelStrategy())
-water_detector = LevelDetector('water sensor', water_sensor, 27, 27+15, 5)
+water_detector = LevelDetector('water sensor', water_sensor, 22, 22+15, 10)
 
 sump_temp_device_id = "28-0300a2792070"
 tank_temp_device_id = "28-0300a279088e"
@@ -37,14 +37,5 @@ sump_pump = Switch('sump pump', sump_pump_channel)
 
 controller = Controller("some name", water_detector, temperature_detector, pump_out, pump_in, sump_pump)
 
+#controller.water_change(10.0)
 
-def job():
-    logger.info("Water change beginning...")
-    controller.water_change(50.0)
-
-
-schedule.every().day.at("20:00").do(job).tag("aquarium")
-
-while True:
-    schedule.run_pending()
-    time.sleep(1)

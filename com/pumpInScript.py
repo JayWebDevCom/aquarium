@@ -9,18 +9,16 @@ from components.Switch import Switch
 logger = AquariumLogger()
 
 GPIO.setmode(GPIO.BCM)
-# BCM mode GPIO channels 17, 27, 23
-channel = 17
+channel = 23
 GPIO.setup(channel, GPIO.OUT)
 
 switch = Switch("test switch", channel)
 
-for i in range(0, 5):
+for i in range(0, 1):
     logger.info("activating switch…")
     switch.on()
-    time.sleep(1)
+    time.sleep(10)
     logger.info("de-activating switch…")
     switch.off()
-    time.sleep(1)
 
 GPIO.cleanup(channel)

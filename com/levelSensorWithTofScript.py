@@ -9,6 +9,13 @@ from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 level_sensor = LevelSensor("test level sensor", TimeOfFlightLevelStrategy())
 logger = AquariumLogger()
 
-for i in range(0, 10):
+num = 5
+sum = 0
+
+for i in range(0, num):
     time.sleep(1)
-    logger.info(level_sensor.get_level())
+    temp = level_sensor.get_level()
+    sum += temp
+    logger.info(temp)
+
+logger.info(f"average level: {sum/num}")
