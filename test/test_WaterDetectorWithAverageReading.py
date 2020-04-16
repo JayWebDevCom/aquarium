@@ -2,11 +2,15 @@ from unittest import TestCase, mock
 
 from com.components.LevelDetector import LevelDetector
 from com.components.LevelSensor import LevelSensor
+from components.AquariumLevels import AquariumLevels
+from components.ReadingsSanitizer import ReadingsSanitizer
 
 
 class TestWaterLevelDetectorWithAverage(TestCase):
     water_sensor = LevelSensor('water sensor')
-    water_detector = LevelDetector('water detector', water_sensor, 20, 60)
+    aquarium_levels = AquariumLevels(20, 60)
+    sanitizer = ReadingsSanitizer(aquarium_levels, 0.1)
+    water_detector = LevelDetector('water detector', water_sensor, aquarium_levels, sanitizer)
 
     @mock.patch("com.components.LevelSensor.LevelSensor.get_level")
     def test_water_level_with_average(self, water_sensor):

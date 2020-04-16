@@ -1,7 +1,9 @@
 from AquariumLogger import AquariumLogger
 from Controller import Controller
+from components.AquariumLevels import AquariumLevels
 from components.LevelDetector import LevelDetector
 from components.LevelSensor import LevelSensor
+from components.ReadingsSanitizer import ReadingsSanitizer
 from components.TemperatureSensor import TemperatureSensor
 from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 from components.Switch import Switch
@@ -15,8 +17,14 @@ GPIO.setwarnings(False)
 
 logger = AquariumLogger()
 
+full_level = 27
+empty_level = 27 + 15
+
+aquarium_levels = AquariumLevels(full_level, empty_level)
+sanitizer = ReadingsSanitizer(aquarium_levels, 0.1)
+
 water_sensor = LevelSensor('water sensor', TimeOfFlightLevelStrategy())
-water_detector = LevelDetector('water sensor', water_sensor, 22, 22+15, 10)
+water_detector = LevelDetector('water sensor', water_sensor, aquarium_levels, sanitizer, 10)
 
 sump_temp_device_id = "28-0300a2792070"
 tank_temp_device_id = "28-0300a279088e"
@@ -37,5 +45,4 @@ sump_pump = Switch('sump pump', sump_pump_channel)
 
 controller = Controller("some name", water_detector, temperature_detector, pump_out, pump_in, sump_pump)
 
-#controller.water_change(10.0)
-
+# controller.water_change(10.0)
