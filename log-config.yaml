@@ -1,6 +1,6 @@
 ---
 version: 1
-disable_existing_loggers: False
+disable_existing_loggers: false
 formatters:
   simple:
     format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
@@ -38,15 +38,15 @@ loggers:
   my_module_1:
     level: INFO
     handlers: [info_file_handler]
-    propagate: no
+    propagate: false
   my_module_2:
     level: ERROR
     handlers: [error_file_handler]
-    propagate: no
+    propagate: false
   my_module_4:
     level: DEBUG
     handlers: [debug_file_handler]
-    propagate: no
+    propagate: false
 root:
   level: INFO
   handlers: [console, info_file_handler, error_file_handler, debug_file_handler]
