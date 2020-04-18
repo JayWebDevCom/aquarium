@@ -49,4 +49,4 @@ loggers:
     propagate: false
 root:
   level: INFO
-  handlers: [console, info_file_handler, error_file_handler, debug_file_handler]
+  handlers: [info_file_handler, error_file_handler, debug_file_handler]
