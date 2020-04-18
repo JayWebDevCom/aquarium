@@ -3,9 +3,10 @@
 ### A water change management application for aquariums to be run on a raspberry pi
 - A python3 learning project
 - Scheduling library used is [schedule by dbader](https://github.com/dbader/schedule)
-- V53L0X library used is [V53L0X by johnbryanmoore](https://github.com/johnbryanmoore/VL53L0X_rasp_python)
 
 - the testing library is UnitTest and makes use of side-effects
+
+<br/>
 
 - run the test suite
 ```bash
@@ -19,9 +20,22 @@ $ pip3 install adafruit-circuitpython-vl53l0x
 $ python3 -m pip install --force-reinstall adafruit-blinka
 ```
 
+- configure by updating `com/main.py` with
+  - `sump_temp_device_id` and `tank_temp_device_id` variables with your corresponding `vl53l0x` device id
+  - `pump_out_channel` `pump_in_channel` and `sump_pump_channel` variables with your corresponding relay pins for your 
+  drain pump, clean water input pump and sump return pump respectively
+
+- adjust the water change percentage settings in `com/main.py` e.g. 50% as
+```bash
+controller.water_change(50.0)
+```
+
+- adjust the schedule settings in `com/main.py` e.g.
+```bash
+schedule.every().day.at("20:00").do(job).tag("aquarium")
+```
+
 - run the application
 ```bash
 $ python3 com/main.py
 ```
-
-- adjust the schedule settings in `com/main.py`
