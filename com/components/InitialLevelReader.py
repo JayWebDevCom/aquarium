@@ -16,6 +16,6 @@ class InitialLevelReader:
         for i in range(0, self.num_readings):
             reading = self.sensor.get_level()
             readings_list.append(reading)
-            time.sleep(0.5)
+            time.sleep(0.2)
 
         return self.sanitizer.sanitize(readings_list)
