@@ -35,7 +35,6 @@ class LevelDetector:
             logging.config.dictConfig(config)
             self.logger = logging.getLogger(__name__)
             ch = logging.StreamHandler()
-            ch.setLevel(logging.DEBUG)
             ch.setFormatter(CustomFormatter())
             self.logger.addHandler(ch)
 
