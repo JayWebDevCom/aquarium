@@ -24,6 +24,8 @@ initial_level_reader = InitialLevelReader(sensor, initial_level_sanitizer)
 
 
 full_level = initial_level_reader.get_initial_level()
+logger.info(f"starting with a full sump level of {full_level}")
+
 water_change_range = 15
 empty_level = full_level + water_change_range
 
