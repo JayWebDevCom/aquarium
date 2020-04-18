@@ -1,17 +1,17 @@
-from components.AquariumLevels import AquariumLevels
+from components.LevelsBoundary import LevelsBoundary
 from components.CustomFormatter import CustomFormatter
 import logging.config
 import yaml
 
 
 class ReadingsSanitizer:
-    aquarium_levels: AquariumLevels
+    levels_boundary: LevelsBoundary
     upper_bound: int
     lower_bound: int
 
-    def __init__(self, aquarium_level: AquariumLevels, percentage_bound: float):
-        upper_bound = int(aquarium_level.empty_level * (1 + percentage_bound))
-        lower_bound = int(aquarium_level.full_level * (1 - percentage_bound))
+    def __init__(self, levels_boundary: LevelsBoundary, percentage_bound: float):
+        upper_bound = int(levels_boundary.empty_level * (1 + percentage_bound))
+        lower_bound = int(levels_boundary.full_level * (1 - percentage_bound))
         self.acceptable_range = range(lower_bound, upper_bound)
         with open('log-config.yaml', 'r') as f:
             config = yaml.safe_load(f.read())

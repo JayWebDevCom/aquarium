@@ -1,12 +1,12 @@
 from unittest import TestCase
 
-from components.AquariumLevels import AquariumLevels
+from components.LevelsBoundary import LevelsBoundary
 from components.ReadingsSanitizer import ReadingsSanitizer
 
 
 class TestReadingsSanitizer(TestCase):
     percentage_boundary = 0.1
-    sanitizer = ReadingsSanitizer(AquariumLevels(20, 40), percentage_boundary)
+    sanitizer = ReadingsSanitizer(LevelsBoundary(20, 40), percentage_boundary)
 
     def test_sanitize_basic(self):
         readings = [30, 30, 30, 30, 30, 30, 30, 30]

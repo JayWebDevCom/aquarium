@@ -2,16 +2,16 @@ from unittest import TestCase
 from unittest.mock import MagicMock
 
 from com.components.LevelDetector import LevelDetector, UnexpectedWaterLevel
-from components.AquariumLevels import AquariumLevels
+from components.LevelsBoundary import LevelsBoundary
 from components.LevelSensor import LevelSensor
 from components.ReadingsSanitizer import ReadingsSanitizer
 
 
 class TestWaterLevelDetector(TestCase):
     water_sensor = LevelSensor('water sensor')
-    aquarium_levels = AquariumLevels(20, 60)
-    sanitizer = ReadingsSanitizer(aquarium_levels, 0.1)
-    water_detector = LevelDetector('water detector', water_sensor, aquarium_levels, sanitizer, 1, 2)
+    levels_boundary = LevelsBoundary(20, 60)
+    sanitizer = ReadingsSanitizer(levels_boundary, 0.1)
+    water_detector = LevelDetector('water detector', water_sensor, levels_boundary, sanitizer, 1, 2)
 
     def test_percentage_changed_parameterized(self):
         params = {30: 25.0, 40: 50.0, 55: 87.5}

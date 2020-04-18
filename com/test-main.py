@@ -1,6 +1,7 @@
 from AquariumLogger import AquariumLogger
 from Controller import Controller
-from components.AquariumLevels import AquariumLevels
+from components.InitialLevelReader import InitialLevelReader
+from components.LevelsBoundary import LevelsBoundary
 from components.LevelDetector import LevelDetector
 from components.LevelSensor import LevelSensor
 from components.ReadingsSanitizer import ReadingsSanitizer
@@ -9,23 +10,28 @@ from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
 import RPi.GPIO as GPIO
-import time
-import schedule
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 logger = AquariumLogger()
 
-full_level = 20
+sensor = TimeOfFlightLevelStrategy()
+
+initial_levels_boundary = LevelsBoundary(20, 30)
+initial_level_sanitizer = ReadingsSanitizer(initial_levels_boundary, 0.1)
+initial_level_reader = InitialLevelReader(sensor, initial_level_sanitizer)
+
+
+full_level = initial_level_reader.get_initial_level()
 water_change_range = 15
 empty_level = full_level + water_change_range
 
-aquarium_levels = AquariumLevels(full_level, empty_level)
-sanitizer = ReadingsSanitizer(aquarium_levels, 0.1)
+levels_boundary = LevelsBoundary(full_level, empty_level)
+sanitizer = ReadingsSanitizer(levels_boundary, 0.1)
 
-water_sensor = LevelSensor('water sensor', TimeOfFlightLevelStrategy())
-water_detector = LevelDetector('water sensor', water_sensor, aquarium_levels, sanitizer, 10)
+water_sensor = LevelSensor('water sensor', sensor)
+water_detector = LevelDetector('water sensor', water_sensor, levels_boundary, sanitizer, 10)
 
 sump_temp_device_id = "28-0300a2792070"
 tank_temp_device_id = "28-0300a279088e"
