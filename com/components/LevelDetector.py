@@ -1,4 +1,4 @@
-from components.AquariumLevels import AquariumLevels
+from components.LevelsBoundary import LevelsBoundary
 from components.CustomFormatter import CustomFormatter
 from components.LevelSensor import LevelSensor
 import logging.config
@@ -20,13 +20,13 @@ class LevelDetector:
     def __init__(
             self, name: str,
             sensor: LevelSensor,
-            aquarium_levels: AquariumLevels,
+            levels_boundary: LevelsBoundary,
             sanitizer: ReadingsSanitizer,
             times_to_check_level: int = 5,
             acceptable_band: int = 2):
         self.name = name
         self.sensor = sensor
-        self.aquarium_levels = aquarium_levels
+        self.aquarium_levels = levels_boundary
         self.sanitizer = sanitizer
         self.times_to_check_level = times_to_check_level
         self.acceptable_band = acceptable_band
