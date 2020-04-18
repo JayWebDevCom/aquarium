@@ -1,3 +1,5 @@
+import time
+
 from components.LevelStrategy import LevelStrategy
 from components.ReadingsSanitizer import ReadingsSanitizer
 
@@ -14,5 +16,6 @@ class InitialLevelReader:
         for i in range(0, self.num_readings):
             reading = self.sensor.get_level()
             readings_list.append(reading)
+            time.sleep(0.5)
 
         return self.sanitizer.sanitize(readings_list)
