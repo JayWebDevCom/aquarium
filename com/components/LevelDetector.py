@@ -26,7 +26,7 @@ class LevelDetector:
             acceptable_band: int = 2):
         self.name = name
         self.sensor = sensor
-        self.aquarium_levels = levels_boundary
+        self.levels_boundary = levels_boundary
         self.sanitizer = sanitizer
         self.times_to_check_level = times_to_check_level
         self.acceptable_band = acceptable_band
@@ -39,15 +39,15 @@ class LevelDetector:
             self.logger.addHandler(ch)
 
     def percentage_changed(self) -> float:
-        total_level = self.aquarium_levels.empty_level - self.aquarium_levels.full_level
+        total_level = self.levels_boundary.empty_level - self.levels_boundary.full_level
         current_level: int = self._get_checked_sump_level()
 
-        difference = current_level - self.aquarium_levels.full_level
+        difference = current_level - self.levels_boundary.full_level
         change: float = difference / total_level
         return change * 100
 
     def _check(self, level):
-        if level not in range(self.aquarium_levels.full_level, self.aquarium_levels.empty_level + 1):
+        if level not in range(self.levels_boundary.full_level, self.levels_boundary.empty_level + 1):
             self.logger.error(f"raising UnexpectedWaterLevel: {level}")
             raise UnexpectedWaterLevel(level)
         pass
@@ -66,11 +66,11 @@ class LevelDetector:
         return sump_level
 
     def is_sump_full(self) -> bool:
-        acceptable_range = range(self.aquarium_levels.full_level - self.acceptable_band,
-                                 self.aquarium_levels.full_level + self.acceptable_band)
+        acceptable_range = range(self.levels_boundary.full_level - self.acceptable_band,
+                                 self.levels_boundary.full_level + self.acceptable_band)
         sump_level = self._get_checked_sump_level()
 
         self.logger.info(f"sump level is {sump_level}")
-        self.logger.info(f"necessary full level is {self.aquarium_levels.full_level}")
+        self.logger.info(f"necessary full level is {self.levels_boundary.full_level}")
 
         return sump_level in acceptable_range
