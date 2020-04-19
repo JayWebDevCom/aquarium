@@ -1,10 +1,7 @@
 from components.LevelsBoundary import LevelsBoundary
-from components.CustomFormatter import CustomFormatter
 from components.LevelSensor import LevelSensor
-import logging.config
-import yaml
-
 from components.ReadingsSanitizer import ReadingsSanitizer
+from loguru import logger
 
 
 class UnexpectedWaterLevel(Exception):
@@ -30,13 +27,6 @@ class LevelDetector:
         self.sanitizer = sanitizer
         self.times_to_check_level = times_to_check_level
         self.acceptable_band = acceptable_band
-        with open('log-config.yaml', 'r') as f:
-            config = yaml.safe_load(f.read())
-            logging.config.dictConfig(config)
-            self.logger = logging.getLogger(__name__)
-            ch = logging.StreamHandler()
-            ch.setFormatter(CustomFormatter())
-            self.logger.addHandler(ch)
 
     def percentage_changed(self) -> float:
         total_level = self.levels_boundary.empty_level - self.levels_boundary.full_level
@@ -47,8 +37,8 @@ class LevelDetector:
         return change * 100
 
     def _check(self, level):
-        if level not in range(self.levels_boundary.full_level, self.levels_boundary.empty_level + 1):
-            self.logger.error(f"raising UnexpectedWaterLevel: {level}")
+        if level not in range(self.aquarium_levels.full_level, self.aquarium_levels.empty_level + 1):
+            logger.error(f"raising UnexpectedWaterLevel: {level}")
             raise UnexpectedWaterLevel(level)
         pass
 
@@ -56,11 +46,11 @@ class LevelDetector:
         sump_level_count_range = range(0, self.times_to_check_level)
         temperatures_returned = []
 
-        for i in sump_level_count_range:
+        for _ in sump_level_count_range:
             one_of_temp_readings = self.sensor.get_level()
             temperatures_returned.append(one_of_temp_readings)
 
-        self.logger.info(f"level readings returned: {temperatures_returned}")
+        logger.info(f"level readings returned: {temperatures_returned}")
         sump_level = self.sanitizer.sanitize(temperatures_returned)
         self._check(sump_level)
         return sump_level
@@ -70,7 +60,7 @@ class LevelDetector:
                                  self.levels_boundary.full_level + self.acceptable_band)
         sump_level = self._get_checked_sump_level()
 
-        self.logger.info(f"sump level is {sump_level}")
-        self.logger.info(f"necessary full level is {self.levels_boundary.full_level}")
+        logger.info(f"sump level is {sump_level}")
+        logger.info(f"necessary full level is {self.aquarium_levels.full_level}")
 
         return sump_level in acceptable_range
