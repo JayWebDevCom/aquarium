@@ -22,12 +22,14 @@ class ReadingsSanitizer:
             self.logger.addHandler(ch)
 
     def sanitize(self, readings_list) -> int:
-        removed_readings = []
+        readings_list_copy = readings_list[:]
+        accepted_readings_iterator = filter(self._is_within_bounds, readings_list_copy)
+        accepted_readings = list(accepted_readings_iterator)
 
-        for item in readings_list[:]:
-            if item not in self.acceptable_range:
-                readings_list.remove(item)
-                removed_readings.append(item)
+        removed_readings = [item for item in readings_list_copy if item not in accepted_readings]
 
         self.logger.info(f"removed {len(removed_readings)} reading(s) {removed_readings}")
-        return int(sum(readings_list) / len(readings_list))
+        return int(sum(accepted_readings) / len(accepted_readings))
+
+    def _is_within_bounds(self, number) -> int:
+        return number in self.acceptable_range
