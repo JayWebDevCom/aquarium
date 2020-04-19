@@ -1,7 +1,5 @@
 from components.LevelsBoundary import LevelsBoundary
-from components.CustomFormatter import CustomFormatter
-import logging.config
-import yaml
+from loguru import logger
 
 
 class ReadingsSanitizer:
@@ -13,13 +11,6 @@ class ReadingsSanitizer:
         upper_bound = int(levels_boundary.empty_level * (1 + percentage_bound))
         lower_bound = int(levels_boundary.full_level * (1 - percentage_bound))
         self.acceptable_range = range(lower_bound, upper_bound)
-        with open('log-config.yaml', 'r') as f:
-            config = yaml.safe_load(f.read())
-            logging.config.dictConfig(config)
-            self.logger = logging.getLogger(__name__)
-            ch = logging.StreamHandler()
-            ch.setFormatter(CustomFormatter())
-            self.logger.addHandler(ch)
 
     def sanitize(self, readings_list) -> int:
         readings_list_copy = readings_list[:]
@@ -28,7 +19,7 @@ class ReadingsSanitizer:
 
         removed_readings = [item for item in readings_list_copy if item not in accepted_readings]
 
-        self.logger.info(f"removed {len(removed_readings)} reading(s) {removed_readings}")
+        logger.info(f"removed {len(removed_readings)} reading(s) {removed_readings}")
         return int(sum(accepted_readings) / len(accepted_readings))
 
     def _is_within_bounds(self, number) -> int:
