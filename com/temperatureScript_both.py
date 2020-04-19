@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-
-import time
 from components.TemperatureSensor import TemperatureSensor
 from AquariumLogger import AquariumLogger
 
@@ -16,6 +14,8 @@ temperature_sensor_2 = TemperatureSensor("test sensor", device_id_2)
 num = 5
 tank_temps_total = 0
 sump_temps_total = 0
+
+tank_temp, sump_temp = 0, 0
 
 for i in range(0, num):
     tank_temp = temperature_sensor_1.get_temp()
