@@ -37,7 +37,7 @@ class LevelDetector:
         return change * 100
 
     def _check(self, level):
-        if level not in range(self.aquarium_levels.full_level, self.aquarium_levels.empty_level + 1):
+        if level not in range(self.levels_boundary.full_level, self.levels_boundary.empty_level + 1):
             logger.error(f"raising UnexpectedWaterLevel: {level}")
             raise UnexpectedWaterLevel(level)
         pass
@@ -61,6 +61,6 @@ class LevelDetector:
         sump_level = self._get_checked_sump_level()
 
         logger.info(f"sump level is {sump_level}")
-        logger.info(f"necessary full level is {self.aquarium_levels.full_level}")
+        logger.info(f"necessary full level is {self.levels_boundary.full_level}")
 
         return sump_level in acceptable_range
