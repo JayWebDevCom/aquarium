@@ -39,10 +39,12 @@ class Controller:
 
     def water_change(self, percentage: float):
         # if x := isBig(y): return x
+        self.empty_by_percentage(percentage)
+        self.refill()
 
+    def empty_by_percentage(self, percentage):
         self.sump_return.off()
         self.pump_out.on()
-
         try:
             while True:
                 percentage_changed = self.water_detector.percentage_changed()
@@ -56,10 +58,7 @@ class Controller:
             self.pump_in.off()
             self.pump_out.off()
             exit(1)
-
         self.pump_out.off()
-
-        self.refill()
 
     def refill(self):
         logger.info("refilling")
