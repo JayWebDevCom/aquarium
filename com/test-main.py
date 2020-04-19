@@ -18,7 +18,7 @@ logger = AquariumLogger()
 
 sensor = TimeOfFlightLevelStrategy()
 
-initial_levels_boundary = LevelsBoundary(20, 30)
+initial_levels_boundary = LevelsBoundary(14, 20)
 initial_level_sanitizer = ReadingsSanitizer(initial_levels_boundary, 0.1)
 initial_level_reader = InitialLevelReader(sensor, initial_level_sanitizer)
 
@@ -33,7 +33,7 @@ levels_boundary = LevelsBoundary(full_level, empty_level)
 sanitizer = ReadingsSanitizer(levels_boundary, 0.1)
 
 water_sensor = LevelSensor('water sensor', sensor)
-water_detector = LevelDetector('water sensor', water_sensor, levels_boundary, sanitizer, 10)
+water_detector = LevelDetector('water sensor', water_sensor, levels_boundary, sanitizer, 10, 1)
 
 sump_temp_device_id = "28-0300a2792070"
 tank_temp_device_id = "28-0300a279088e"
