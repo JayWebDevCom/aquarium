@@ -1,4 +1,5 @@
 import time
+from datetime import datetime
 from components.Switch import Switch
 from components.LevelDetector import LevelDetector, UnexpectedWaterLevel
 from components.TemperatureDetector import TemperatureDetector
@@ -39,8 +40,23 @@ class Controller:
 
     def water_change(self, percentage: float):
         # if x := isBig(y): return x
+        water_extraction_started = datetime.now()
+
         self.empty_by_percentage(percentage)
+
+        water_extraction_ended = datetime.now()
+        water_extraction_interval = water_extraction_ended - water_extraction_started
+        water_extraction_interval_minutes_seconds = divmod(water_extraction_interval.total_seconds(), 60)
+        logger.info(f"water extraction complete: {int(water_extraction_interval_minutes_seconds[0])}m \
+                {int(water_extraction_interval_minutes_seconds[1])}s")
+
         self.refill()
+
+        refill_ended = datetime.now()
+        total_interval = refill_ended - water_extraction_started
+        total_minutes_seconds = divmod(total_interval.total_seconds(), 60)
+        logger.info(f"water change complete: {int(total_minutes_seconds[0])}m \
+                {int(total_minutes_seconds[1])}s")
 
     def empty_by_percentage(self, percentage):
         self.sump_return.off()
