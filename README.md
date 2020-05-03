@@ -1,4 +1,5 @@
-## aquarium  ![](https://github.com/JayWebDevCom/aquarium/workflows/Python%20CI/badge.svg)
+## aquarium
+![](https://github.com/JayWebDevCom/aquarium/workflows/Python%20CI/badge.svg)
 
 ### A water change management application for aquariums to be run on a raspberry pi
 - a python3 learning project
@@ -30,9 +31,9 @@ $ pip3 install adafruit-circuitpython-vl53l0x
 $ python3 -m pip install --force-reinstall adafruit-blinka
 ```
 
+- place your `vl53l0x` device suspended roughly 15cm above your sump water surface
 - configure by updating `com/main.py` with
-  - `sump_temp_device_id` and `tank_temp_device_id` variables with your corresponding `DS18B20` device id
-  - suspend your `vl53l0x` device roughly 15cm above your sump water surface
+  - `sump_temp_device_id` and `tank_temp_device_id` variables with your corresponding `DS18B20` device ids
   - `pump_out_channel` `pump_in_channel` and `sump_pump_channel` variables with your corresponding relay pins for your 
   drain pump, clean water input pump and sump return pump respectively
 
