@@ -14,13 +14,10 @@ class ReadingsSanitizer:
 
     def sanitize(self, readings_list) -> int:
         readings_list_copy = readings_list[:]
-        accepted_readings_iterator = filter(self._is_within_bounds, readings_list_copy)
+        accepted_readings_iterator = filter(lambda reading: reading in self.acceptable_range, readings_list_copy)
         accepted_readings = list(accepted_readings_iterator)
 
         removed_readings = [item for item in readings_list_copy if item not in accepted_readings]
 
         logger.info(f"removed {len(removed_readings)} reading(s) {removed_readings}")
         return int(sum(accepted_readings) / len(accepted_readings))
-
-    def _is_within_bounds(self, number) -> int:
-        return number in self.acceptable_range
