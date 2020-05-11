@@ -36,10 +36,10 @@ class Controller:
         self.temperature_delay = temperature_delay
 
     def log_time_elapsed(decorated):
-        def wrapper():
+        def wrapper(*args):
             started = datetime.now()
 
-            decorated()
+            decorated(*args)
 
             ended = datetime.now()
             interval = ended - started
