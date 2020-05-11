@@ -44,7 +44,8 @@ class Controller:
             ended = datetime.now()
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
-            logger.info(f"complete: {int(interval_minutes_seconds[0])}m {int(interval_minutes_seconds[1])}s")
+            logger.info(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
+                        f"{int(interval_minutes_seconds[1])}s")
 
         return wrapper
 
