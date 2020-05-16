@@ -2,6 +2,7 @@
 
 import RPi.GPIO as GPIO
 import time
+import click
 
 from AquariumLogger import AquariumLogger
 from components.Switch import Switch
@@ -9,17 +10,21 @@ from components.Switch import Switch
 logger = AquariumLogger()
 
 GPIO.setmode(GPIO.BCM)
+GPIO.setwarnings(False)
 channel = 27
 GPIO.setup(channel, GPIO.OUT)
 
-switch = Switch("test switch", channel)
+switch = Switch("pump out", channel)
 
-for i in range(0, 1):
-    logger.info("activating switch…")
+@click.command()
+@click.option('--time', '-t', 'time_', default=0, help='how long to turn the pump on for')
+def pump_out(time_: int):
+    logger.info(f"activating {switch.name} for {time_} seconds")
     switch.on()
-    time.sleep(30)
+    time.sleep(time_)
     logger.info("de-activating switch…")
     switch.off()
-#    time.sleep(7)
+
+pump_out()
 
 GPIO.cleanup(channel)
