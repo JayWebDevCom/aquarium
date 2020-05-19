@@ -35,29 +35,27 @@ class Controller:
         self.level_delay = level_delay
         self.temperature_delay = temperature_delay
 
-    def get_name(self):
-        return self.name
+    def log_time_elapsed(decorated):
+        def wrapper(*args):
+            started = datetime.now()
 
+            decorated(*args)
+
+            ended = datetime.now()
+            interval = ended - started
+            interval_minutes_seconds = divmod(interval.total_seconds(), 60)
+            logger.info(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
+                        f"{int(interval_minutes_seconds[1])}s")
+
+        return wrapper
+
+    @log_time_elapsed
     def water_change(self, percentage: float):
         # if x := isBig(y): return x
-        water_extraction_started = datetime.now()
-
         self.empty_by_percentage(percentage)
-
-        water_extraction_ended = datetime.now()
-        water_extraction_interval = water_extraction_ended - water_extraction_started
-        water_extraction_interval_minutes_seconds = divmod(water_extraction_interval.total_seconds(), 60)
-        logger.info(f"water extraction complete: {int(water_extraction_interval_minutes_seconds[0])}m \
-                {int(water_extraction_interval_minutes_seconds[1])}s")
-
         self.refill()
 
-        refill_ended = datetime.now()
-        total_interval = refill_ended - water_extraction_started
-        total_minutes_seconds = divmod(total_interval.total_seconds(), 60)
-        logger.info(f"water change complete: {int(total_minutes_seconds[0])}m \
-                {int(total_minutes_seconds[1])}s")
-
+    @log_time_elapsed
     def empty_by_percentage(self, percentage):
         self.sump_return.off()
         self.pump_out.on()
@@ -76,6 +74,7 @@ class Controller:
             exit(1)
         self.pump_out.off()
 
+    @log_time_elapsed
     def refill(self):
         logger.info("refilling")
 
