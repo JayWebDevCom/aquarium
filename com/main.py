@@ -33,7 +33,8 @@ levels_boundary = LevelsBoundary(full_level, empty_level)
 sanitizer = ReadingsSanitizer(levels_boundary, 0.1)
 
 water_sensor = LevelSensor('water sensor', sensor)
-water_detector = LevelDetector('water sensor', water_sensor, levels_boundary, sanitizer, 10, 1)
+water_detector = LevelDetector('water sensor', water_sensor, levels_boundary, sanitizer,
+                               times_to_check_level=10, acceptable_temp_band=1)
 
 sump_temp_device_id = "28-0300a2792070"
 tank_temp_device_id = "28-0300a279088e"

@@ -10,7 +10,8 @@ class TestWaterLevelDetectorWithAverage(TestCase):
     water_sensor = LevelSensor('water sensor')
     levels_boundary = LevelsBoundary(20, 60)
     sanitizer = ReadingsSanitizer(levels_boundary, 0.1)
-    water_detector = LevelDetector('water detector', water_sensor, levels_boundary, sanitizer)
+    water_detector = LevelDetector('water detector', water_sensor, levels_boundary, sanitizer,
+                                   times_to_check_level=5, acceptable_temp_band=2)
 
     @mock.patch("com.components.LevelSensor.LevelSensor.get_level")
     def test_water_level_with_average(self, water_sensor):

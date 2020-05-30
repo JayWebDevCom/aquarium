@@ -19,14 +19,13 @@ class LevelDetector:
             sensor: LevelSensor,
             levels_boundary: LevelsBoundary,
             sanitizer: ReadingsSanitizer,
-            times_to_check_level: int = 5,
-            acceptable_band: int = 2):
+            **kwargs):
         self.name = name
         self.sensor = sensor
         self.levels_boundary = levels_boundary
         self.sanitizer = sanitizer
-        self.times_to_check_level = times_to_check_level
-        self.acceptable_band = acceptable_band
+        self.times_to_check_level = kwargs.pop("times_to_check_level")
+        self.acceptable_temp_band = kwargs.pop("acceptable_temp_band")
 
     def percentage_changed(self) -> float:
         total_level = self.levels_boundary.empty_level - self.levels_boundary.full_level
