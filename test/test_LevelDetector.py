@@ -21,7 +21,8 @@ class TestWaterLevelDetector(TestCase):
             self.assertEqual(percentage, self.water_detector.percentage_changed())
 
     def test_sump_is_full(self):
-        params = {20: True, 21: False, 22: False, 40: False, 50: False, 59: False, 60: False}
+        params = {20.1: True, 20.4: True, 20.5: True,
+                  20.6: False, 21.34: False, 22.4: False, 40: False, 50: False, 59.3: False, 60: False}
         for water_level, expected in params.items():
             self.water_sensor.get_level = MagicMock(return_value=water_level)
             self.assertEqual(expected, self.water_detector.is_sump_full())
