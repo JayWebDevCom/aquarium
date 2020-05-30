@@ -21,14 +21,14 @@ class TestWaterLevelDetector(TestCase):
             self.assertEqual(percentage, self.water_detector.percentage_changed())
 
     def test_sump_is_full(self):
-        params = {19: True, 20: True, 21: False, 22: False, 40: False, 50: False, 59: False}
+        params = {20: True, 21: False, 22: False, 40: False, 50: False, 59: False, 60: False}
         for water_level, expected in params.items():
             self.water_sensor.get_level = MagicMock(return_value=water_level)
             self.assertEqual(expected, self.water_detector.is_sump_full())
 
     def test_unexpected_water_level_error_raised(self):
-        too_high = [15, 16, 17, 18]
-        too_low = [62, 63]
+        too_high = [15, 16, 17, 18, 19]
+        too_low = [61, 62, 63]
         for level in too_high + too_low:
             self.water_sensor.get_level = MagicMock(return_value=level)
             with self.assertRaises(UnexpectedWaterLevel):

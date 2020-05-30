@@ -36,7 +36,8 @@ class LevelDetector:
         return change * 100
 
     def _check(self, level):
-        if level not in range(self.levels_boundary.full_level - 1, self.levels_boundary.empty_level + 1):
+        grace = 1
+        if level > self.levels_boundary.empty_level or level <= self.levels_boundary.full_level - grace:
             logger.error(f"raising UnexpectedWaterLevel: {level}")
             raise UnexpectedWaterLevel(level)
         pass
@@ -55,7 +56,7 @@ class LevelDetector:
         return sump_level
 
     def is_sump_full(self) -> bool:
-        acceptable_range = range(self.levels_boundary.full_level - self.acceptable_band,
+        acceptable_range = range(self.levels_boundary.full_level - self.acceptable_temp_band,
                                  self.levels_boundary.full_level + 1)
         sump_level = self._get_checked_sump_level()
 
