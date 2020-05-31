@@ -35,6 +35,7 @@ class Controller:
         self.sump_return = sump_return
         self.level_delay = level_delay
         self.temperature_delay = temperature_delay
+        self.current_dir = os.path.dirname(os.path.abspath(__file__))
 
     def log_time_elapsed(decorated):
         def wrapper(*args):
@@ -98,6 +99,5 @@ class Controller:
         self.sump_return.on()
 
     def update(self):
-        current_dir = os.path.dirname(os.path.abspath(__file__))
-        exec(open(f"{current_dir}/temperatureScript_both.py").read())
-        exec(open("./levelSensorWithTofScript.py").read())
+        exec(open(f"{self.current_dir}/temperatureScript_both.py").read())
+        exec(open(f"{self.current_dir}/levelSensorWithTofScript.py").read())
