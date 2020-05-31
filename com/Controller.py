@@ -1,3 +1,4 @@
+import os
 import time
 from datetime import datetime
 from components.Switch import Switch
@@ -34,6 +35,7 @@ class Controller:
         self.sump_return = sump_return
         self.level_delay = level_delay
         self.temperature_delay = temperature_delay
+        self.current_dir = os.path.dirname(os.path.abspath(__file__))
 
     def log_time_elapsed(decorated):
         def wrapper(*args):
@@ -95,3 +97,7 @@ class Controller:
             time.sleep(self.temperature_delay)
 
         self.sump_return.on()
+
+    def update(self):
+        exec(open(f"{self.current_dir}/temperatureScript_both.py").read())
+        exec(open(f"{self.current_dir}/levelSensorWithTofScript.py").read())
