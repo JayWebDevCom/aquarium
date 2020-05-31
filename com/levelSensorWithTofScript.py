@@ -15,7 +15,7 @@ for i in range(0, num):
     temp = level_sensor.get_level()
     sum += temp
 
-message = f"average level: {sum/num}\n\n"
+message = f"average level: {round(sum/num, 2)}\n\n"
 
 with open("aquarium.txt", "a") as f:
     f.write(message)
