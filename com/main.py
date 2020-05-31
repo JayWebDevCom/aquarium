@@ -56,12 +56,19 @@ sump_pump = Switch('sump pump', sump_pump_channel)
 controller = Controller("some name", water_detector, temperature_detector, pump_out, pump_in, sump_pump)
 
 
-def job():
+def update():
+    controller.update()
+
+
+schedule.every().hour.at(":00").at(":15").at(":30").at(":45").do(update).tag("aquarium")
+
+
+def water_change():
     logger.info("Water change beginning...")
     controller.water_change(50.0)
 
 
-schedule.every().day.at("20:00").do(job).tag("aquarium")
+schedule.every().day.at("20:00").do(water_change).tag("aquarium")
 
 while True:
     schedule.run_pending()

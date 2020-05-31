@@ -95,3 +95,8 @@ class Controller:
             time.sleep(self.temperature_delay)
 
         self.sump_return.on()
+
+    def update(self):
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        exec(open(f"{current_dir}/temperatureScript_both.py").read())
+        exec(open("./levelSensorWithTofScript.py").read())
