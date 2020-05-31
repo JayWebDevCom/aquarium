@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 from components.TemperatureSensor import TemperatureSensor
+from datetime import datetime
 
 tank_device = "28-0300a279088e"
 sump_device = "28-0300a2792070"
@@ -21,7 +22,9 @@ for i in range(0, num):
     tank_temps_total += tank_temp
     sump_temps_total += sump_temp
 
-message = f"tank average: {round(tank_temps_total/num, 2)}\n"
+datetime = datetime.now().strftime("%Y-%m-%d %H:%M")
+message = f"{datetime}\n"
+message += f"tank average: {round(tank_temps_total/num, 2)}\n"
 message += f"sump average: {round(sump_temps_total/num, 2)}\n"
 message += f"difference: {round(abs(tank_temp-sump_temp), 2)}\n"
 
