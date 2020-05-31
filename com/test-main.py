@@ -10,6 +10,8 @@ from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
 import RPi.GPIO as GPIO
+import time
+import schedule
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -55,4 +57,21 @@ sump_pump = Switch('sump pump', sump_pump_channel)
 
 controller = Controller("some name", water_detector, temperature_detector, pump_out, pump_in, sump_pump)
 
-# controller.water_change(10.0)
+
+def update():
+    controller.update()
+
+
+schedule.every().hour.at(":00").at(":15").at(":30").at(":45").do(update).tag("aquarium")
+
+
+def water_change():
+    logger.info("Water change beginning...")
+    controller.water_change(50.0)
+
+
+schedule.every().day.at("20:00").do(water_change).tag("aquarium")
+
+while True:
+    schedule.run_pending()
+    time.sleep(1)
