@@ -62,7 +62,10 @@ def update():
     controller.update()
 
 
-schedule.every().hour.at(":00").at(":15").at(":30").at(":45").do(update).tag("aquarium")
+schedule.every().hour.at(":00").do(update).tag("aquarium")
+schedule.every().hour.at(":15").do(update).tag("aquarium")
+schedule.every().hour.at(":30").do(update).tag("aquarium")
+schedule.every().hour.at(":45").do(update).tag("aquarium")
 
 
 def water_change():
