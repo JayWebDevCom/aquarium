@@ -1,9 +1,6 @@
 #!/usr/bin/env python3
 
 from components.TemperatureSensor import TemperatureSensor
-from AquariumLogger import AquariumLogger
-
-logger = AquariumLogger()
 
 device_id_1 = "28-0300a279088e"
 device_id_2 = "28-0300a2792070"
@@ -23,10 +20,10 @@ for i in range(0, num):
 
     tank_temps_total += tank_temp
     sump_temps_total += sump_temp
-    
-    logger.info("tank: " + str(tank_temp))
-    logger.info("sump: " + str(sump_temp))
 
-logger.info(f"tank average: {round(tank_temps_total/num, 2)}")
-logger.info(f"sump average: {round(sump_temps_total/num, 2)}")
-logger.info(f"difference: {round(abs(tank_temp-sump_temp), 2)}")
+message = f"tank average: {round(tank_temps_total/num, 2)}\n"
+message += f"sump average: {round(sump_temps_total/num, 2)}\n"
+message += f"difference: {round(abs(tank_temp-sump_temp), 2)}\n"
+
+with open("aquarium.txt", "a") as f:
+    f.write(message)
