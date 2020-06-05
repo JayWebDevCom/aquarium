@@ -99,5 +99,8 @@ class Controller:
         self.sump_return.on()
 
     def update(self):
-        exec(open(f"{self.current_dir}/temperatureScript_both.py").read())
-        exec(open(f"{self.current_dir}/levelSensorWithTofScript.py").read())
+        with open(f"{self.current_dir}/temperatureScript_both.py", "r") as f:
+            exec(f.read())
+        with open(f"{self.current_dir}/levelSensorWithTofScript.py", "r") as f:
+            exec(f.read())
+
