@@ -2,20 +2,19 @@
 
 import time
 
+from AquariumLogger import AquariumLogger
 from components.LevelSensor import LevelSensor
 from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 
+logger = AquariumLogger()
+
 level_sensor = LevelSensor("test level sensor", TimeOfFlightLevelStrategy())
 
-num = 5
-sum = 0
+num = 15; sum = 0
 
 for i in range(0, num):
     time.sleep(1)
     temp = level_sensor.get_level()
     sum += temp
 
-message = f"average level: {round(sum/num, 2)}\n\n"
-
-with open("aquarium.txt", "a") as f:
-    f.write(message)
+logger.info(f"average level: {round(sum/num, 2)}")
