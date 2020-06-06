@@ -25,9 +25,9 @@ class LevelDetector:
         self.levels_boundary = levels_boundary
         self.sanitizer = sanitizer
         self.times_to_check_level = kwargs.pop("times_to_check_level")
-        acceptable_temp_band = kwargs.pop("acceptable_temp_band")
-        self.upper_limit = self.levels_boundary.full_level - acceptable_temp_band
-        self.lower_limit = self.levels_boundary.full_level + acceptable_temp_band
+        acceptable_level_band = kwargs.pop("acceptable_level_band")
+        self.upper_limit = self.levels_boundary.full_level - acceptable_level_band
+        self.lower_limit = self.levels_boundary.full_level + acceptable_level_band
 
     def percentage_changed(self) -> float:
         total_level = self.levels_boundary.empty_level - self.levels_boundary.full_level

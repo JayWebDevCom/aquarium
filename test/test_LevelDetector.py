@@ -12,7 +12,7 @@ class TestWaterLevelDetector(TestCase):
     levels_boundary = LevelsBoundary(20, 60)
     sanitizer = ReadingsSanitizer(levels_boundary, 0.5)
     water_detector = LevelDetector('water detector', water_sensor, levels_boundary, sanitizer,
-                                   times_to_check_level=10, acceptable_temp_band=1)
+                                   times_to_check_level=10, acceptable_level_band=1)
 
     def test_percentage_changed_parameterized(self):
         params = {30: 25.0, 40: 50.0, 55: 87.5}
