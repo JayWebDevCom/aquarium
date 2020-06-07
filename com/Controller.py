@@ -14,8 +14,8 @@ class Controller:
     pump_in: Switch
     sump_return: Switch
     level_detector: LevelDetector
-    level_delay: int
-    temperature_delay: int
+    level_check_interval: int
+    temp_check_interval: int
 
     def __init__(
             self,
@@ -25,16 +25,15 @@ class Controller:
             pump_out: Switch,
             pump_in: Switch,
             sump_return: Switch,
-            level_delay: int = 1,
-            temperature_delay: int = 1):
+            **kwargs):
         self.name = name
         self.level_detector = level_detector
         self.temperature_detector = temperature_detector
         self.pump_out = pump_out
         self.pump_in = pump_in
         self.sump_return = sump_return
-        self.level_delay = level_delay
-        self.temperature_delay = temperature_delay
+        self.level_check_interval = kwargs.pop("level_check_interval")
+        self.temp_check_interval = kwargs.pop("temp_check_interval")
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
 
     def log_time_elapsed(decorated):
@@ -66,7 +65,7 @@ class Controller:
                 percentage_changed = self.level_detector.percentage_changed()
                 logger.info(f"percentage changed is {':.2f'.format(percentage_changed)}%")
                 if percentage_changed < percentage:
-                    time.sleep(self.level_delay)
+                    time.sleep(self.level_check_interval)
                 else:
                     break
         except UnexpectedWaterLevel:
@@ -84,7 +83,7 @@ class Controller:
 
         try:
             while not self.level_detector.is_sump_full():
-                time.sleep(self.level_delay)
+                time.sleep(self.level_check_interval)
         except UnexpectedWaterLevel:
             logger.error("UnexpectedWaterLevel ex caught while refilling")
             self.pump_in.off()
@@ -94,7 +93,7 @@ class Controller:
         self.pump_in.off()
 
         while not self.temperature_detector.within_range():
-            time.sleep(self.temperature_delay)
+            time.sleep(self.temp_check_interval)
 
         self.sump_return.on()
 

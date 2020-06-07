@@ -53,7 +53,8 @@ pump_out = Switch('pump_out', pump_out_channel)
 pump_in = Switch('pump_in', pump_in_channel)
 sump_pump = Switch('sump pump', sump_pump_channel)
 
-controller = Controller("some name", level_detector, temperature_detector, pump_out, pump_in, sump_pump)
+controller = Controller("some name", level_detector, temperature_detector, pump_out, pump_in, sump_pump,
+                        level_check_interval=3, temp_check_interval=3)
 
 
 def update():

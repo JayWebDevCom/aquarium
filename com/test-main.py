@@ -24,7 +24,6 @@ initial_levels_boundary = LevelsBoundary(14, 20)
 initial_level_sanitizer = ReadingsSanitizer(initial_levels_boundary, 0.1)
 initial_level_reader = InitialLevelReader(sensor, initial_level_sanitizer)
 
-
 full_level = initial_level_reader.get_initial_level()
 logger.info(f"starting with a full sump level of {full_level}")
 
@@ -55,7 +54,8 @@ pump_out = Switch('pump_out', pump_out_channel)
 pump_in = Switch('pump_in', pump_in_channel)
 sump_pump = Switch('sump pump', sump_pump_channel)
 
-controller = Controller("some name", level_detector, temperature_detector, pump_out, pump_in, sump_pump)
+controller = Controller("some name", level_detector, temperature_detector, pump_out, pump_in, sump_pump,
+                        level_check_interval=3, temp_check_interval=3)
 
 
 def update():
