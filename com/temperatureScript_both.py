@@ -29,4 +29,5 @@ print("")
 logger.info(datetime.now().strftime("%H:%M"))
 logger.info(f"tank average: {round(tank_temps_total/num, 2)}")
 logger.info(f"sump average: {round(sump_temps_total/num, 2)}")
-logger.info(f"difference: {round(abs(tank_temp-sump_temp), 2)}")
+logger.info(f"difference: {'{:.2f}'.format(abs(tank_temp-sump_temp))}")
+
