@@ -18,7 +18,8 @@ class TestReadingsSanitizer(TestCase):
             TestReadings(31, [0, 0, 0, 0, 1, 1, 1, 1, 3, 4, 5, 20, 30, 40, 34, 66]),
             TestReadings(30, [30, 30, 30, 30, 30, 30, 30, 30, 500, 819, 819]),
             TestReadings(30, [30, 30, 30, 30, 30, 30, 30, 30]),
-            TestReadings(35, [28, 39, 40, 34])
+            TestReadings(35.25, [28, 39, 40, 34]),
+            TestReadings(35.51, [28.12, 39.23, 40.34, 34.35])
         ]
 
         for reading in params:
@@ -26,9 +27,10 @@ class TestReadingsSanitizer(TestCase):
 
     def test_sanitize_float(self):
         params = [
-            TestReadings(30, [30.0, 30.1, 30.2, 30.3, 30.4, 30.5, 30.6]),
-            TestReadings(31, [30.4, 30.5, 30.6, 30.7, 30.8]),
-            TestReadings(31, [30.4, 30.5, 30.6, 30.7, 30.8, 45.76]),
+            TestReadings(30.3, [30.0, 30.1, 30.2, 30.3, 30.4, 30.5, 30.6]),
+            TestReadings(30.6, [30.4, 30.5, 30.6, 30.7, 30.8]),
+            TestReadings(30.6, [30.4, 30.5, 30.6, 30.7, 30.8, 45.76]),
+            TestReadings(30.63, [30.41, 30.52, 30.63, 30.74, 30.85, 45.76])
         ]
 
         for reading in params:

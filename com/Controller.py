@@ -13,7 +13,7 @@ class Controller:
     pump_out: Switch
     pump_in: Switch
     sump_return: Switch
-    water_detector: LevelDetector
+    level_detector: LevelDetector
     level_delay: int
     temperature_delay: int
 
@@ -28,7 +28,7 @@ class Controller:
             level_delay: int = 1,
             temperature_delay: int = 1):
         self.name = name
-        self.water_detector = level_detector
+        self.level_detector = level_detector
         self.temperature_detector = temperature_detector
         self.pump_out = pump_out
         self.pump_in = pump_in
@@ -63,8 +63,8 @@ class Controller:
         self.pump_out.on()
         try:
             while True:
-                percentage_changed = self.water_detector.percentage_changed()
-                logger.info(f"percentage changed is {round(percentage_changed, 2)}%")
+                percentage_changed = self.level_detector.percentage_changed()
+                logger.info(f"percentage changed is {':.2f'.format(percentage_changed)}%")
                 if percentage_changed < percentage:
                     time.sleep(self.level_delay)
                 else:
@@ -83,7 +83,7 @@ class Controller:
         self.pump_in.on()
 
         try:
-            while not self.water_detector.is_sump_full():
+            while not self.level_detector.is_sump_full():
                 time.sleep(self.level_delay)
         except UnexpectedWaterLevel:
             logger.error("UnexpectedWaterLevel ex caught while refilling")

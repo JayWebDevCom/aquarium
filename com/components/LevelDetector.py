@@ -31,11 +31,11 @@ class LevelDetector:
 
     def percentage_changed(self) -> float:
         total_level = self.levels_boundary.empty_level - self.levels_boundary.full_level
-        current_level: int = self._get_checked_sump_level()
+        current_level = self._get_checked_sump_level()
 
         difference = current_level - self.levels_boundary.full_level
         change: float = difference / total_level
-        return change * 100
+        return round(change * 100, 2)
 
     def _check(self, level):
         grace = 1
@@ -44,7 +44,7 @@ class LevelDetector:
             raise UnexpectedWaterLevel(level)
         pass
 
-    def _get_checked_sump_level(self) -> int:
+    def _get_checked_sump_level(self) -> float:
         sump_level_count_range = range(0, self.times_to_check_level)
         temperatures_returned = []
 

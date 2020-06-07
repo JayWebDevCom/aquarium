@@ -32,8 +32,8 @@ empty_level = full_level + water_change_range
 levels_boundary = LevelsBoundary(full_level, empty_level)
 sanitizer = ReadingsSanitizer(levels_boundary, 0.1)
 
-water_sensor = LevelSensor('water sensor', sensor)
-water_detector = LevelDetector('water sensor', water_sensor, levels_boundary, sanitizer,
+level_sensor = LevelSensor('level sensor', sensor)
+level_detector = LevelDetector('level sensor', level_sensor, levels_boundary, sanitizer,
                                times_to_check_level=10, acceptable_level_band=1)
 
 sump_temp_device_id = "28-0300a2792070"
@@ -53,7 +53,7 @@ pump_out = Switch('pump_out', pump_out_channel)
 pump_in = Switch('pump_in', pump_in_channel)
 sump_pump = Switch('sump pump', sump_pump_channel)
 
-controller = Controller("some name", water_detector, temperature_detector, pump_out, pump_in, sump_pump)
+controller = Controller("some name", level_detector, temperature_detector, pump_out, pump_in, sump_pump)
 
 
 def update():
