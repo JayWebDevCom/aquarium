@@ -16,9 +16,10 @@ class TestWaterLevelDetectorWithAverage(TestCase):
     @mock.patch("com.components.LevelSensor.LevelSensor.get_level")
     def test_water_level_with_average(self, water_sensor):
         params = {
-            26: [25, 26, 20, 28, 29],
+            25.6: [25, 26, 20, 28, 29],
             30: [25, 26, 30, 31, 38],
-            40: [37, 38, 40, 35, 50]
+            40: [37, 38, 40, 35, 50],
+            40.34: [37.12, 38.23, 40.34, 35.45, 50.56]
         }
 
         for water_level, side_effect in params.items():

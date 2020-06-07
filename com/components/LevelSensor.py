@@ -10,5 +10,5 @@ class LevelSensor:
         self.name = name
         self.strategy = level_strategy
 
-    def get_level(self) -> int:
+    def get_level(self) -> float:
         return self.strategy.get_level()

@@ -4,7 +4,7 @@ class LevelStrategy:
     def __init__(self, name: str):
         self.name = name
 
-    def get_level(self) -> int:
+    def get_level(self) -> float:
         raise IllegalArgumentError
 
 
