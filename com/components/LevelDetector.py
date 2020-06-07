@@ -24,7 +24,7 @@ class LevelDetector:
         self.sensor = sensor
         self.levels_boundary = levels_boundary
         self.sanitizer = sanitizer
-        self.times_to_check_level = kwargs.pop("times_to_check_level")
+        self.times_to_check_level = range(kwargs.pop("times_to_check_level"))
         acceptable_level_band = kwargs.pop("acceptable_level_band")
         self.upper_limit = self.levels_boundary.full_level - acceptable_level_band
         self.lower_limit = self.levels_boundary.full_level + acceptable_level_band
@@ -45,10 +45,9 @@ class LevelDetector:
         pass
 
     def _get_checked_sump_level(self) -> float:
-        sump_level_count_range = range(0, self.times_to_check_level)
         temperatures_returned = []
 
-        for _ in sump_level_count_range:
+        for _ in self.times_to_check_level:
             one_of_temp_readings = self.sensor.get_level()
             temperatures_returned.append(one_of_temp_readings)
 
