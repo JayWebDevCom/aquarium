@@ -25,9 +25,7 @@ class LevelDetector:
         self.levels_boundary = levels_boundary
         self.sanitizer = sanitizer
         self.times_to_check_level = range(kwargs.pop("times_to_check_level"))
-        acceptable_level_band = kwargs.pop("acceptable_level_band")
-        self.upper_limit = self.levels_boundary.full_level - acceptable_level_band
-        self.lower_limit = self.levels_boundary.full_level + acceptable_level_band
+        self.full_limit = self.levels_boundary.full_level - kwargs.pop("overfill_allowance")
 
     def percentage_changed(self) -> float:
         total_level = self.levels_boundary.empty_level - self.levels_boundary.full_level
@@ -38,8 +36,8 @@ class LevelDetector:
         return round(change * 100, 2)
 
     def _check(self, level):
-        grace = 1
-        if level > self.levels_boundary.empty_level or level <= self.levels_boundary.full_level - grace:
+        if level > self.levels_boundary.empty_level \
+                or level < self.levels_boundary.full_level:
             logger.error(f"raising UnexpectedWaterLevel: {level}")
             raise UnexpectedWaterLevel(level)
         pass
@@ -62,4 +60,4 @@ class LevelDetector:
         logger.info(f"sump level is {sump_level}")
         logger.info(f"necessary full level is {self.levels_boundary.full_level}")
 
-        return self.upper_limit < sump_level < self.lower_limit
+        return sump_level <= self.full_limit
