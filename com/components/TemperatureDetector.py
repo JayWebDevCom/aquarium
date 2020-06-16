@@ -24,6 +24,6 @@ class TemperatureDetector:
         tank_temp = self.tank_temp.get_temp()
         temp_difference = abs(sump_temp - tank_temp)
 
-        logger.info(f"temp difference: {round(temp_difference, 1)} "
-                         f"sump: {sump_temp} tank: {tank_temp}")
+        logger.info(f"temp difference: {'{:.2f}'.format(temp_difference)}, "
+                    f"sump: {sump_temp}, tank: {tank_temp}")
         return temp_difference <= self.limit
