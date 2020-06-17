@@ -36,8 +36,7 @@ class LevelDetector:
         return round(change * 100, 2)
 
     def _check(self, level):
-        if level > self.levels_boundary.empty_level \
-                or level < self.levels_boundary.full_level:
+        if level > self.levels_boundary.empty_level or level < self.full_limit:
             logger.error(f"raising UnexpectedWaterLevel: {level}")
             raise UnexpectedWaterLevel(level)
         pass
@@ -60,4 +59,4 @@ class LevelDetector:
         logger.info(f"sump level is {sump_level}")
         logger.info(f"necessary full level is {self.levels_boundary.full_level}")
 
-        return sump_level <= self.full_limit
+        return sump_level <= self.levels_boundary.full_level
