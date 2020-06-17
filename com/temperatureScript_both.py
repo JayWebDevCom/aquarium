@@ -27,7 +27,7 @@ for i in range(0, num):
 
 print("")
 logger.info(datetime.now().strftime("%H:%M"))
-logger.info(f"tank average: {round(tank_temps_total/num, 2)}")
-logger.info(f"sump average: {round(sump_temps_total/num, 2)}")
+logger.info(f"tank average: {'{:.2f}'.format(tank_temps_total/num)}")
+logger.info(f"sump average: {'{:.2f}'.format(sump_temps_total/num)}")
 logger.info(f"difference: {'{:.2f}'.format(abs(tank_temp-sump_temp))}")
 
