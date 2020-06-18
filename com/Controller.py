@@ -55,6 +55,7 @@ class Controller:
         # if x := isBig(y): return x
         self.empty_by_percentage(percentage)
         self.refill()
+        self.wait_for_temperature_equalization()
 
     @log_time_elapsed
     def empty_by_percentage(self, percentage):
@@ -93,6 +94,9 @@ class Controller:
 
         self.pump_in.off()
 
+    @log_time_elapsed
+    def wait_for_temperature_equalization(self):
+        logger.info("waiting for sump and tank temperatures to equalize")
         while not self.temperature_detector.within_range():
             time.sleep(self.temp_check_interval)
 
@@ -103,4 +107,3 @@ class Controller:
             exec(f.read())
         with open(f"{self.current_dir}/levelSensorWithTofScript.py", "r") as f:
             exec(f.read())
-
