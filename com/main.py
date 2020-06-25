@@ -1,6 +1,5 @@
 from AquariumLogger import AquariumLogger
 from Controller import Controller
-from components.InitialLevelReader import InitialLevelReader
 from components.LevelsBoundary import LevelsBoundary
 from components.LevelDetector import LevelDetector
 from components.LevelSensor import LevelSensor
@@ -17,22 +16,18 @@ GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
 
 logger = AquariumLogger()
-sensor = TimeOfFlightLevelStrategy()
 
-initial_levels_boundary = LevelsBoundary(20, 30)
-initial_level_sanitizer = ReadingsSanitizer(initial_levels_boundary, 0.1)
-initial_level_reader = InitialLevelReader(sensor, initial_level_sanitizer)
+full_level = 20
+water_change_span = 25
+accuracy_allowance = 0.1
+empty_level = full_level + water_change_span
 
-full_level = initial_level_reader.get_initial_level()
-logger.info(f"starting with a full sump level of {full_level}")
-
-water_change_range = 25
-empty_level = full_level + water_change_range
+logger.info(f"starting with full sump levels full: {full_level}, empty: {empty_level}, accuracy: {accuracy_allowance}")
 
 levels_boundary = LevelsBoundary(full_level, empty_level)
-sanitizer = ReadingsSanitizer(levels_boundary, 0.1)
+sanitizer = ReadingsSanitizer(levels_boundary, accuracy_allowance)
 
-level_sensor = LevelSensor('level sensor', sensor)
+level_sensor = LevelSensor('level sensor', TimeOfFlightLevelStrategy())
 level_detector = LevelDetector('level sensor', level_sensor, levels_boundary, sanitizer,
                                times_to_check_level=10, acceptable_level_band=1)
 
