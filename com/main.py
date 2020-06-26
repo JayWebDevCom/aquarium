@@ -22,7 +22,7 @@ water_change_span = 25
 accuracy_allowance = 0.1
 empty_level = full_level + water_change_span
 
-logger.info(f"starting with full sump levels full: {full_level}, empty: {empty_level}, accuracy: {accuracy_allowance}")
+logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 
 levels_boundary = LevelsBoundary(full_level, empty_level)
 sanitizer = ReadingsSanitizer(levels_boundary, accuracy_allowance)
