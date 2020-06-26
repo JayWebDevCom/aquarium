@@ -12,7 +12,7 @@ sump_device = "28-0300a2792070"
 tank_temp_sensor = TemperatureSensor("test sensor", tank_device)
 sump_temp_sensor = TemperatureSensor("test sensor", sump_device)
 
-num = 5
+num = 3
 tank_temps_total = 0
 sump_temps_total = 0
 
