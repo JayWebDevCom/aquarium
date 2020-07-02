@@ -13,11 +13,11 @@ sump_device = "28-0300a2792070"
 tank_temp_sensor = TemperatureSensor("test sensor", tank_device)
 sump_temp_sensor = TemperatureSensor("test sensor", sump_device)
 
-num = 3
+num = 1
 tank_temps = []
 sump_temps = []
 
-for i in range(0, num):
+for i in range(num):
     tank_temps.append(tank_temp_sensor.get_temp())
     sump_temps.append(sump_temp_sensor.get_temp())
 
