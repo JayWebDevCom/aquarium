@@ -16,6 +16,7 @@ class Controller:
     level_detector: LevelDetector
     level_check_interval: int
     temp_check_interval: int
+    temperature_difference_limit: float
 
     def __init__(
             self,
@@ -34,6 +35,7 @@ class Controller:
         self.sump_return = sump_return
         self.level_check_interval = kwargs.pop("level_check_interval")
         self.temp_check_interval = kwargs.pop("temp_check_interval")
+        self.temperature_difference_limit = kwargs.pop("temperature_difference_limit")
         self.current_dir = os.path.dirname(os.path.abspath(__file__))
 
     def log_time_elapsed(decorated):
@@ -97,7 +99,7 @@ class Controller:
     @log_time_elapsed
     def wait_for_temperature_equalization(self):
         logger.info("waiting for sump and tank temperatures to equalize")
-        while not self.temperature_detector.within_range():
+        while self.temperature_detector.temperature_difference() > self.temperature_difference_limit:
             time.sleep(self.temp_check_interval)
 
         self.sump_return.on()

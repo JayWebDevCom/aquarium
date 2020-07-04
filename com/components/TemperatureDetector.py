@@ -1,5 +1,6 @@
-from components import TemperatureSensor
 from loguru import logger
+
+from components import TemperatureSensor
 
 
 class TemperatureDetector:
@@ -12,18 +13,17 @@ class TemperatureDetector:
     def __init__(
             self, name: str,
             sump_temp: TemperatureSensor,
-            tank_temp: TemperatureSensor,
-            temperature_difference_limit: float = 2.0):
+            tank_temp: TemperatureSensor):
         self.name = name
         self.sump_temp = sump_temp
         self.tank_temp = tank_temp
-        self.limit = temperature_difference_limit
 
-    def within_range(self) -> bool:
+    def temperature_difference(self) -> float:
         sump_temp = self.sump_temp.get_temp()
         tank_temp = self.tank_temp.get_temp()
         temp_difference = abs(sump_temp - tank_temp)
 
         logger.info(f"temp difference: {'{:.2f}'.format(temp_difference)}, "
-                f"sump: {'{:.2f}'.format(sump_temp)}, tank: {'{:.2f}'.format(tank_temp)}")
-        return temp_difference <= self.limit
+                    f"sump: {'{:.2f}'.format(sump_temp)}, tank: {'{:.2f}'.format(tank_temp)}")
+
+        return float('{:.2f}'.format(temp_difference))
