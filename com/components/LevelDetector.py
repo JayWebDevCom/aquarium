@@ -45,8 +45,7 @@ class LevelDetector:
         temperatures_returned = []
 
         for _ in self.times_to_check_level:
-            one_of_temp_readings = self.sensor.get_level()
-            temperatures_returned.append(one_of_temp_readings)
+            temperatures_returned.append(self.sensor.get_level())
 
         logger.info(f"level readings returned: {temperatures_returned}")
         sump_level = self.sanitizer.sanitize(temperatures_returned)

@@ -17,9 +17,10 @@ GPIO.setwarnings(False)
 
 logger = AquariumLogger()
 
-full_level = 20
-water_change_span = 25
+full_level = 17
+water_change_span = 15
 accuracy_allowance = 0.1
+times_to_check_level = 9
 empty_level = full_level + water_change_span
 
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
@@ -29,8 +30,7 @@ sanitizer = ReadingsSanitizer(levels_boundary, accuracy_allowance)
 
 level_sensor = LevelSensor('level sensor', TimeOfFlightLevelStrategy())
 level_detector = LevelDetector('level sensor', level_sensor, levels_boundary, sanitizer,
-                               times_to_check_level=10, acceptable_level_band=1)
-
+                               times_to_check_level=times_to_check_level, overfill_allowance=2)
 sump_temp_device_id = "28-0300a2792070"
 tank_temp_device_id = "28-0300a279088e"
 
@@ -42,14 +42,14 @@ GPIO.setup([pump_out_channel, pump_in_channel, sump_pump_channel], GPIO.OUT)
 
 sump_temp = TemperatureSensor("sump temperature sensor", sump_temp_device_id)
 tank_temp = TemperatureSensor("tank temperature sensor", tank_temp_device_id)
-temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp, 1.0)
+temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp)
 
 pump_out = Switch('pump_out', pump_out_channel)
 pump_in = Switch('pump_in', pump_in_channel)
 sump_pump = Switch('sump pump', sump_pump_channel)
 
 controller = Controller("some name", level_detector, temperature_detector, pump_out, pump_in, sump_pump,
-                        times_to_check_level=10, overfill_allowance=0)
+                        level_check_interval=3, temp_check_interval=3, temperature_difference_limit=4.0)
 
 
 def update():
