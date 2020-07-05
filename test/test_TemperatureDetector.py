@@ -20,7 +20,8 @@ class TestTemperatureDetector(TestCase):
             TestTemperatures(0, 0): 0,
             TestTemperatures(0, 1): 1,
             TestTemperatures(1, 1): 0,
-            TestTemperatures(26.0, 28.0): 2.0
+            TestTemperatures(26.0, 28.0): 2.0,
+            TestTemperatures(26.34345, 28.45): 2.11
         }
 
         for temps, result in params.items():
