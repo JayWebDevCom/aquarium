@@ -26,13 +26,13 @@ class LevelDetector:
         self.sanitizer = sanitizer
         self.times_to_check_level = range(kwargs.pop("times_to_check_level"))
         self.full_limit = self.levels_boundary.full_level - kwargs.pop("overfill_allowance")
+        self.total_level = self.levels_boundary.empty_level - self.levels_boundary.full_level
 
     def percentage_changed(self) -> float:
-        total_level = self.levels_boundary.empty_level - self.levels_boundary.full_level
         current_level = self._get_checked_sump_level()
-
         difference = current_level - self.levels_boundary.full_level
-        change: float = difference / total_level
+        change: float = difference / self.total_level
+
         return round(change * 100, 2)
 
     def _check(self, level):
@@ -42,13 +42,9 @@ class LevelDetector:
         pass
 
     def _get_checked_sump_level(self) -> float:
-        temperatures_returned = []
-
-        for _ in self.times_to_check_level:
-            temperatures_returned.append(self.sensor.get_level())
-
-        logger.info(f"level readings returned: {temperatures_returned}")
+        temperatures_returned = [self.sensor.get_level() for _ in self.times_to_check_level]
         sump_level = self.sanitizer.sanitize(temperatures_returned)
+        logger.info(f"current sump level: {'{:.2f}'.format(sump_level)}")
         self._check(sump_level)
         return sump_level
 

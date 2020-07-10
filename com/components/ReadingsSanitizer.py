@@ -12,6 +12,7 @@ class ReadingsSanitizer:
         self.lower_bound = levels_boundary.full_level * (1 - percentage_bound)
 
     def sanitize(self, readings_list) -> float:
+        logger.info(f"sanitizing: {readings_list}")
         readings_list_copy = readings_list[:]
         accepted_readings_iterator = filter(lambda reading:
                                             self.lower_bound <= reading <= self.upper_bound,
