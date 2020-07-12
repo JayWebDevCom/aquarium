@@ -50,8 +50,6 @@ class LevelDetector:
 
     def is_sump_full(self) -> bool:
         sump_level = self._get_checked_sump_level()
-
-        logger.info(f"sump level is {sump_level}")
         logger.info(f"necessary full level is {self.levels_boundary.full_level}")
 
         return sump_level <= self.levels_boundary.full_level
