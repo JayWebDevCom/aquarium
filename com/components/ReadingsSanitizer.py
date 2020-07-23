@@ -1,5 +1,8 @@
-from components.LevelsBoundary import LevelsBoundary
+import statistics
+
 from loguru import logger
+
+from components.LevelsBoundary import LevelsBoundary
 
 
 class ReadingsSanitizer:
@@ -20,6 +23,15 @@ class ReadingsSanitizer:
         accepted_readings = list(accepted_readings_iterator)
 
         removed_readings = [item for item in readings_list_copy if item not in accepted_readings]
+        st_dev = '{:.2f}'.format(statistics.stdev(readings_list_copy), 2)
+        spread = '{:.2f}'.format(max(readings_list_copy) - min(readings_list_copy), 2)
+        length_removed_readings = len(removed_readings)
 
-        logger.info(f"removed {len(removed_readings)} reading(s) {removed_readings}")
+        message = "{} {} {} {}, {} {}, {} {}".format("removed", length_removed_readings,
+                                                     "reading" if length_removed_readings == 1 else "readings",
+                                                     removed_readings,
+                                                     "st-dev:", st_dev,
+                                                     "spread:", spread)
+
+        logger.info(message)
         return round(sum(accepted_readings) / len(accepted_readings), 2)
