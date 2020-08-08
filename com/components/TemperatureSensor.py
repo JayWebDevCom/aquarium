@@ -10,9 +10,9 @@ class TemperatureSensor:
         self.db_device_id_location = '/sys/bus/w1/devices/' + db_device_id + '/w1_slave'
 
     def get_temp(self) -> float:
-        device_file = open(self.db_device_id_location)
-        text = device_file.read()
-        device_file.close()
+        with open(self.db_device_id_location) as file:
+            text = file.read()
+
         second_line = text.split("\n")[1]
         temperature_data = second_line.split(" ")[9]
         temperature = float(temperature_data[2:])
