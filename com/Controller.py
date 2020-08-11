@@ -1,10 +1,12 @@
-import os
 import time
 from datetime import datetime
-from components.Switch import Switch
-from components.LevelDetector import LevelDetector, UnexpectedWaterLevel
-from components.TemperatureDetector import TemperatureDetector
+from typing import List
+
 from loguru import logger
+
+from components.LevelDetector import LevelDetector, UnexpectedWaterLevel
+from components.Switch import Switch
+from components.TemperatureDetector import TemperatureDetector
 
 
 class Controller:
@@ -26,6 +28,7 @@ class Controller:
             pump_out: Switch,
             pump_in: Switch,
             sump_return: Switch,
+            scripts: List[str],
             **kwargs):
         self.name = name
         self.level_detector = level_detector
@@ -33,10 +36,10 @@ class Controller:
         self.pump_out = pump_out
         self.pump_in = pump_in
         self.sump_return = sump_return
+        self.scripts = scripts
         self.level_check_interval = kwargs.pop("level_check_interval")
         self.temp_check_interval = kwargs.pop("temp_check_interval")
         self.temperature_difference_limit = kwargs.pop("temperature_difference_limit")
-        self.current_dir = os.path.dirname(os.path.abspath(__file__))
 
     def log_time_elapsed(decorated):
         def wrapper(*args):
@@ -105,6 +108,6 @@ class Controller:
         self.sump_return.on()
 
     def update(self):
-        for script in ["temperatureScript_both.py", "levelSensorWithTofScript.py"]:
+        for script in self.scripts:
             with open(f"{self.current_dir}/{script}", "r") as f:
                 exec(f.read())

@@ -1,16 +1,19 @@
+import os
+import time
+
+import RPi.GPIO as GPIO
+import schedule
+
 from AquariumLogger import AquariumLogger
 from Controller import Controller
-from components.LevelsBoundary import LevelsBoundary
 from components.LevelDetector import LevelDetector
 from components.LevelSensor import LevelSensor
+from components.LevelsBoundary import LevelsBoundary
 from components.ReadingsSanitizer import ReadingsSanitizer
-from components.TemperatureSensor import TemperatureSensor
-from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
-import RPi.GPIO as GPIO
-import time
-import schedule
+from components.TemperatureSensor import TemperatureSensor
+from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -48,7 +51,11 @@ pump_out = Switch('pump_out', pump_out_channel)
 pump_in = Switch('pump_in', pump_in_channel)
 sump_pump = Switch('sump pump', sump_pump_channel)
 
-controller = Controller("some name", level_detector, temperature_detector, pump_out, pump_in, sump_pump,
+current_dir = os.path.dirname(os.path.abspath(__file__))
+scripts = [current_dir / "temperatureScript_both.py", current_dir / "levelSensorWithTofScript.py"]
+
+controller = Controller("Aquarium Controller", level_detector, temperature_detector,
+                        pump_out, pump_in, sump_pump, scripts,
                         level_check_interval=3, temp_check_interval=3, temperature_difference_limit=4.0)
 
 
