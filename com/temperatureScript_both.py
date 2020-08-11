@@ -10,16 +10,15 @@ logger = AquariumLogger()
 tank_device = "28-01191c5f02ae"
 sump_device = "28-01191c6c5b42"
 
+global tank_temp_sensor
+global sump_temp_sensor
+
 tank_temp_sensor = TemperatureSensor("test sensor", tank_device)
 sump_temp_sensor = TemperatureSensor("test sensor", sump_device)
 
 num = 1
-tank_temps = []
-sump_temps = []
-
-for i in range(num):
-    tank_temps.append(tank_temp_sensor.get_temp())
-    sump_temps.append(sump_temp_sensor.get_temp())
+tank_temps = [tank_temp_sensor.get_temp() for i in range(num)]
+sump_temps = [sump_temp_sensor.get_temp() for i in range(num)]
 
 tank_temp_average = reduce(lambda x, y: (x + y), tank_temps) / num
 sump_temp_average = reduce(lambda x, y: (x + y), sump_temps) / num
