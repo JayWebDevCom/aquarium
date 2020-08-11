@@ -109,5 +109,5 @@ class Controller:
 
     def update(self):
         for script in self.scripts:
-            with open(f"{self.current_dir}/{script}", "r") as f:
+            with open(script, "r") as f:
                 exec(f.read())

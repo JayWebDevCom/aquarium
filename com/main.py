@@ -53,8 +53,7 @@ pump_in = Switch('pump_in', pump_in_channel)
 sump_pump = Switch('sump pump', sump_pump_channel)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-scripts = [current_dir / "temperatureScript_both.py", current_dir / "levelSensorWithTofScript.py"]
-
+scripts = [f"{current_dir}/temperatureScript_both.py", f"{current_dir}/levelSensorWithTofScript.py"]
 controller = Controller("Aquarium Controller", level_detector, temperature_detector,
                         pump_out, pump_in, sump_pump, scripts,
                         level_check_interval=3, temp_check_interval=60, temperature_difference_limit=1.0)
@@ -71,7 +70,7 @@ def water_change():
     logger.info("Water change beginning...")
     controller.water_change(90.0)
 
-for t in ["01:01", "05:01", "09:01", "13:01", "17:39", "22:01"]:
+for t in ["01:01", "05:01", "09:01", "13:01", "17:01", "22:01"]:
     schedule.every().day.at(t).do(water_change).tag("aquarium")
 
 while True:
