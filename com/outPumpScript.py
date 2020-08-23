@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 
-import RPi.GPIO as GPIO
+import sys
 import time
+
+import RPi.GPIO as GPIO
 import click
+from ipython_genutils.py3compat import xrange
 
-from AquariumLogger import AquariumLogger
 from components.Switch import Switch
-
-logger = AquariumLogger()
 
 GPIO.setmode(GPIO.BCM)
 GPIO.setwarnings(False)
@@ -16,14 +16,26 @@ GPIO.setup(channel, GPIO.OUT)
 
 switch = Switch("pump out", channel)
 
+
 @click.command()
 @click.option('--time', '-t', 'time_', default=0, help='how long to turn the pump on for')
 def pump_out(time_: int):
-    logger.info(f"activating {switch.name} for {time_} seconds")
     switch.on()
-    time.sleep(time_)
-    logger.info("de-activating switch…")
+
+    progress_bar_width = 100
+
+    sys.stdout.write("[%s]" % (" " * progress_bar_width))
+    sys.stdout.flush()
+    sys.stdout.write("\b" * (progress_bar_width + 1))
+
+    for _ in xrange(progress_bar_width):
+        time.sleep(time_ / progress_bar_width)
+        sys.stdout.write("-")
+        sys.stdout.flush()
+
+    sys.stdout.write("]\n")
     switch.off()
+
 
 pump_out()
 
