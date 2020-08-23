@@ -28,8 +28,9 @@ def pump_in(time_: int):
     sys.stdout.flush()
     sys.stdout.write("\b" * (progress_bar_width + 1))
 
+    sleep = time_ / progress_bar_width
     for _ in xrange(progress_bar_width):
-        time.sleep(time_ / progress_bar_width)
+        time.sleep(sleep)
         sys.stdout.write("-")
         sys.stdout.flush()
 
