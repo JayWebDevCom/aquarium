@@ -22,12 +22,14 @@ switch = Switch("pump out", channel)
 def pump_out(time_: int):
     switch.on()
 
-    sys.stdout.write("[%s]" % (" " * time_))
-    sys.stdout.flush()
-    sys.stdout.write("\b" * (time_ + 1))
+    progress_bar_width = 100
 
-    for _ in xrange(time_):
-        time.sleep(1)
+    sys.stdout.write("[%s]" % (" " * progress_bar_width))
+    sys.stdout.flush()
+    sys.stdout.write("\b" * (progress_bar_width + 1))
+
+    for _ in xrange(progress_bar_width):
+        time.sleep(time_ / progress_bar_width)
         sys.stdout.write("-")
         sys.stdout.flush()
 
