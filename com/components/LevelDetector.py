@@ -50,7 +50,11 @@ class LevelDetector:
 
     def is_sump_full(self) -> bool:
         sump_level = self._get_checked_sump_level()
-        percent_full = (sump_level / self.levels_boundary.full_level) * 100
-        logger.info(f"necessary full level is {self.levels_boundary.full_level}, {'{:.2f}'.format(percent_full)}% full")
-
+        logger.info(f"necessary full level is {self.levels_boundary.full_level}, {self.percent_full(sump_level)} full")
         return sump_level <= self.levels_boundary.full_level
+
+    def percent_full(self, sump_level) -> str:
+        difference = sump_level - self.levels_boundary.full_level
+        relative_level = self.levels_boundary.full_level - difference
+        percent_full = (relative_level / self.levels_boundary.full_level) * 100
+        return f"{int(percent_full)}%"

@@ -74,3 +74,8 @@ class TestWaterLevelDetector(TestCase):
             self.water_sensor.get_level = MagicMock(return_value=level)
             with self.assertRaises(UnexpectedWaterLevel):
                 self.level_detector_with_float_readings.is_sump_full()
+
+    def test_percentage_full(self):
+        params = {20: "100%", 30: "50%", 40: "0%"}
+        for sump_level, expected in params.items():
+            self.assertEqual(expected, self.level_detector.percent_full(sump_level))
