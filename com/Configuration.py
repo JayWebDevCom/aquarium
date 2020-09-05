@@ -2,7 +2,6 @@ from yaml import load
 
 
 class Configuration:
-    aquarium: dict = {}
 
     def __init__(self, file_path: str):
         with open(file_path, 'r') as stream:
