@@ -2,7 +2,7 @@ from yaml import load
 
 
 class Configuration:
-    aquarium: dict
+    aquarium: dict = {}
 
     def __init__(self, file_path: str):
         with open(file_path, 'r') as stream:
@@ -17,5 +17,3 @@ class Configuration:
 
     def update_times(self):
         return self.aquarium['update_times']
-
-
