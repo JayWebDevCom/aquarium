@@ -7,3 +7,9 @@ water_change_times:
   - '1'
   - '2'
   - '3'
+overfill_allowance:
+  2.5
+inner:
+  value:
+    inner-value
+empty: []

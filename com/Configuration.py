@@ -15,3 +15,9 @@ class Configuration:
 
     def update_times(self):
         return self.aquarium['update_times']
+
+    def data(self):
+        return self.aquarium
+
+    def get(self, value):
+        return self.aquarium[value]
