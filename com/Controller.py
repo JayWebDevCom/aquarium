@@ -77,9 +77,10 @@ class Controller:
                     break
         except UnexpectedWaterLevel:
             logger.error("UnexpectedWaterLevel ex caught")
-            self.pump_in.off()
-            self.pump_out.off()
-            exit(1)
+            self._shutdown()
+        except ZeroDivisionError:
+            logger.error("ZeroDivisionError ex caught")
+            self._shutdown()
         self.pump_out.off()
 
     @log_time_elapsed
@@ -92,10 +93,11 @@ class Controller:
             while not self.level_detector.is_sump_full():
                 time.sleep(self.level_check_interval)
         except UnexpectedWaterLevel:
-            logger.error("UnexpectedWaterLevel ex caught while refilling")
-            self.pump_in.off()
-            self.pump_out.off()
-            exit(1)
+            logger.error("UnexpectedWaterLevel ex caught")
+            self._shutdown()
+        except ZeroDivisionError:
+            logger.error("ZeroDivisionError ex caught")
+            self._shutdown()
 
         self.pump_in.off()
 
@@ -111,3 +113,8 @@ class Controller:
         for script in self.scripts:
             with open(script, "r") as f:
                 exec(f.read())
+
+    def _shutdown(self):
+        self.pump_in.off()
+        self.pump_out.off()
+        exit(1)
