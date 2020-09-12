@@ -7,8 +7,8 @@ from datetime import datetime
 
 logger = AquariumLogger()
 
-tank_device = "28-01191c5f02ae"
-sump_device = "28-01191c6c5b42"
+sump_device = "28-01191c5f02ae"
+tank_device = "28-01191c6c5b42"
 
 global tank_temp_sensor
 global sump_temp_sensor
