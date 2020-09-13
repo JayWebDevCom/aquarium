@@ -5,6 +5,7 @@ import RPi.GPIO as GPIO
 import schedule
 
 from AquariumLogger import AquariumLogger
+from Configuration import Configuration
 from Controller import Controller
 from components.LevelDetector import LevelDetector
 from components.LevelSensor import LevelSensor
@@ -20,32 +21,34 @@ GPIO.setwarnings(False)
 
 logger = AquariumLogger()
 
-full_level = 14
-water_change_span = 17
-accuracy_allowance = 0.1
-times_to_check_level = 9
+current_dir = os.path.dirname(os.path.abspath(__file__))
+config_file = "config.yaml"
+cfile = f"{current_dir}/{config_file}"
+config = Configuration(cfile)
+data = config.data()
+
+full_level = data['full_level']
+water_change_span = data['water_change_span']
 empty_level = full_level + water_change_span
 
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 
 levels_boundary = LevelsBoundary(full_level, empty_level)
-sanitizer = ReadingsSanitizer(levels_boundary, 0.1)
+sanitizer = ReadingsSanitizer(levels_boundary, data['accuracy_allowance'])
 
 level_sensor = LevelSensor('level sensor', TimeOfFlightLevelStrategy())
 level_detector = LevelDetector('level sensor', level_sensor, levels_boundary, sanitizer,
-                               times_to_check_level=times_to_check_level, overfill_allowance=0.5)
+                               times_to_check_level=data['times_to_check_level'], 
+                               overfill_allowance=data['overfill_allowance'])
 
-sump_temp_device_id = "28-01191c6c5b42"
-tank_temp_device_id = "28-01191c5f02ae"
-
-pump_out_channel = 27
-pump_in_channel = 23
-sump_pump_channel = 17
+pump_out_channel = data['pump_out_channel']
+pump_in_channel = data['pump_in_channel']
+sump_pump_channel = data['sump_pump_channel']
 
 GPIO.setup([pump_out_channel, pump_in_channel, sump_pump_channel], GPIO.OUT)
 
-sump_temp = TemperatureSensor("sump temperature sensor", sump_temp_device_id)
-tank_temp = TemperatureSensor("tank temperature sensor", tank_temp_device_id)
+sump_temp = TemperatureSensor("sump temperature sensor", data['sump_temp_device_id'])
+tank_temp = TemperatureSensor("tank temperature sensor", data['tank_temp_device_id'])
 temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp)
 
 pump_out = Switch('pump_out', pump_out_channel)
@@ -56,23 +59,42 @@ current_dir = os.path.dirname(os.path.abspath(__file__))
 scripts = [f"{current_dir}/temperatureScript_both.py", f"{current_dir}/levelSensorWithTofScript.py"]
 controller = Controller("Aquarium Controller", level_detector, temperature_detector,
                         pump_out, pump_in, sump_pump, scripts,
-                        level_check_interval=3, temp_check_interval=60, temperature_difference_limit=1.0)
+                        level_check_interval=data['level_check_interval'], 
+                        temp_check_interval=data['temp_check_interval'], 
+                        temperature_difference_limit=data['temperature_difference_limit'])
 
 sump_pump.on()
 
-def update():
+def updates():
+    schedule.clear("update")
+    schedule.clear("water_change")
     controller.update()
+    schedule_updates()
+    schedule_water_changes()
 
-for minutes in [":00", ":15", ":30", ":45"]:
-    schedule.every().hour.at(minutes).do(update).tag("aquarium")
+def schedule_updates():
+    config = Configuration(cfile)
+    for minutes in config.update_times():
+        schedule.every().hour.at(minutes).do(updates).tag("update")
+
+def schedule_water_changes():
+    config = Configuration(cfile)
+    logger.info(f"scheduling water changes for: {config.water_change_times()}")
+    for minutes in config.water_change_times():
+        schedule.every().day.at(minutes).do(water_change).tag("water_change")
 
 def water_change():
+    config = Configuration(cfile)
+    schedule.clear("update")
+    logger.info("")
     logger.info("Water change beginning...")
-    controller.water_change(90.0)
+    controller.water_change(config.get('water_change_level'))
+    schedule_updates()
 
-for t in ["01:01", "05:01", "09:01", "13:01", "17:01", "22:01"]:
-    schedule.every().day.at(t).do(water_change).tag("aquarium")
+schedule_updates()
+schedule_water_changes()
 
 while True:
     schedule.run_pending()
     time.sleep(1)
+
