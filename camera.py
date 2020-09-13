@@ -8,7 +8,7 @@ from http import server
 PAGE="""\
 <html>
 <head>
-<title>Jaiye Home</title>
+<title>Tank Camm</title>
 </head>
 <body>
 <center><img src="stream.mjpg" width="1000" height="800"></center>

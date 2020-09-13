@@ -3,7 +3,7 @@ update_times:
   - :15
   - :30
   - :45
-water_change_times: 
+water_change_times:
   - '01:01'
   - '05:01'
   - '09:01'
