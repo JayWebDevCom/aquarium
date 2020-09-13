@@ -103,7 +103,7 @@ class Controller:
 
     @log_time_elapsed
     def wait_for_temperature_equalization(self):
-        logger.info("waiting for sump and tank temperatures to equalize")
+        logger.info(f"waiting for sump and tank temperatures to equalize, band: {self.temperature_difference_limit}")
         while self.temperature_detector.temperature_difference() > self.temperature_difference_limit:
             time.sleep(self.temp_check_interval)
 
