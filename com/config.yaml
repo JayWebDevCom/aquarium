@@ -1,12 +1,27 @@
 update_times:
-  - ':00'
-  - ':15'
-  - ':30'
-  - ':45'
+  - :00
+  - :15
+  - :30
+  - :45
 water_change_times:
   - '01:01'
   - '05:01'
   - '09:01'
   - '13:01'
   - '17:01'
+# - '19:01'
   - '22:01'
+full_level: 26
+water_change_span: 16
+times_to_check_level: 9
+accuracy_allowance: 0.1
+overfill_allowance: 1.0
+tank_temp_device_id: '28-01191c6c5b42'
+sump_temp_device_id: '28-01191c5f02ae'
+pump_out_channel: 27
+pump_in_channel: 23
+sump_pump_channel: 17
+level_check_interval: 3
+temp_check_interval: 60
+temperature_difference_limit: 2.5
+water_change_level: 90
