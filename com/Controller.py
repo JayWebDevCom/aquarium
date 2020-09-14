@@ -78,11 +78,11 @@ class Controller:
         schedule.clear("update")
         logger.info("")
         logger.info("Water change beginning...")
-        self.water_change(config.get('water_change_level'))
+        self.water_change_process(config.get('water_change_level'))
         self.schedule_updates()
 
     @log_time_elapsed
-    def water_change(self, percentage: float):
+    def water_change_process(self, percentage: float):
         # if x := isBig(y): return x
         self.empty_by_percentage(percentage)
         self.refill()
