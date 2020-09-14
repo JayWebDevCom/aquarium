@@ -1,45 +1,37 @@
 import time
+import schedule
 from datetime import datetime
 from typing import List
 
 from loguru import logger
 
+from Configuration import Configuration
 from components.LevelDetector import LevelDetector, UnexpectedWaterLevel
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
 
 
 class Controller:
-    """A simple Controller class"""
-    name: str
-    pump_out: Switch
-    pump_in: Switch
-    sump_return: Switch
-    level_detector: LevelDetector
-    level_check_interval: int
-    temp_check_interval: int
-    temperature_difference_limit: float
-
     def __init__(
             self,
-            name: str,
             level_detector: LevelDetector,
             temperature_detector: TemperatureDetector,
             pump_out: Switch,
             pump_in: Switch,
-            sump_return: Switch,
+            sump_pump: Switch,
             scripts: List[str],
-            **kwargs):
-        self.name = name
+            configuration_file: str):
         self.level_detector = level_detector
         self.temperature_detector = temperature_detector
         self.pump_out = pump_out
         self.pump_in = pump_in
-        self.sump_return = sump_return
+        self.sump_pump = sump_pump
         self.scripts = scripts
-        self.level_check_interval = kwargs.pop("level_check_interval")
-        self.temp_check_interval = kwargs.pop("temp_check_interval")
-        self.temperature_difference_limit = kwargs.pop("temperature_difference_limit")
+        self.configuration_file = configuration_file
+        self.config = Configuration(configuration_file)
+        self.level_check_interval = self.config.get("level_check_interval")
+        self.temp_check_interval = self.config.get("temp_check_interval")
+        self.temperature_difference_band = self.config.get("temperature_difference_band")
 
     def log_time_elapsed(decorated):
         def wrapper(*args):
@@ -55,6 +47,40 @@ class Controller:
 
         return wrapper
 
+    def start(self):
+        self.sump_pump.on()
+        self.schedule_updates()
+        self.schedule_water_changes()
+
+        while True:
+            schedule.run_pending()
+            time.sleep(1)
+
+    def schedule_updates(self):
+        for value in Configuration(self.configuration_file).update_times():
+            schedule.every().hour.at(value).do(self.updates).tag("update")
+
+    def updates(self):
+        schedule.clear("update")
+        schedule.clear("water_change")
+        self.update()
+        self.schedule_updates()
+        self.schedule_water_changes()
+
+    def schedule_water_changes(self):
+        water_change_times = Configuration(self.configuration_file).water_change_times()
+        logger.info(f"scheduling water changes for: {water_change_times}")
+        for value in water_change_times:
+            schedule.every().day.at(value).do(self.water_change).tag("water_change")
+
+    def water_change(self):
+        config = Configuration(self.configuration_file)
+        schedule.clear("update")
+        logger.info("")
+        logger.info("Water change beginning...")
+        self.water_change(config.get('water_change_level'))
+        self.schedule_updates()
+
     @log_time_elapsed
     def water_change(self, percentage: float):
         # if x := isBig(y): return x
@@ -64,7 +90,7 @@ class Controller:
 
     @log_time_elapsed
     def empty_by_percentage(self, percentage):
-        self.sump_return.off()
+        self.sump_pump.off()
         self.pump_out.on()
         try:
             while True:
@@ -103,11 +129,11 @@ class Controller:
 
     @log_time_elapsed
     def wait_for_temperature_equalization(self):
-        logger.info(f"waiting for sump and tank temperatures to equalize, band: {self.temperature_difference_limit}")
-        while self.temperature_detector.temperature_difference() > self.temperature_difference_limit:
+        logger.info(f"waiting for sump and tank temperatures to equalize, band: {self.temperature_difference_band}")
+        while self.temperature_detector.temperature_difference() > self.temperature_difference_band:
             time.sleep(self.temp_check_interval)
 
-        self.sump_return.on()
+        self.sump_pump.on()
 
     def update(self):
         for script in self.scripts:
