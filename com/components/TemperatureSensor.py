@@ -7,7 +7,7 @@ class TemperatureSensor:
 
     def __init__(self, name, db_device_id: str):
         self.name = name
-        self.db_device_id_location = '/sys/bus/w1/devices/' + db_device_id + '/w1_slave'
+        self.db_device_id_location = f"/sys/bus/w1/devices/{db_device_id}/w1_slave"
 
     def get_temp(self) -> float:
         with open(self.db_device_id_location) as file:
