@@ -16,15 +16,13 @@ class ReadingsSanitizer:
 
     def sanitize(self, readings_list) -> float:
         logger.info(f"sanitizing: {readings_list}")
-        readings_list_copy = readings_list[:]
-        accepted_readings_iterator = filter(lambda reading:
-                                            self.lower_bound <= reading <= self.upper_bound,
-                                            readings_list_copy)
+        copy = readings_list[:]
+        accepted_readings_iterator = filter(lambda reading: self.lower_bound <= reading <= self.upper_bound, copy)
         accepted_readings = list(accepted_readings_iterator)
 
-        removed_readings = [item for item in readings_list_copy if item not in accepted_readings]
-        st_dev = '{:.2f}'.format(statistics.stdev(readings_list_copy), 2)
-        spread = '{:.2f}'.format(max(readings_list_copy) - min(readings_list_copy), 2)
+        removed_readings = [item for item in copy if item not in accepted_readings]
+        st_dev = '{:.2f}'.format(statistics.stdev(copy), 2)
+        spread = '{:.2f}'.format(max(copy) - min(copy), 2)
         length_removed_readings = len(removed_readings)
 
         message = "{} {} {} {}, {} {}, {} {}".format("removed", length_removed_readings,
