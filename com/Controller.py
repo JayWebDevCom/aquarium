@@ -31,7 +31,6 @@ class Controller:
         self.config = Configuration(configuration_file)
         self.level_check_interval = self.config.get("level_check_interval")
         self.temp_check_interval = self.config.get("temp_check_interval")
-        self.temperature_difference_band = self.config.get("temperature_difference_band")
 
     def log_time_elapsed(decorated):
         def wrapper(*args):
@@ -129,8 +128,9 @@ class Controller:
 
     @log_time_elapsed
     def wait_for_temperature_equalization(self):
-        logger.info(f"waiting for sump and tank temperatures to equalize, band: {self.temperature_difference_band}")
-        while self.temperature_detector.temperature_difference() > self.temperature_difference_band:
+        band = Configuration(self.configuration_file).get("temperature_difference_band")
+        logger.info(f"waiting for sump and tank temperatures to equalize, band: {band}")
+        while self.temperature_detector.temperature_difference() > band:
             time.sleep(self.temp_check_interval)
 
         self.sump_pump.on()
