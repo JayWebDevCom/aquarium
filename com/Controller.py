@@ -56,14 +56,12 @@ class Controller:
             time.sleep(1)
 
     def schedule_updates(self):
-        for value in Configuration(self.configuration_file).update_times():
+        for value in self.config.update_times():
             schedule.every().hour.at(value).do(self.updates).tag("update")
 
     def updates(self):
-        schedule.clear("update")
         schedule.clear("water_change")
         self.update()
-        self.schedule_updates()
         self.schedule_water_changes()
 
     def schedule_water_changes(self):
@@ -74,22 +72,19 @@ class Controller:
 
     def water_change(self):
         config = Configuration(self.configuration_file)
-        schedule.clear("update")
-        logger.info("")
-        logger.info("Water change beginning...")
+        logger.info("\nWater change beginning...")
         self.water_change_process(config.get('water_change_level'))
-        self.schedule_updates()
 
     @log_time_elapsed
     def water_change_process(self, percentage: float):
-        # if x := isBig(y): return x
+        self.sump_pump.off()
         self.empty_by_percentage(percentage)
         self.refill()
         self.wait_for_temperature_equalization()
+        self.sump_pump.on()
 
     @log_time_elapsed
     def empty_by_percentage(self, percentage):
-        self.sump_pump.off()
         self.pump_out.on()
         try:
             while True:
@@ -132,8 +127,6 @@ class Controller:
         logger.info(f"waiting for sump and tank temperatures to equalize, band: {band}")
         while self.temperature_detector.temperature_difference() > band:
             time.sleep(self.temp_check_interval)
-
-        self.sump_pump.on()
 
     def update(self):
         for script in self.scripts:
