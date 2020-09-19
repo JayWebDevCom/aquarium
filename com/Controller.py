@@ -83,13 +83,14 @@ class Controller:
     @log_time_elapsed
     def water_change_process(self, percentage: float):
         # if x := isBig(y): return x
+        self.sump_pump.off()
         self.empty_by_percentage(percentage)
         self.refill()
         self.wait_for_temperature_equalization()
+        self.sump_pump.on()
 
     @log_time_elapsed
     def empty_by_percentage(self, percentage):
-        self.sump_pump.off()
         self.pump_out.on()
         try:
             while True:
@@ -132,8 +133,6 @@ class Controller:
         logger.info(f"waiting for sump and tank temperatures to equalize, band: {band}")
         while self.temperature_detector.temperature_difference() > band:
             time.sleep(self.temp_check_interval)
-
-        self.sump_pump.on()
 
     def update(self):
         for script in self.scripts:
