@@ -73,7 +73,8 @@ class Controller:
     def water_change(self):
         config = Configuration(self.configuration_file)
         schedule.clear("update")
-        logger.info("\nWater change beginning...")
+        logger.info("")
+        logger.info("Water change beginning...")
         self.water_change_process(config.get('water_change_level'))
         self.schedule_updates()
 
