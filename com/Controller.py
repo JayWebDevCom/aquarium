@@ -32,8 +32,7 @@ class Controller:
         self.level_check_interval = self.config.get("level_check_interval")
         self.temp_check_interval = self.config.get("temp_check_interval")
 
-    @classmethod
-    def log_time_elapsed(cls, decorated):
+    def log_time_elapsed(decorated):
         def wrapper(*args):
             started = datetime.now()
 
