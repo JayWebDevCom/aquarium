@@ -32,6 +32,7 @@ class Controller:
         self.level_check_interval = self.config.get("level_check_interval")
         self.temp_check_interval = self.config.get("temp_check_interval")
 
+    @staticmethod
     def log_time_elapsed(decorated):
         def wrapper(*args):
             started = datetime.now()
@@ -98,12 +99,10 @@ class Controller:
                     time.sleep(self.level_check_interval)
                 else:
                     break
-        except UnexpectedWaterLevel:
-            logger.error("UnexpectedWaterLevel ex caught")
-            self._shutdown()
-        except ZeroDivisionError:
-            logger.error("ZeroDivisionError ex caught")
-            self._shutdown()
+        except UnexpectedWaterLevel as error:
+            self._shutdown(error)
+        except ZeroDivisionError as error:
+            self._shutdown(error)
         self.pump_out.off()
 
     @log_time_elapsed
@@ -115,12 +114,10 @@ class Controller:
         try:
             while not self.level_detector.is_sump_full():
                 time.sleep(self.level_check_interval)
-        except UnexpectedWaterLevel:
-            logger.error("UnexpectedWaterLevel ex caught")
-            self._shutdown()
-        except ZeroDivisionError:
-            logger.error("ZeroDivisionError ex caught")
-            self._shutdown()
+        except UnexpectedWaterLevel as error:
+            self._shutdown(error)
+        except ZeroDivisionError as error:
+            self._shutdown(error)
 
         self.pump_in.off()
 
@@ -136,7 +133,8 @@ class Controller:
             with open(script, "r") as f:
                 exec(f.read())
 
-    def _shutdown(self):
+    def _shutdown(self, error):
+        logger.error(f"{error.__class__.__name__} ex caught")
         self.pump_in.off()
         self.pump_out.off()
         exit(1)
