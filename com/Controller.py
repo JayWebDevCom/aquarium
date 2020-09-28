@@ -30,7 +30,6 @@ class Controller:
         self.configuration_file = configuration_file
         self.config = Configuration(configuration_file)
         self.level_check_interval = self.config.get("level_check_interval")
-        self.temp_check_interval = self.config.get("temp_check_interval")
 
     def log_time_elapsed(decorated):
         def wrapper(*args):
@@ -98,10 +97,9 @@ class Controller:
                     time.sleep(self.level_check_interval)
                 else:
                     break
-        except UnexpectedWaterLevel as error:
+        except Exception as error:
             self._shutdown(error)
-        except ZeroDivisionError as error:
-            self._shutdown(error)
+
         self.pump_out.off()
 
     @log_time_elapsed
@@ -113,19 +111,19 @@ class Controller:
         try:
             while not self.level_detector.is_sump_full():
                 time.sleep(self.level_check_interval)
-        except UnexpectedWaterLevel as error:
-            self._shutdown(error)
-        except ZeroDivisionError as error:
+        except Exception as error:
             self._shutdown(error)
 
         self.pump_in.off()
 
     @log_time_elapsed
     def wait_for_temperature_equalization(self):
-        band = Configuration(self.configuration_file).get("temperature_difference_band")
+        config = Configuration(self.configuration_file)
+        band = config.get("temperature_difference_band")
+        interval = config.get("temp_check_interval")
         logger.info(f"waiting for sump and tank temperatures to equalize, band: {band}")
         while self.temperature_detector.temperature_difference() > band:
-            time.sleep(self.temp_check_interval)
+            time.sleep(interval)
 
     def update(self):
         for script in self.scripts:
