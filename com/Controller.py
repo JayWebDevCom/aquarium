@@ -92,7 +92,7 @@ class Controller:
             while True:
                 percentage_changed = self.level_detector.percentage_changed()
                 formatted_percentage_changed = "{:.2f}".format(percentage_changed)
-                logger.info(f"percentage changed is {formatted_percentage_changed}")
+                logger.info(f"percentage changed: {formatted_percentage_changed} of {percentage}")
                 if percentage_changed < percentage:
                     time.sleep(self.level_check_interval)
                 else:
