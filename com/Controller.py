@@ -1,9 +1,11 @@
+import sys
 import time
 import schedule
 from datetime import datetime
 from typing import List
 
 from loguru import logger
+from mercurial.pycompat import xrange
 
 from Configuration import Configuration
 from components.LevelDetector import LevelDetector, UnexpectedWaterLevel
@@ -88,14 +90,32 @@ class Controller:
     @log_time_elapsed
     def empty_by_percentage(self, percentage):
         self.pump_out.on()
+
+        progress_bar_width = 100
+
+        sys.stdout.write("[%s]" % (" " * progress_bar_width))
+        sys.stdout.flush()
+        sys.stdout.write("\b" * (progress_bar_width + 1))
+        written = 0
         try:
             while True:
                 percentage_changed = self.level_detector.percentage_changed()
                 formatted_percentage_changed = "{:.2f}".format(percentage_changed)
-                logger.info(f"percentage changed: {formatted_percentage_changed} of {percentage}")
+                # logger.info(f"{formatted_percentage_changed}% changed [{percentage}%]")
+
                 if percentage_changed < percentage:
+
+                    proportion = percentage_changed / percentage
+                    num_to_write = int((proportion * 100) - written)
+
+                    for i in range(num_to_write):
+                        sys.stdout.write("-")
+                    sys.stdout.flush()
+                    written = num_to_write
+
                     time.sleep(self.level_check_interval)
                 else:
+                    sys.stdout.write("]\n")
                     break
         except Exception as error:
             self._shutdown(error)
