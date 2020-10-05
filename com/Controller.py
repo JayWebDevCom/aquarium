@@ -105,7 +105,7 @@ class Controller:
                 if percentage_changed < percentage:
 
                     proportion = percentage_changed / percentage
-                    num_to_write = int((proportion * 100) - written)
+                    num_to_write = written - (written + proportion)
 
                     if num_to_write > 0:
                         for i in range(num_to_write):
