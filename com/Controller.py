@@ -5,10 +5,9 @@ from datetime import datetime
 from typing import List
 
 from loguru import logger
-from mercurial.pycompat import xrange
 
 from Configuration import Configuration
-from components.LevelDetector import LevelDetector, UnexpectedWaterLevel
+from components.LevelDetector import LevelDetector
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
 
