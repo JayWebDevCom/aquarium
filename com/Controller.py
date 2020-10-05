@@ -108,10 +108,11 @@ class Controller:
                     proportion = percentage_changed / percentage
                     num_to_write = int((proportion * 100) - written)
 
-                    for i in range(num_to_write):
-                        sys.stdout.write("-")
-                    sys.stdout.flush()
-                    written = num_to_write
+                    if num_to_write > 0:
+                        for i in range(num_to_write):
+                            sys.stdout.write("-")
+                        sys.stdout.flush()
+                    written += num_to_write
 
                     time.sleep(self.level_check_interval)
                 else:
