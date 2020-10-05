@@ -44,13 +44,13 @@ class LevelDetector:
     def _get_checked_sump_level(self) -> float:
         temperatures_returned = [self.sensor.get_level() for _ in self.times_to_check_level]
         sump_level = self.sanitizer.sanitize(temperatures_returned)
-        logger.info(f"current sump level: {'{:.2f}'.format(sump_level)}")
+        # logger.info(f"current sump level: {'{:.2f}'.format(sump_level)}")
         self._check(sump_level)
         return sump_level
 
     def is_sump_full(self) -> bool:
         sump_level = self._get_checked_sump_level()
-        logger.info(f"necessary full level is {self.levels_boundary.full_level}, {self.percent_full(sump_level)} full")
+        # logger.info(f"necessary full level is {self.levels_boundary.full_level}, {self.percent_full(sump_level)} full")
         return sump_level <= self.levels_boundary.full_level
 
     def percent_full(self, sump_level) -> str:

@@ -15,7 +15,7 @@ class ReadingsSanitizer:
         self.lower_bound = levels_boundary.full_level * (1 - percentage_bound)
 
     def sanitize(self, readings_list) -> float:
-        logger.info(f"sanitizing: {readings_list}")
+        # logger.info(f"sanitizing: {readings_list}")
         copy = readings_list[:]
         accepted_readings_iterator = filter(lambda reading: self.lower_bound <= reading <= self.upper_bound, copy)
         accepted_readings = list(accepted_readings_iterator)
@@ -31,5 +31,5 @@ class ReadingsSanitizer:
                                                      "st-dev:", st_dev,
                                                      "spread:", spread)
 
-        logger.info(message)
+        # logger.info(message)
         return round(sum(accepted_readings) / len(accepted_readings), 2)
