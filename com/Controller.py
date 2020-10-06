@@ -104,12 +104,11 @@ class Controller:
                 if percentage_changed < percentage:
 
                     proportion = percentage_changed / percentage
-                    num_to_write = int(proportion * progress_bar_width)
-                    to_write = "[" + "-" * num_to_write
-                    print(to_write, end="\r")
-                    sys.stdout.write("\033[K")
 
-                    time.sleep(self.level_check_interval)
+                    for _ in xrange(proportion):
+                        sys.stdout.write("-")
+                        sys.stdout.flush()
+                        time.sleep(self.level_check_interval)
                 else:
                     sys.stdout.write("]\n")
                     break
