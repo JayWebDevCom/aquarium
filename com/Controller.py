@@ -99,8 +99,6 @@ class Controller:
         try:
             while True:
                 percentage_changed = self.level_detector.percentage_changed()
-                formatted_percentage_changed = "{:.2f}".format(percentage_changed)
-                # logger.info(f"{formatted_percentage_changed}% changed [{percentage}%]")
 
                 if percentage_changed < percentage:
                     proportion_changed = (percentage_changed / percentage) * 100
