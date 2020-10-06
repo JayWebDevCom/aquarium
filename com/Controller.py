@@ -105,7 +105,7 @@ class Controller:
 
                     proportion = percentage_changed / percentage
 
-                    for _ in xrange(proportion):
+                    for _ in range(proportion):
                         sys.stdout.write("-")
                         sys.stdout.flush()
                         time.sleep(self.level_check_interval)
