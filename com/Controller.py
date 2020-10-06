@@ -108,7 +108,7 @@ class Controller:
                     sys.stdout.write("-" * int(proportion_changed))
                     sys.stdout.flush()
                     time.sleep(self.level_check_interval)
-                    written = proportion_changed
+                    written += proportion_changed
                 else:
                     sys.stdout.write("]\n")
                     break
