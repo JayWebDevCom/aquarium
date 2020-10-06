@@ -105,8 +105,7 @@ class Controller:
 
                     proportion = percentage_changed / percentage
                     num_to_write = int(proportion * progress_bar_width)
-
-                    sys.stdout.write("-" * num_to_write)
+                    print("-" * num_to_write)
                     sys.stdout.write("\033[F")
 
                     time.sleep(self.level_check_interval)
