@@ -102,10 +102,8 @@ class Controller:
                 # logger.info(f"{formatted_percentage_changed}% changed [{percentage}%]")
 
                 if percentage_changed < percentage:
-
                     proportion = percentage_changed / percentage
-
-                    for _ in range(proportion):
+                    for _ in range(int(proportion)):
                         sys.stdout.write("-")
                         sys.stdout.flush()
                         time.sleep(self.level_check_interval)
