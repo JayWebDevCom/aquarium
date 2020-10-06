@@ -94,6 +94,7 @@ class Controller:
         sys.stdout.write("[%s]" % (" " * progress_bar_width))
         sys.stdout.flush()
         sys.stdout.write("\b" * (progress_bar_width + 1))
+        written = 0
 
         try:
             while True:
@@ -102,11 +103,12 @@ class Controller:
                 # logger.info(f"{formatted_percentage_changed}% changed [{percentage}%]")
 
                 if percentage_changed < percentage:
-                    proportion = percentage_changed / percentage
-                    for _ in range(int(proportion)):
-                        sys.stdout.write("-")
-                        sys.stdout.flush()
-                        time.sleep(self.level_check_interval)
+                    proportion_changed = (percentage_changed / percentage) * 100
+                    proportion_changed -= written
+                    sys.stdout.write("-" * int(proportion_changed))
+                    sys.stdout.flush()
+                    time.sleep(self.level_check_interval)
+                    written = proportion_changed
                 else:
                     sys.stdout.write("]\n")
                     break
