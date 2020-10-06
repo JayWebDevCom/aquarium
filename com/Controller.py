@@ -91,11 +91,10 @@ class Controller:
         self.pump_out.on()
 
         progress_bar_width = 100
-
         sys.stdout.write("[%s]" % (" " * progress_bar_width))
         sys.stdout.flush()
         sys.stdout.write("\b" * (progress_bar_width + 1))
-        written = 0
+
         try:
             while True:
                 percentage_changed = self.level_detector.percentage_changed()
@@ -105,13 +104,10 @@ class Controller:
                 if percentage_changed < percentage:
 
                     proportion = percentage_changed / percentage
-                    num_to_write = written - (written + proportion)
+                    num_to_write = int(proportion * progress_bar_width)
 
-                    if num_to_write > 0:
-                        for i in range(num_to_write):
-                            sys.stdout.write("-")
-                        sys.stdout.flush()
-                    written += num_to_write
+                    sys.stdout.write("-" * num_to_write)
+                    sys.stdout.write("\033[F")
 
                     time.sleep(self.level_check_interval)
                 else:
