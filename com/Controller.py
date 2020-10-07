@@ -105,7 +105,7 @@ class Controller:
                     progress_bar.update(progress)
 
                     time.sleep(self.level_check_interval)
-                    written = proportion_update
+                    written += progress
                 else:
                     progress_bar.finish()
                     break
