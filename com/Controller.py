@@ -7,6 +7,7 @@ from typing import List
 from loguru import logger
 
 from Configuration import Configuration
+from ProgressBar import ProgressBar
 from components.LevelDetector import LevelDetector
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
@@ -90,10 +91,8 @@ class Controller:
     def empty_by_percentage(self, percentage):
         self.pump_out.on()
 
-        progress_bar_width = 100
-        sys.stdout.write("[%s]" % (" " * progress_bar_width))
-        sys.stdout.flush()
-        sys.stdout.write("\b" * (progress_bar_width + 1))
+        progress_bar = ProgressBar()
+        progress_bar.initialize()
         written = 0
 
         try:
@@ -101,14 +100,14 @@ class Controller:
                 percentage_changed = self.level_detector.percentage_changed()
 
                 if percentage_changed < percentage:
-                    proportion_changed = (percentage_changed / percentage) * 100
-                    proportion_changed -= written
-                    sys.stdout.write("-" * int(proportion_changed))
-                    sys.stdout.flush()
+                    proportion_update = (percentage_changed / percentage) * progress_bar.width
+                    progress = proportion_update - written
+                    progress_bar.update(progress)
+
                     time.sleep(self.level_check_interval)
-                    written = proportion_changed
+                    written = proportion_update
                 else:
-                    sys.stdout.write("]\n")
+                    progress_bar.finish()
                     break
         except Exception as error:
             self._shutdown(error)
