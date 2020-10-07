@@ -27,8 +27,8 @@ def pump_in(time_: int):
     progress_bar.initialize()
     sleep = time_ / progress_bar.width
 
-    for progress in xrange(progress_bar.width):
-        progress_bar.update(progress)
+    for _ in xrange(progress_bar.width):
+        progress_bar.update(1)
         time.sleep(sleep)
 
     progress_bar.finish()
