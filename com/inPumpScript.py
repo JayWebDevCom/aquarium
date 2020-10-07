@@ -1,11 +1,9 @@
 #!/usr/bin/env python3
 
-import sys
 import time
 
 import RPi.GPIO as GPIO
 import click
-from ipython_genutils.py3compat import xrange
 
 from ProgressBar import ProgressBar
 from components.Switch import Switch
@@ -27,7 +25,7 @@ def pump_in(time_: int):
     progress_bar.initialize()
     sleep = time_ / progress_bar.width
 
-    for _ in xrange(progress_bar.width):
+    for _ in range(progress_bar.width):
         progress_bar.update(1)
         time.sleep(sleep)
 
