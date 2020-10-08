@@ -102,10 +102,12 @@ class Controller:
                 if percentage_changed < percentage:
                     proportion_update = (percentage_changed / percentage) * progress_bar.width
                     progress = proportion_update - written
-                    progress_bar.update(progress)
+
+                    if progress >= 1:
+                        progress_bar.update(progress)
+                        written += progress
 
                     time.sleep(self.level_check_interval)
-                    written += progress
                 else:
                     progress_bar.finish()
                     break
