@@ -111,7 +111,7 @@ class Controller:
         logger.info("refilling")
         self.pump_in.on()
         progress_tracker = ProgressTracker()
-        dots = self._generator([".", "..", "..."])
+        dots = self._generator([".  ", ".. ", "..."])
 
         try:
             while True:
@@ -138,7 +138,7 @@ class Controller:
         temperature_difference = self.temperature_detector.temperature_difference()
 
         while temperature_difference > band:
-            progress_tracker.write(f"temperature difference: {temperature_difference}")
+            progress_tracker.write(f"temperature difference: {temperature_difference}c of band: {band}c")
             time.sleep(interval)
             temperature_difference = self.temperature_detector.temperature_difference()
         progress_tracker.finish()
