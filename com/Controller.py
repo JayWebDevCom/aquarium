@@ -1,4 +1,3 @@
-import sys
 import time
 import schedule
 from datetime import datetime
@@ -7,7 +6,7 @@ from typing import List
 from loguru import logger
 
 from Configuration import Configuration
-from ProgressBar import ProgressBar
+from ProgressBar import ProgressTracker
 from components.LevelDetector import LevelDetector
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
@@ -90,26 +89,17 @@ class Controller:
     @log_time_elapsed
     def empty_by_percentage(self, percentage):
         self.pump_out.on()
-
-        progress_bar = ProgressBar()
-        progress_bar.initialize()
-        written = 0
+        progress_tracker = ProgressTracker()
 
         try:
             while True:
                 percentage_changed = self.level_detector.percentage_changed()
+                progress_tracker.write(f"{percentage_changed}% changed of {percentage}%")
 
                 if percentage_changed < percentage:
-                    proportion_update = (percentage_changed / percentage) * progress_bar.width
-                    progress = proportion_update - written
-
-                    if progress >= 1:
-                        progress_bar.update(progress)
-                        written += progress
-
                     time.sleep(self.level_check_interval)
                 else:
-                    progress_bar.finish()
+                    progress_tracker.finish()
                     break
         except Exception as error:
             self._shutdown(error)
@@ -119,15 +109,18 @@ class Controller:
     @log_time_elapsed
     def refill(self):
         logger.info("refilling")
-
         self.pump_in.on()
+        progress_tracker = ProgressTracker()
+        dots = self._generator([".", "..", "..."])
 
         try:
             while not self.level_detector.is_sump_full():
+                progress_tracker.write("refilling" + dots.__next__())
                 time.sleep(self.level_check_interval)
         except Exception as error:
             self._shutdown(error)
 
+        progress_tracker.finish()
         self.pump_in.off()
 
     @log_time_elapsed
@@ -135,9 +128,15 @@ class Controller:
         config = Configuration(self.configuration_file)
         band = config.get("temperature_difference_band")
         interval = config.get("temp_check_interval")
+
         logger.info(f"waiting for sump and tank temperatures to equalize, band: {band}")
-        while self.temperature_detector.temperature_difference() > band:
+        progress_tracker = ProgressTracker()
+        temperature_difference = self.temperature_detector.temperature_difference()
+
+        while temperature_difference > band:
+            progress_tracker.write(f"temperature difference: {temperature_difference}")
             time.sleep(interval)
+        progress_tracker.finish()
 
     def update(self):
         for script in self.scripts:
@@ -149,3 +148,9 @@ class Controller:
         self.pump_in.off()
         self.pump_out.off()
         exit(1)
+
+    @staticmethod
+    def _generator(lst: List):
+        while 1:
+            for i in lst:
+                yield i

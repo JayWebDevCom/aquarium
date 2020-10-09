@@ -20,3 +20,19 @@ class ProgressBar:
     @staticmethod
     def finish():
         sys.stdout.write("]\n")
+
+
+class ProgressTracker:
+
+    written_value = ""
+    spaces = "   "
+
+    def write(self, to_write):
+        sys.stdout.write("\b" * (len(self.written_value) + len(self.spaces)))
+        sys.stdout.write(to_write + self.spaces)
+        self.written_value = to_write
+        sys.stdout.flush()
+
+    @staticmethod
+    def finish():
+        sys.stdout.write("\n")
