@@ -140,6 +140,7 @@ class Controller:
         while temperature_difference > band:
             progress_tracker.write(f"temperature difference: {temperature_difference}")
             time.sleep(interval)
+            temperature_difference = self.temperature_detector.temperature_difference()
         progress_tracker.finish()
 
     def update(self):
