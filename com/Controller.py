@@ -114,9 +114,13 @@ class Controller:
         dots = self._generator([".", "..", "..."])
 
         try:
-            while not self.level_detector.is_sump_full():
-                progress_tracker.write("refilling" + dots.__next__())
-                time.sleep(self.level_check_interval)
+            while True:
+                (is_full, percent_full) = self.level_detector.get_sump_state()
+                if not is_full:
+                    progress_tracker.write(f"{percent_full} full{dots.__next__()}")
+                    time.sleep(self.level_check_interval)
+                else:
+                    break
         except Exception as error:
             self._shutdown(error)
 

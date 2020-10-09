@@ -34,22 +34,22 @@ class TestWaterLevelDetector(TestCase):
             self.assertEqual(percentage, self.level_detector.percentage_changed())
 
     def test_sump_is_full(self):
-        params = {20.0: True, 20.1: False, 40: False}
+        params = {20.0: (True, '100%'), 20.1: (False, '99%'), 40: (False, '50%')}
         for water_level, expected in params.items():
             self.water_sensor.get_level = MagicMock(return_value=water_level)
-            self.assertEqual(expected, self.level_detector.is_sump_full())
+            self.assertEqual(expected, self.level_detector.get_sump_state())
 
     def test_sump_is_full_allowance(self):
-        params = {19.0: True, 20.0: True, 20.1: False, 40: False}
+        params = {19.0: (True, '102%'), 20.0: (True, '100%'), 20.1: (False, '99%'), 40: (False, '50%')}
         for water_level, expected in params.items():
             self.water_sensor.get_level = MagicMock(return_value=water_level)
-            self.assertEqual(expected, self.level_detector_with_allowance.is_sump_full())
+            self.assertEqual(expected, self.level_detector_with_allowance.get_sump_state())
 
     def test_sump_is_full_float_readings(self):
-        params = {20.5: True, 20.6: False, 40: False}
+        params = {20.5: (True, '100%'), 20.6: (False, '99%'), 40: (False, '51%')}
         for water_level, expected in params.items():
             self.water_sensor.get_level = MagicMock(return_value=water_level)
-            self.assertEqual(expected, self.level_detector_with_float_readings.is_sump_full())
+            self.assertEqual(expected, self.level_detector_with_float_readings.get_sump_state())
 
     def test_unexpected_water_level_error_raised(self):
         too_high = [15, 16, 17, 18, 19, 19.9]
@@ -57,7 +57,7 @@ class TestWaterLevelDetector(TestCase):
         for level in too_high + too_low:
             self.water_sensor.get_level = MagicMock(return_value=level)
             with self.assertRaises(UnexpectedWaterLevel):
-                self.level_detector.is_sump_full()
+                self.level_detector.get_sump_state()
 
     def test_unexpected_water_level_error_raised_allowance(self):
         too_high = [15, 16, 17, 18, 18.9]
@@ -65,7 +65,7 @@ class TestWaterLevelDetector(TestCase):
         for level in too_high + too_low:
             self.water_sensor.get_level = MagicMock(return_value=level)
             with self.assertRaises(UnexpectedWaterLevel):
-                self.level_detector_with_allowance.is_sump_full()
+                self.level_detector_with_allowance.get_sump_state()
 
     def test_unexpected_water_level_error_raised_with_float_readings(self):
         too_high = [15, 16, 17, 18, 18.9, 19.5, 20.4]
@@ -73,9 +73,9 @@ class TestWaterLevelDetector(TestCase):
         for level in too_high + too_low:
             self.water_sensor.get_level = MagicMock(return_value=level)
             with self.assertRaises(UnexpectedWaterLevel):
-                self.level_detector_with_float_readings.is_sump_full()
+                self.level_detector_with_float_readings.get_sump_state()
 
     def test_percentage_full(self):
-        params = {20: "100%", 30: "50%", 40: "0%"}
+        params = {20: "100%", 40: "50%", 60: "0%"}
         for sump_level, expected in params.items():
             self.assertEqual(expected, self.level_detector.percent_full(sump_level))
