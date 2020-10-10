@@ -25,9 +25,9 @@ def pump_out(time_: int):
     progress_bar.initialize()
 
     for i in range(time_):
+        time.sleep(1)
         percentage = (i + 1) / time_ * progress_bar.width
         progress_bar.update(percentage)
-        time.sleep(1)
 
     progress_bar.finish()
     switch.off()
