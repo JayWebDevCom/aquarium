@@ -33,7 +33,7 @@ class Controller:
         self.level_check_interval = self.config.get("level_check_interval")
         self.progress_tracker = ProgressTracker("\033[33m")
 
-    def log_time_elapsed(self, decorated):
+    def log_time_elapsed(decorated):
         def wrapper(*args):
             started = datetime.now()
 
@@ -42,8 +42,8 @@ class Controller:
             ended = datetime.now()
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
-            self.progress_tracker.write_ln(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
-                                           f"{int(interval_minutes_seconds[1])}s")
+            logger.info(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
+                        f"{int(interval_minutes_seconds[1])}s")
 
         return wrapper
 
