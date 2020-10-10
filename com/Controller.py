@@ -135,12 +135,16 @@ class Controller:
 
         # logger.info(f"waiting for sump and tank temperatures to equalize, band: {band}")
         progress_tracker = ProgressTracker()
-        temperature_difference = self.temperature_detector.temperature_difference()
-
-        while temperature_difference > band:
-            progress_tracker.write(f"temperature difference: {temperature_difference}c of band: {band}c")
-            time.sleep(interval)
-            temperature_difference = self.temperature_detector.temperature_difference()
+        try:
+            while True:
+                temperature_difference = self.temperature_detector.temperature_difference()
+                if temperature_difference > band:
+                    progress_tracker.write(f"temperature difference: {temperature_difference}c of band: {band}c")
+                    time.sleep(interval)
+                else:
+                    break
+        except Exception as error:
+            self._shutdown(error)
         progress_tracker.finish()
 
     def update(self):
