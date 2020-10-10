@@ -32,6 +32,6 @@ sump_average = f"sump average: {'{:.2f}'.format(sump_temp_average)}"
 difference = f"difference: {'{:.2f}'.format(abs(tank_temp_average - sump_temp_average))}"
 
 print("")
-progress_tracker.write(f"{tank_average}, {sump_average}, {difference}")
+progress_tracker.write(f"{date_time}: {tank_average}, {sump_average}, {difference}")
 progress_tracker.finish()
 
