@@ -31,8 +31,9 @@ class Controller:
         self.configuration_file = configuration_file
         self.config = Configuration(configuration_file)
         self.level_check_interval = self.config.get("level_check_interval")
+        self.progress_tracker = ProgressTracker("\033[33m")
 
-    def log_time_elapsed(decorated):
+    def log_time_elapsed(self, decorated):
         def wrapper(*args):
             started = datetime.now()
 
@@ -41,8 +42,8 @@ class Controller:
             ended = datetime.now()
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
-            logger.info(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
-                        f"{int(interval_minutes_seconds[1])}s")
+            self.progress_tracker.write_ln(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
+                                           f"{int(interval_minutes_seconds[1])}s")
 
         return wrapper
 
@@ -66,15 +67,15 @@ class Controller:
 
     def schedule_water_changes(self):
         water_change_times = Configuration(self.configuration_file).water_change_times()
-        logger.info(f"scheduling water changes for: {water_change_times}")
+        self.progress_tracker.write_ln(f"scheduling water changes for: {water_change_times}")
         for value in water_change_times:
             schedule.every().day.at(value).do(self.water_change).tag("water_change")
 
     def water_change(self):
         config = Configuration(self.configuration_file)
         schedule.clear("update")
-        logger.info("")
-        logger.info("Water change beginning...")
+        self.progress_tracker.write_ln("")
+        self.progress_tracker.write_ln("Water change beginning...")
         self.water_change_process(config.get('water_change_level'))
         self.schedule_updates()
 
@@ -94,7 +95,7 @@ class Controller:
         try:
             while True:
                 percentage_changed = self.level_detector.percentage_changed()
-                progress_tracker.write(f"{percentage_changed}% changed of {percentage}%")
+                self.progress_tracker.write_ln(f"{percentage_changed}% changed of {percentage}%")
 
                 if percentage_changed < percentage:
                     time.sleep(self.level_check_interval)
@@ -108,7 +109,7 @@ class Controller:
 
     @log_time_elapsed
     def refill(self):
-        logger.info("refilling")
+        self.progress_tracker.write_ln("refilling")
         self.pump_in.on()
         progress_tracker = ProgressTracker()
         dots = self._generator([".  ", ".. ", "..."])
@@ -116,7 +117,7 @@ class Controller:
         try:
             while True:
                 (is_full, percent_full) = self.level_detector.get_sump_state()
-                progress_tracker.write(f"{percent_full} full{dots.__next__()}")
+                self.progress_tracker.write_ln(f"{percent_full} full{dots.__next__()}")
 
                 if not is_full:
                     time.sleep(self.level_check_interval)
@@ -138,7 +139,7 @@ class Controller:
         try:
             while True:
                 temperature_difference = self.temperature_detector.temperature_difference()
-                progress_tracker.write(f"temperature difference: {temperature_difference}c of band: {band}c")
+                self.progress_tracker.write_ln(f"temperature difference: {temperature_difference}c of band: {band}c")
 
                 if temperature_difference > band:
                     time.sleep(interval)

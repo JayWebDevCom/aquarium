@@ -45,3 +45,7 @@ class ProgressTracker:
     def finish():
         sys.stdout.write("\033[0;0m")
         sys.stdout.write("\n")
+
+    def write_ln(self, to_write):
+        self.write(to_write)
+        self.finish()
