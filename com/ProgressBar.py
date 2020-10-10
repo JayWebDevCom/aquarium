@@ -4,6 +4,8 @@ import sys
 
 class ProgressBar:
 
+    written = 0
+
     def __init__(self, width: int = 100):
         self.width = width
 
@@ -12,9 +14,10 @@ class ProgressBar:
         sys.stdout.flush()
         sys.stdout.write("\b" * (self.width + 1))
 
-    @staticmethod
-    def update(progress_level: float):
+    def update(self, progress_level: float):
+        sys.stdout.write("\b" * math.ceil(self.written))
         sys.stdout.write("-" * math.ceil(progress_level))
+        self.written = progress_level
         sys.stdout.flush()
 
     @staticmethod
