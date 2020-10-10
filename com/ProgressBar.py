@@ -28,7 +28,7 @@ class ProgressBar:
 class ProgressTracker:
 
     written_value = ""
-    spaces = "            "
+    spaces = " " * 25
 
     def write(self, to_write):
         sys.stdout.write("\b" * (len(self.written_value) + (2 * len(self.spaces))))
