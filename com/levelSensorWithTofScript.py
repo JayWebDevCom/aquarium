@@ -19,7 +19,7 @@ levels = [level_sensor.get_level() for i in range(num)]
 average_level = reduce(lambda x, y: (x + y), levels) / num
 date_time = datetime.now().strftime("%H:%M")
 
-progress_tracker = ProgressTracker("\033[37m")
+progress_tracker = ProgressTracker("\033[0;0m")
 progress_tracker.write(f"{date_time}: average level: {'{:.2f}'.format(average_level)}")
 progress_tracker.finish()
 
