@@ -134,7 +134,6 @@ class Controller:
         band = config.get("temperature_difference_band")
         interval = config.get("temp_check_interval")
 
-        # logger.info(f"waiting for sump and tank temperatures to equalize, band: {band}")
         progress_tracker = ProgressTracker()
         try:
             while True:
