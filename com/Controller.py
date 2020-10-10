@@ -99,11 +99,11 @@ class Controller:
                 if percentage_changed < percentage:
                     time.sleep(self.level_check_interval)
                 else:
-                    progress_tracker.finish()
                     break
         except Exception as error:
             self._shutdown(error)
 
+        progress_tracker.finish()
         self.pump_out.off()
 
     @log_time_elapsed
@@ -117,6 +117,7 @@ class Controller:
             while True:
                 (is_full, percent_full) = self.level_detector.get_sump_state()
                 progress_tracker.write(f"{percent_full} full{dots.__next__()}")
+
                 if not is_full:
                     time.sleep(self.level_check_interval)
                 else:
@@ -138,13 +139,15 @@ class Controller:
         try:
             while True:
                 temperature_difference = self.temperature_detector.temperature_difference()
+                progress_tracker.write(f"temperature difference: {temperature_difference}c of band: {band}c")
+
                 if temperature_difference > band:
-                    progress_tracker.write(f"temperature difference: {temperature_difference}c of band: {band}c")
                     time.sleep(interval)
                 else:
                     break
         except Exception as error:
             self._shutdown(error)
+
         progress_tracker.finish()
 
     def update(self):
