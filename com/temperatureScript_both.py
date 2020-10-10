@@ -2,7 +2,7 @@
 from functools import reduce
 
 from AquariumLogger import AquariumLogger
-from ProgressBar import ProgressTracker
+from ProgressBar import ProgressTracker, Style
 from components.TemperatureSensor import TemperatureSensor
 from datetime import datetime
 
@@ -24,7 +24,7 @@ sump_temps = [sump_temp_sensor.get_temp() for _ in range(num)]
 tank_temp_average = reduce(lambda x, y: (x + y), tank_temps) / num
 sump_temp_average = reduce(lambda x, y: (x + y), sump_temps) / num
 
-progress_tracker = ProgressTracker("\033[0;0m")
+progress_tracker = ProgressTracker(Style.BOLD)
 
 date_time = datetime.now().strftime("%H:%M")
 tank_average = f"tank average: {'{:.2f}'.format(tank_temp_average)}"

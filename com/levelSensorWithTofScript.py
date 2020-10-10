@@ -2,7 +2,7 @@
 from datetime import datetime
 
 from AquariumLogger import AquariumLogger
-from ProgressBar import ProgressTracker
+from ProgressBar import ProgressTracker, Style
 from components.LevelSensor import LevelSensor
 from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 from functools import reduce
@@ -19,6 +19,6 @@ levels = [level_sensor.get_level() for i in range(num)]
 average_level = reduce(lambda x, y: (x + y), levels) / num
 date_time = datetime.now().strftime("%H:%M")
 
-progress_tracker = ProgressTracker("\033[0;0m")
+progress_tracker = ProgressTracker(Style.BOLD)
 progress_tracker.write(f"{date_time}: average level: {'{:.2f}'.format(average_level)}")
 progress_tracker.finish()
