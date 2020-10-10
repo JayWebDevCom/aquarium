@@ -22,4 +22,3 @@ date_time = datetime.now().strftime("%H:%M")
 progress_tracker = ProgressTracker("\033[0;0m")
 progress_tracker.write(f"{date_time}: average level: {'{:.2f}'.format(average_level)}")
 progress_tracker.finish()
-
