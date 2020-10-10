@@ -116,8 +116,8 @@ class Controller:
         try:
             while True:
                 (is_full, percent_full) = self.level_detector.get_sump_state()
+                progress_tracker.write(f"{percent_full} full{dots.__next__()}")
                 if not is_full:
-                    progress_tracker.write(f"{percent_full} full{dots.__next__()}")
                     time.sleep(self.level_check_interval)
                 else:
                     break
