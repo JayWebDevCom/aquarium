@@ -30,9 +30,12 @@ class ProgressTracker:
     written_value = ""
     spaces = " " * 25
 
+    def __init__(self, colour_code: str = "\033[1;34m"):
+        self.colour_code = colour_code
+
     def write(self, to_write):
-        sys.stdout.write("\b" * (len(self.written_value) + (2 * len(self.spaces))))
-        sys.stdout.write("\033[1;34m")
+        sys.stdout.write("\b" * (len(self.written_value) + (len(self.spaces))))
+        sys.stdout.write(f"{self.colour_code}")
         write = f"->  {to_write}{self.spaces}"
         sys.stdout.write(write)
         self.written_value = write
