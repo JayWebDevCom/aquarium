@@ -95,7 +95,7 @@ class Controller:
         try:
             while True:
                 percentage_changed = self.level_detector.percentage_changed()
-                self.progress_tracker.write_ln(f"{percentage_changed}% changed of {percentage}%")
+                self.progress_tracker.write(f"{percentage_changed}% changed of {percentage}%")
 
                 if percentage_changed < percentage:
                     time.sleep(self.level_check_interval)
@@ -117,7 +117,7 @@ class Controller:
         try:
             while True:
                 (is_full, percent_full) = self.level_detector.get_sump_state()
-                self.progress_tracker.write_ln(f"{percent_full} full{dots.__next__()}")
+                self.progress_tracker.write(f"{percent_full} full{dots.__next__()}")
 
                 if not is_full:
                     time.sleep(self.level_check_interval)
@@ -139,7 +139,7 @@ class Controller:
         try:
             while True:
                 temperature_difference = self.temperature_detector.temperature_difference()
-                self.progress_tracker.write_ln(f"temperature difference: {temperature_difference}c of band: {band}c")
+                self.progress_tracker.write(f"temperature difference: {temperature_difference}c of band: {band}c")
 
                 if temperature_difference > band:
                     time.sleep(interval)
