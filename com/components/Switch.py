@@ -11,7 +11,7 @@ class Switch:
     def __init__(self, name, pin):
         self.name = name
         self.pin = pin
-        self.progress_tracker = ProgressTracker(Style.WHITE)
+        self.progress_tracker = ProgressTracker(Style.LIGHT_RED)
 
     def on(self):
         self.progress_tracker.write_ln(f"switching on {self.name}")
