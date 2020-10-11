@@ -44,7 +44,7 @@ class Controller:
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
             progress_tracker.write_ln(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
-                                      f"{int(interval_minutes_seconds[1])}s")
+                                      f"{int(interval_minutes_seconds[1])}s \n")
 
         return wrapper
 
@@ -75,6 +75,7 @@ class Controller:
     def water_change(self):
         config = Configuration(self.configuration_file)
         schedule.clear("update")
+        print("")
         self.progress_tracker.write_ln("Water change beginning...")
         self.water_change_process(config.get('water_change_level'))
         self.schedule_updates()
