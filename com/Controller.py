@@ -47,7 +47,7 @@ class Controller:
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
             progress_tracker.write_ln(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
-                                      f"{int(interval_minutes_seconds[1])}s \n")
+                                      f"{int(interval_minutes_seconds[1])}s")
 
         return wrapper
 
