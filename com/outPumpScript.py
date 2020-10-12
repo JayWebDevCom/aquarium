@@ -5,7 +5,7 @@ import time
 import RPi.GPIO as GPIO
 import click
 
-from ProgressBar import ProgressBar
+from Progress import ProgressBar
 from components.Switch import Switch
 
 GPIO.setmode(GPIO.BCM)

@@ -1,6 +1,6 @@
 import RPi.GPIO as GPIO
 
-from ProgressBar import ProgressTracker, Style
+from Progress import ProgressTracker, Style
 
 
 class Switch:
@@ -8,15 +8,19 @@ class Switch:
     name: str
     pin: int
 
-    def __init__(self, name, pin):
+    def __init__(self, name, pin, style: str, progress_tracker: ProgressTracker):
         self.name = name
         self.pin = pin
-        self.progress_tracker = ProgressTracker(Style.LIGHT_RED)
+        self.style = style,
+        self.progress_tracker = progress_tracker
 
     def on(self):
-        self.progress_tracker.write_ln(f"switching on {self.name}")
+        self._log("switching on")
         GPIO.output(self.pin, 1)
 
     def off(self):
-        self.progress_tracker.write_ln(f"switching off {self.name}")
+        self._log("switching off")
         GPIO.output(self.pin, 0)
+
+    def _log(self, message):
+        self.progress_tracker.write_ln(f"{self.style}{message} {self.name}")
