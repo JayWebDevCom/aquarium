@@ -1,12 +1,13 @@
 import time
-import schedule
 from datetime import datetime
 from typing import List
 
+import schedule
 from loguru import logger
 
 from Configuration import Configuration
-from components.LevelDetector import LevelDetector, UnexpectedWaterLevel
+from Progress import ProgressTracker, Style
+from components.LevelDetector import LevelDetector
 from components.Switch import Switch
 from components.TemperatureDetector import TemperatureDetector
 
@@ -20,7 +21,8 @@ class Controller:
             pump_in: Switch,
             sump_pump: Switch,
             scripts: List[str],
-            configuration_file: str):
+            configuration_file: str,
+            progress_tracker: ProgressTracker):
         self.level_detector = level_detector
         self.temperature_detector = temperature_detector
         self.pump_out = pump_out
@@ -30,9 +32,13 @@ class Controller:
         self.configuration_file = configuration_file
         self.config = Configuration(configuration_file)
         self.level_check_interval = self.config.get("level_check_interval")
+        self.progress_tracker = progress_tracker
 
     def log_time_elapsed(decorated):
         def wrapper(*args):
+            progress_tracker = ProgressTracker()
+            print("")
+            progress_tracker.write_ln(f"{decorated.__name__} starting...")
             started = datetime.now()
 
             decorated(*args)
@@ -40,8 +46,8 @@ class Controller:
             ended = datetime.now()
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
-            logger.info(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
-                        f"{int(interval_minutes_seconds[1])}s")
+            progress_tracker.write_ln(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
+                                      f"{int(interval_minutes_seconds[1])}s")
 
         return wrapper
 
@@ -65,15 +71,13 @@ class Controller:
 
     def schedule_water_changes(self):
         water_change_times = Configuration(self.configuration_file).water_change_times()
-        logger.info(f"scheduling water changes for: {water_change_times}")
+        self._write_ln(f"{Style.YELLOW}scheduling water changes for: {water_change_times}")
         for value in water_change_times:
             schedule.every().day.at(value).do(self.water_change).tag("water_change")
 
     def water_change(self):
         config = Configuration(self.configuration_file)
         schedule.clear("update")
-        logger.info("")
-        logger.info("Water change beginning...")
         self.water_change_process(config.get('water_change_level'))
         self.schedule_updates()
 
@@ -88,11 +92,12 @@ class Controller:
     @log_time_elapsed
     def empty_by_percentage(self, percentage):
         self.pump_out.on()
+
         try:
             while True:
                 percentage_changed = self.level_detector.percentage_changed()
-                formatted_percentage_changed = "{:.2f}".format(percentage_changed)
-                logger.info(f"percentage changed: {formatted_percentage_changed} of {percentage}")
+                self._write(f"{Style.BLUE}{percentage_changed}% changed of {percentage}%")
+
                 if percentage_changed < percentage:
                     time.sleep(self.level_check_interval)
                 else:
@@ -100,20 +105,27 @@ class Controller:
         except Exception as error:
             self._shutdown(error)
 
+        self._write_finish()
         self.pump_out.off()
 
     @log_time_elapsed
     def refill(self):
-        logger.info("refilling")
-
         self.pump_in.on()
+        dots = self._generator([".  ", ".. ", "..."])
 
         try:
-            while not self.level_detector.is_sump_full():
-                time.sleep(self.level_check_interval)
+            while True:
+                (is_full, percent_full) = self.level_detector.get_sump_state()
+                self._write(f"{Style.BLUE}{percent_full} full{dots.__next__()}")
+
+                if not is_full:
+                    time.sleep(self.level_check_interval)
+                else:
+                    break
         except Exception as error:
             self._shutdown(error)
 
+        self._write_finish()
         self.pump_in.off()
 
     @log_time_elapsed
@@ -121,9 +133,20 @@ class Controller:
         config = Configuration(self.configuration_file)
         band = config.get("temperature_difference_band")
         interval = config.get("temp_check_interval")
-        logger.info(f"waiting for sump and tank temperatures to equalize, band: {band}")
-        while self.temperature_detector.temperature_difference() > band:
-            time.sleep(interval)
+
+        try:
+            while True:
+                temperature_difference = self.temperature_detector.temperature_difference()
+                self._write(f"{Style.BLUE}temperature difference: {temperature_difference}c of band: {band}c")
+
+                if temperature_difference > band:
+                    time.sleep(interval)
+                else:
+                    break
+        except Exception as error:
+            self._shutdown(error)
+
+        self._write_finish()
 
     def update(self):
         for script in self.scripts:
@@ -135,3 +158,18 @@ class Controller:
         self.pump_in.off()
         self.pump_out.off()
         exit(1)
+
+    @staticmethod
+    def _generator(lst: List):
+        while 1:
+            for i in lst:
+                yield i
+
+    def _write(self, message):
+        self.progress_tracker.write(message)
+
+    def _write_ln(self, message):
+        self.progress_tracker.write_ln(message)
+
+    def _write_finish(self):
+        self.progress_tracker.finish()

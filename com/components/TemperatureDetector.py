@@ -1,5 +1,3 @@
-from loguru import logger
-
 from components import TemperatureSensor
 
 
@@ -22,8 +20,5 @@ class TemperatureDetector:
         sump_temp = self.sump_temp.get_temp()
         tank_temp = self.tank_temp.get_temp()
         temp_difference = abs(sump_temp - tank_temp)
-
-        logger.info(f"temp difference: {'{:.2f}'.format(temp_difference)}, "
-                    f"sump: {'{:.2f}'.format(sump_temp)}, tank: {'{:.2f}'.format(tank_temp)}")
 
         return round(temp_difference, 2)

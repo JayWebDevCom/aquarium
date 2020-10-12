@@ -1,12 +1,11 @@
 #!/usr/bin/env python3
 
-import sys
 import time
 
 import RPi.GPIO as GPIO
 import click
-from ipython_genutils.py3compat import xrange
 
+from Progress import ProgressBar
 from components.Switch import Switch
 
 GPIO.setmode(GPIO.BCM)
@@ -22,19 +21,15 @@ switch = Switch("Pump in", channel)
 def pump_in(time_: int):
     switch.on()
 
-    progress_bar_width = 100
+    progress_bar = ProgressBar()
+    progress_bar.initialize()
 
-    sys.stdout.write("[%s]" % (" " * progress_bar_width))
-    sys.stdout.flush()
-    sys.stdout.write("\b" * (progress_bar_width + 1))
+    for i in range(time_):
+        time.sleep(1)
+        percentage = (i + 1) / time_ * progress_bar.width
+        progress_bar.update(percentage)
 
-    sleep = time_ / progress_bar_width
-    for _ in xrange(progress_bar_width):
-        time.sleep(sleep)
-        sys.stdout.write("-")
-        sys.stdout.flush()
-
-    sys.stdout.write("]\n")
+    progress_bar.finish()
     switch.off()
 
 
