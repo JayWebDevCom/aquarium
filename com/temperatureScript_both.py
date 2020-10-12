@@ -25,8 +25,8 @@ tank_temp_average = reduce(lambda x, y: (x + y), tank_temps) / num
 sump_temp_average = reduce(lambda x, y: (x + y), sump_temps) / num
 
 date_time = datetime.now().strftime("%H:%M")
-tank_average = f"tank average: {'{:.2f}c'.format(tank_temp_average)}"
-sump_average = f"sump average: {'{:.2f}c'.format(sump_temp_average)}"
+tank_average = f"tank temp: {'{:.2f}c'.format(tank_temp_average)}"
+sump_average = f"sump temp: {'{:.2f}c'.format(sump_temp_average)}"
 difference = f"difference: {'{:.2f}'.format(abs(tank_temp_average - sump_temp_average))}"
 
 print("")
