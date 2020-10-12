@@ -48,15 +48,14 @@ sump_temp = TemperatureSensor("sump temperature sensor", config.get("sump_temp_d
 tank_temp = TemperatureSensor("tank temperature sensor", config.get("tank_temp_device_id"))
 temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp)
 
-pump_out = Switch("pump_out", pump_out_channel, Style.LIGHT_RED, progress_tracker)
-pump_in = Switch("pump_in", pump_in_channel, Style.LIGHT_RED, progress_tracker)
-sump_pump = Switch("sump pump", sump_pump_channel, Style.LIGHT_RED, progress_tracker)
+pump_out = Switch("pump_out", pump_out_channel, progress_tracker)
+pump_in = Switch("pump_in", pump_in_channel, progress_tracker)
+sump_pump = Switch("sump pump", sump_pump_channel, progress_tracker)
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 scripts = [f"{current_dir}/temperatureScript_both.py", f"{current_dir}/levelSensorWithTofScript.py"]
 controller = Controller(level_detector, temperature_detector,
-                        pump_out, pump_in, sump_pump, scripts, c_file,
-                        Style.YELLOW, progress_tracker)
+                        pump_out, pump_in, sump_pump, scripts, c_file, progress_tracker)
 
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 controller.start()

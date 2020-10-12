@@ -8,10 +8,9 @@ class Switch:
     name: str
     pin: int
 
-    def __init__(self, name, pin, style: str, progress_tracker: ProgressTracker):
+    def __init__(self, name, pin, progress_tracker: ProgressTracker):
         self.name = name
         self.pin = pin
-        self.style = style,
         self.progress_tracker = progress_tracker
 
     def on(self):
@@ -23,4 +22,4 @@ class Switch:
         GPIO.output(self.pin, 0)
 
     def _log(self, message):
-        self.progress_tracker.write_ln(f"{self.style}{message} {self.name}")
+        self.progress_tracker.write_ln(f"{Style.LIGHT_RED}{message} {self.name}")
