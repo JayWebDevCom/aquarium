@@ -51,7 +51,7 @@ class ProgressBar:
 class ProgressTracker:
 
     written_value = ""
-    line_length = 30
+    line_length = 40
     space = " "
     prompt = f"{Style.DARK_GREY}{Style.BOLD}->{Style.RESET} "
 
