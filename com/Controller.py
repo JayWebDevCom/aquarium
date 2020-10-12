@@ -38,7 +38,7 @@ class Controller:
         def wrapper(*args):
             progress_tracker = ProgressTracker()
             print("")
-            progress_tracker.write_ln(f"{Style.GREEN}{decorated.__name__} starting...")
+            progress_tracker.write_ln(f"{decorated.__name__} starting...")
             started = datetime.now()
 
             decorated(*args)
