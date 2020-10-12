@@ -2,6 +2,29 @@ import math
 import sys
 
 
+class Style:
+
+    BLACK = '\033[30m'
+    RED = '\033[31m'
+    GREEN = '\033[32m'
+    YELLOW = '\033[33m'
+    BLUE = '\033[34m'
+    MAGENTA = '\033[35m'
+    CYAN = '\033[36m'
+    WHITE = '\033[37m'
+    UNDERLINE = '\033[4m'
+    BOLD = '\033[1m'
+    RESET = '\033[0m'
+    ORANGE = '\033[33m'
+    PURPLE = '\033[35m'
+    LIGHT_GREY = '\033[37m'
+    DARK_GREY = '\033[90m'
+    LIGHT_RED = '\033[91m'
+    LIGHT_GREEN = '\033[92m'
+    LIGHT_BLUE = '\033[94m'
+    PINK = '\033[95m'
+
+
 class ProgressBar:
 
     written = 0
@@ -29,10 +52,11 @@ class ProgressTracker:
 
     written_value = ""
     spaces = " " * 25
+    prompt = f"{Style.DARK_GREY}{Style.BOLD}->{Style.RESET} "
 
     def write(self, to_write):
         sys.stdout.write("\b" * (len(self.written_value) + (len(self.spaces))))
-        write = f"->  {to_write}{self.spaces}"
+        write = f"{self.prompt}{to_write}{self.spaces}"
         sys.stdout.write(write)
         self.written_value = write
         sys.stdout.flush()
@@ -47,24 +71,4 @@ class ProgressTracker:
         self.finish()
 
 
-class Style:
 
-    BLACK = '\033[30m'
-    RED = '\033[31m'
-    GREEN = '\033[32m'
-    YELLOW = '\033[33m'
-    BLUE = '\033[34m'
-    MAGENTA = '\033[35m'
-    CYAN = '\033[36m'
-    WHITE = '\033[37m'
-    UNDERLINE = '\033[4m'
-    BOLD = '\033[1m'
-    RESET = '\033[0m'
-    ORANGE = '\033[33m'
-    PURPLE = '\033[35m'
-    LIGHT_GREY = '\033[37m'
-    DARK_GREY = '\033[90m'
-    LIGHT_RED = '\033[91m'
-    LIGHT_GREEN = '\033[92m'
-    LIGHT_BLUE = '\033[94m'
-    PINK = '\033[95m'
