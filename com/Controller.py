@@ -34,6 +34,18 @@ class Controller:
         self.level_check_interval = self.config.get("level_check_interval")
         self.progress_tracker = progress_tracker
 
+    def safely(fun):
+        def safe(self, *args, **kwargs):
+            try:
+                fun(*args, **kwargs)
+            except Exception as error:
+                logger.error(f"{error.__class__.__name__} ex caught")
+                self.pump_in.off()
+                self.pump_out.off()
+                exit(1)
+
+        return safe
+
     def log_time_elapsed(decorated):
         def wrapper(*args):
             progress_tracker = ProgressTracker()
@@ -81,6 +93,7 @@ class Controller:
         self.water_change_process(config.get('water_change_level'))
         self.schedule_updates()
 
+    @safely
     @log_time_elapsed
     def water_change_process(self, percentage: float):
         self.sump_pump.off()
@@ -93,17 +106,14 @@ class Controller:
     def empty_by_percentage(self, percentage):
         self.pump_out.on()
 
-        try:
-            while True:
-                percentage_changed = self.level_detector.percentage_changed()
-                self._write(f"{Style.BLUE}{percentage_changed}% changed of {percentage}%")
+        while True:
+            percentage_changed = self.level_detector.percentage_changed()
+            self._write(f"{Style.BLUE}{percentage_changed}% changed of {percentage}%")
 
-                if percentage_changed < percentage:
-                    time.sleep(self.level_check_interval)
-                else:
-                    break
-        except Exception as error:
-            self._shutdown(error)
+            if percentage_changed < percentage:
+                time.sleep(self.level_check_interval)
+            else:
+                break
 
         self._write_finish()
         self.pump_out.off()
@@ -113,17 +123,14 @@ class Controller:
         self.pump_in.on()
         dots = self._generator([".  ", ".. ", "..."])
 
-        try:
-            while True:
-                (is_full, percent_full) = self.level_detector.get_sump_state()
-                self._write(f"{Style.BLUE}{percent_full} full{dots.__next__()}")
+        while True:
+            (is_full, percent_full) = self.level_detector.get_sump_state()
+            self._write(f"{Style.BLUE}{percent_full} full{dots.__next__()}")
 
-                if not is_full:
-                    time.sleep(self.level_check_interval)
-                else:
-                    break
-        except Exception as error:
-            self._shutdown(error)
+            if not is_full:
+                time.sleep(self.level_check_interval)
+            else:
+                break
 
         self._write_finish()
         self.pump_in.off()
@@ -134,17 +141,14 @@ class Controller:
         band = config.get("temperature_difference_band")
         interval = config.get("temp_check_interval")
 
-        try:
-            while True:
-                temperature_difference = self.temperature_detector.temperature_difference()
-                self._write(f"{Style.BLUE}temperature difference: {temperature_difference}c of band: {band}c")
+        while True:
+            temperature_difference = self.temperature_detector.temperature_difference()
+            self._write(f"{Style.BLUE}temperature difference: {temperature_difference}c of band: {band}c")
 
-                if temperature_difference > band:
-                    time.sleep(interval)
-                else:
-                    break
-        except Exception as error:
-            self._shutdown(error)
+            if temperature_difference > band:
+                time.sleep(interval)
+            else:
+                break
 
         self._write_finish()
 
@@ -152,12 +156,6 @@ class Controller:
         for script in self.scripts:
             with open(script, "r") as f:
                 exec(f.read())
-
-    def _shutdown(self, error):
-        logger.error(f"{error.__class__.__name__} ex caught")
-        self.pump_in.off()
-        self.pump_out.off()
-        exit(1)
 
     @staticmethod
     def _generator(lst: List):
