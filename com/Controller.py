@@ -35,7 +35,7 @@ class Controller:
         self.progress_tracker = progress_tracker
 
     def safely(fun):
-        def safe(self, *args):
+        def safe(*args):
             try:
                 fun(*args)
             except Exception as error:
