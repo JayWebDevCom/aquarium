@@ -38,7 +38,7 @@ class Controller:
         def wrapper(*args):
             progress_tracker = ProgressTracker()
             print("")
-            progress_tracker.write_ln(f"{decorated.__name__} starting...")
+            progress_tracker.write_ln(f"{Style.GREEN}{decorated.__name__} starting...")
             started = datetime.now()
 
             decorated(*args)
@@ -46,7 +46,7 @@ class Controller:
             ended = datetime.now()
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
-            progress_tracker.write_ln(f"{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
+            progress_tracker.write_ln(f"{Style.GREEN}{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
                                       f"{int(interval_minutes_seconds[1])}s")
 
         return wrapper
