@@ -1,15 +1,36 @@
 import os
+import tempfile
+from typing import Any, Union, IO
 from unittest import TestCase
+
+import yaml
 
 from Configuration import Configuration
 
 
 class TestConfiguration(TestCase):
-    current_dir = os.path.dirname(os.path.abspath(__file__))
-    test_config = "test-config.yaml"
-    file_path = f"{current_dir}/{test_config}"
+    temp: Union[IO[bytes], IO[Any]]
+    configuration: Configuration
+    configuration_data = {
+        'update_times': [':00', ':15', ':30', ':45'],
+        'water_change_times': ['1', '2', '3'],
+        'overfill_allowance': 2.5,
+        'inner': {'value': 'inner-value'},
+        'empty': []
+    }
 
-    configuration = Configuration(file_path)
+    @classmethod
+    def setUpClass(cls):
+        TestConfiguration.temp = tempfile.NamedTemporaryFile(delete=False)
+
+        with open(TestConfiguration.temp.name, 'w') as file:
+            yaml.dump(TestConfiguration.configuration_data, file)
+
+        TestConfiguration.configuration = Configuration(TestConfiguration.temp.name)
+
+    @classmethod
+    def tearDownClass(cls):
+        os.remove(TestConfiguration.temp.name)
 
     def test_update_time(self):
         self.assertEqual([':00', ':15', ':30', ':45'], self.configuration.update_times())
@@ -18,14 +39,7 @@ class TestConfiguration(TestCase):
         self.assertEqual(['1', '2', '3'], self.configuration.water_change_times())
 
     def test_data(self):
-        data = {
-            'inner': {'value': 'inner-value'},
-            'overfill_allowance': 2.5,
-            'update_times': [':00', ':15', ':30', ':45'],
-            'water_change_times': ['1', '2', '3'],
-            'empty': []
-        }
-        self.assertEqual(data, self.configuration.data())
+        self.assertEqual(TestConfiguration.configuration_data, self.configuration.data())
 
     def test_data_get(self):
         self.assertEqual(2.5, self.configuration.data()['overfill_allowance'])
