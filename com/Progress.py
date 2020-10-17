@@ -1,6 +1,7 @@
 import math
 import sys
 
+
 class Style:
 
     BLACK = '\033[30m'
