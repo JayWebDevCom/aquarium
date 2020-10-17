@@ -35,9 +35,9 @@ class Controller:
         self.progress_tracker = progress_tracker
 
     def safely(fun):
-        def safe(self, *args, **kwargs):
+        def safe(self, *args):
             try:
-                fun(*args, **kwargs)
+                fun(*args)
             except Exception as error:
                 logger.error(f"{error.__class__.__name__} ex caught")
                 self.pump_in.off()
