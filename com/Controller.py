@@ -88,7 +88,6 @@ class Controller:
 
         self.schedule_updates()
 
-    @safely
     @log_time_elapsed
     def water_change_process(self, percentage: float):
         self.sump_pump.off()
