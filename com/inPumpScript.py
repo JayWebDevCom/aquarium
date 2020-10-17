@@ -5,7 +5,7 @@ import time
 import RPi.GPIO as GPIO
 import click
 
-from Progress import ProgressBar, ProgressTracker
+from Progress import ProgressBar
 from components.Switch import Switch
 
 GPIO.setmode(GPIO.BCM)
@@ -13,7 +13,7 @@ GPIO.setwarnings(False)
 channel = 23
 GPIO.setup(channel, GPIO.OUT)
 
-switch = Switch("Pump in", channel, ProgressTracker())
+switch = Switch("Pump in", channel)
 
 
 @click.command()

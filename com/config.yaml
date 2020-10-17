@@ -22,6 +22,6 @@ pump_out_channel: 27
 pump_in_channel: 23
 sump_pump_channel: 17
 level_check_interval: 3
-temp_check_interval: 30
-temperature_difference_band: 3.5
-water_change_level: 95
+temp_check_interval: 60
+temperature_difference_band: 2.5
+water_change_level: 90

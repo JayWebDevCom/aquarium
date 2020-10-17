@@ -1,6 +1,7 @@
 import math
 import sys
 
+
 class Style:
 
     BLACK = '\033[30m'
@@ -50,7 +51,7 @@ class ProgressBar:
 class ProgressTracker:
 
     written_value = ""
-    line_length = 70
+    line_length = 40
     space = " "
     prompt = f"{Style.DARK_GREY}{Style.BOLD}->{Style.RESET} "
 
