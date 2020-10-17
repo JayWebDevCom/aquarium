@@ -34,7 +34,7 @@ class Controller:
         self.level_check_interval = self.config.get("level_check_interval")
         self.progress_tracker = progress_tracker
 
-    def safely(fun):
+    def safely(self, fun):
         def safe(*args):
             try:
                 fun(*args)
