@@ -34,18 +34,6 @@ class Controller:
         self.level_check_interval = self.config.get("level_check_interval")
         self.progress_tracker = progress_tracker
 
-    def safely(self, fun):
-        def safe(*args):
-            try:
-                fun(*args)
-            except Exception as error:
-                logger.error(f"{error.__class__.__name__} ex caught")
-                self.pump_in.off()
-                self.pump_out.off()
-                exit(1)
-
-        return safe
-
     def log_time_elapsed(decorated):
         def wrapper(*args):
             progress_tracker = ProgressTracker()
@@ -90,7 +78,14 @@ class Controller:
     def water_change(self):
         config = Configuration(self.configuration_file)
         schedule.clear("update")
-        self.water_change_process(config.get('water_change_level'))
+        try:
+            self.water_change_process(config.get('water_change_level'))
+        except Exception as error:
+            logger.error(f"{error.__class__.__name__} ex caught")
+            self.pump_in.off()
+            self.pump_out.off()
+            exit(1)
+
         self.schedule_updates()
 
     @safely
