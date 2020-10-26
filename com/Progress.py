@@ -27,10 +27,9 @@ class Style:
 
 class ProgressBar:
 
-    written = 0
-
     def __init__(self, width: int = 100):
         self.width = width
+        self.written = 0
 
     def initialize(self):
         sys.stdout.write("[%s]" % (" " * self.width))
@@ -50,10 +49,11 @@ class ProgressBar:
 
 class ProgressTracker:
 
-    written_value = ""
-    line_length = 40
-    space = " "
-    prompt = f"{Style.DARK_GREY}{Style.BOLD}->{Style.RESET} "
+    def __init__(self):
+        self.written_value = ""
+        self.line_length = 40
+        self.space = " "
+        self.prompt = f"{Style.DARK_GREY}{Style.BOLD}->{Style.RESET} "
 
     def write(self, to_write):
         sys.stdout.write("\b" * len(self.written_value))
