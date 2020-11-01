@@ -38,7 +38,7 @@ class Controller:
         def wrapper(*args):
             progress_tracker = ProgressTracker()
             print("")
-            progress_tracker.write_ln(f"{Style.GREEN}{decorated.__name__} starting...")
+            progress_tracker.write_ln(f"{Style.YELLOW}{decorated.__name__} starting:")
             started = datetime.now()
 
             decorated(*args)
@@ -46,7 +46,7 @@ class Controller:
             ended = datetime.now()
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
-            progress_tracker.write_ln(f"{Style.GREEN}{decorated.__name__} complete: {int(interval_minutes_seconds[0])}m "
+            progress_tracker.write_ln(f"{Style.YELLOW}{decorated.__name__} complete: {Style.BOLD}{Style.WHITE}{int(interval_minutes_seconds[0])}m "
                                       f"{int(interval_minutes_seconds[1])}s")
 
         return wrapper
@@ -71,7 +71,7 @@ class Controller:
 
     def schedule_water_changes(self):
         water_change_times = Configuration(self.configuration_file).water_change_times()
-        self._write_ln(f"{Style.YELLOW}scheduling water changes for: {water_change_times}")
+        self._write_ln(f"{Style.YELLOW}scheduling water changes for: {Style.BOLD}{Style.WHITE}{water_change_times}")
         for value in water_change_times:
             schedule.every().day.at(value).do(self.water_change).tag("water_change")
 
@@ -102,7 +102,7 @@ class Controller:
 
         while True:
             percentage_changed = self.level_detector.percentage_changed()
-            self._write(f"{Style.BLUE}{percentage_changed}% changed of {percentage}%")
+            self._write(f"{Style.WHITE}{Style.BOLD}{percentage_changed}% changed of {percentage}%")
 
             if percentage_changed < percentage:
                 time.sleep(self.level_check_interval)
@@ -119,7 +119,7 @@ class Controller:
 
         while True:
             (is_full, percent_full) = self.level_detector.get_sump_state()
-            self._write(f"{Style.BLUE}{percent_full} full{dots.__next__()}")
+            self._write(f"{Style.WHITE}{Style.BOLD}{percent_full} full{dots.__next__()}")
 
             if not is_full:
                 time.sleep(self.level_check_interval)
@@ -137,7 +137,7 @@ class Controller:
 
         while True:
             temperature_difference = self.temperature_detector.temperature_difference()
-            self._write(f"{Style.BLUE}temperature difference: {temperature_difference}c of band: {band}c")
+            self._write(f"{Style.WHITE}{Style.BOLD}temperature difference: {temperature_difference}c of band: {band}c")
 
             if temperature_difference > band:
                 time.sleep(interval)

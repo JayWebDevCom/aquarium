@@ -24,11 +24,16 @@ sump_temps = [sump_temp_sensor.get_temp() for _ in range(num)]
 tank_temp_average = reduce(lambda x, y: (x + y), tank_temps) / num
 sump_temp_average = reduce(lambda x, y: (x + y), sump_temps) / num
 
+tank_average = f"{'{:.2f}'.format(tank_temp_average)}"
+sump_average = f"{'{:.2f}'.format(sump_temp_average)}"
+difference = f"{'{:.2f}'.format(abs(tank_temp_average - sump_temp_average))}"
+
 date_time = datetime.now().strftime("%H:%M")
-tank_average = f"tank temp: {'{:.2f}c'.format(tank_temp_average)}"
-sump_average = f"sump temp: {'{:.2f}c'.format(sump_temp_average)}"
-difference = f"difference: {'{:.2f}'.format(abs(tank_temp_average - sump_temp_average))}"
+progress_tracker = ProgressTracker()
 
 print("")
-progress_tracker = ProgressTracker()
-progress_tracker.write_ln(f"{Style.BOLD}{Style.WHITE}{date_time}: {tank_average}, {sump_average}, {difference}")
+progress_tracker.write_ln(f"{Style.WHITE}{Style.BOLD}{date_time}: {Style.RESET}"
+                          f"{Style.GREEN}tank temp:{Style.RESET}{Style.BOLD}{Style.WHITE} {tank_average}{Style.RESET}°c, "
+                          f"{Style.GREEN}sump temp:{Style.RESET}{Style.BOLD}{Style.WHITE} {sump_average}{Style.RESET}°c, "
+                          f"{Style.GREEN}difference:{Style.RESET}{Style.BOLD}{Style.WHITE} {difference}{Style.RESET}°c")
+

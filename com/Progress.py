@@ -71,5 +71,3 @@ class ProgressTracker:
         self.write(to_write)
         self.finish()
 
-
-
