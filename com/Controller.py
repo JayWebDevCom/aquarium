@@ -55,6 +55,7 @@ class Controller:
         self.sump_pump.on()
         self.schedule_updates()
         self.schedule_water_changes()
+        self.update()
 
         while True:
             schedule.run_pending()
