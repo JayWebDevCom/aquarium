@@ -2,7 +2,6 @@ import time
 from datetime import datetime
 from typing import List
 
-import schedule
 from loguru import logger
 
 from Configuration import Configuration
@@ -46,39 +45,18 @@ class Controller:
             ended = datetime.now()
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
-            progress_tracker.write_ln(f"{Style.YELLOW}{decorated.__name__} complete: {Style.BOLD}{Style.WHITE}{int(interval_minutes_seconds[0])}m "
+            progress_tracker.write_ln(f"{Style.YELLOW}{decorated.__name__} complete: "
+                                      f"{Style.BOLD}{Style.WHITE}{int(interval_minutes_seconds[0])}m "
                                       f"{int(interval_minutes_seconds[1])}s")
 
         return wrapper
 
     def start(self):
         self.sump_pump.on()
-        self.schedule_updates()
-        self.schedule_water_changes()
         self.update()
-
-        while True:
-            schedule.run_pending()
-            time.sleep(1)
-
-    def schedule_updates(self):
-        for value in self.config.update_times():
-            schedule.every().hour.at(value).do(self.updates).tag("update")
-
-    def updates(self):
-        schedule.clear("water_change")
-        self.update()
-        self.schedule_water_changes()
-
-    def schedule_water_changes(self):
-        water_change_times = Configuration(self.configuration_file).water_change_times()
-        self._write_ln(f"{Style.YELLOW}scheduling water changes for: {Style.BOLD}{Style.WHITE}{water_change_times}")
-        for value in water_change_times:
-            schedule.every().day.at(value).do(self.water_change).tag("water_change")
 
     def water_change(self):
         config = Configuration(self.configuration_file)
-        schedule.clear("update")
         try:
             self.water_change_process(config.get('water_change_level'))
         except Exception as error:
@@ -86,8 +64,6 @@ class Controller:
             self.pump_in.off()
             self.pump_out.off()
             exit(1)
-
-        self.schedule_updates()
 
     @log_time_elapsed
     def water_change_process(self, percentage: float):
