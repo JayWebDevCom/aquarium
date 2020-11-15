@@ -91,7 +91,6 @@ def start():
     schedule_updates()
     schedule_water_changes()
     controller.start()
-    controller.update()
     while True:
         schedule.run_pending()
         time.sleep(1)
