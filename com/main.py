@@ -62,15 +62,16 @@ controller = Controller(level_detector, temperature_detector,
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 
 
-def update_and_schedule():
-    schedule.clear("water_change")
-    controller.update()
-    schedule_water_changes()
-
-
 def schedule_updates():
     for value in Configuration(configuration_file_path).update_times():
-        schedule.every().hour.at(value).do(update_and_schedule).tag("update")
+        schedule.every().hour.at(value).do(clear_and_schedule).tag("update")
+
+
+def clear_and_schedule():
+    schedule.clear()
+    controller.update()
+    schedule_updates()
+    schedule_water_changes()
 
 
 def clear_and_water_change():
