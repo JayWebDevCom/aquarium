@@ -62,23 +62,10 @@ controller = Controller(level_detector, temperature_detector,
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 
 
-def reschedule():
-    schedule.clear()
-    schedule_updates()
-    schedule_water_changes()
-
-
-def schedule_water_changes():
-    water_change_times = Configuration(configuration_file_path).water_change_times()
-    progress_tracker.write_ln(
-        f"{Style.YELLOW}scheduling water changes for: {Style.BOLD}{Style.WHITE}{water_change_times}")
-    for water_change_time in water_change_times:
-        schedule.every().day.at(water_change_time).do(controller.water_change).tag("water_change")
-
-
 def update_and_schedule():
-    reschedule()
+    schedule.clear("water_change")
     controller.update()
+    schedule_water_changes()
 
 
 def schedule_updates():
@@ -86,10 +73,25 @@ def schedule_updates():
         schedule.every().hour.at(value).do(update_and_schedule).tag("update")
 
 
+def clear_and_water_change():
+    schedule.clear("update")
+    controller.water_change()
+    schedule_updates()
+
+
+def schedule_water_changes():
+    water_change_times = Configuration(configuration_file_path).water_change_times()
+    progress_tracker.write_ln(
+        f"{Style.YELLOW}scheduling water changes for: {Style.BOLD}{Style.WHITE}{water_change_times}")
+    for water_change_time in water_change_times:
+        schedule.every().day.at(water_change_time).do(clear_and_water_change).tag("water_change")
+
+
 def start():
     schedule_updates()
     schedule_water_changes()
     controller.start()
+    controller.update()
     while True:
         schedule.run_pending()
         time.sleep(1)
