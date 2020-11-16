@@ -1,6 +1,8 @@
 import os
+import time
 
 import RPi.GPIO as GPIO
+import schedule
 
 from AquariumLogger import AquariumLogger
 from Configuration import Configuration
@@ -22,9 +24,9 @@ logger = AquariumLogger()
 progress_tracker = ProgressTracker()
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
-config_file = "config.yaml"
-c_file = f"{current_dir}/{config_file}"
-config = Configuration(c_file)
+configuration_file_name = "config.yaml"
+configuration_file_path = f"{current_dir}/{configuration_file_name}"
+config = Configuration(configuration_file_path)
 
 full_level = config.get("full_level")
 water_change_span = config.get("water_change_span")
@@ -55,7 +57,45 @@ sump_pump = Switch("sump pump", sump_pump_channel, progress_tracker)
 current_dir = os.path.dirname(os.path.abspath(__file__))
 scripts = [f"{current_dir}/temperatureScript_both.py", f"{current_dir}/levelSensorWithTofScript.py"]
 controller = Controller(level_detector, temperature_detector,
-                        pump_out, pump_in, sump_pump, scripts, c_file, progress_tracker)
+                        pump_out, pump_in, sump_pump, scripts, configuration_file_path, progress_tracker)
 
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
-controller.start()
+
+
+def schedule_updates():
+    for value in Configuration(configuration_file_path).update_times():
+        schedule.every().hour.at(value).do(clear_and_schedule).tag("update")
+
+
+def clear_and_schedule():
+    schedule.clear()
+    controller.update()
+    schedule_updates()
+    schedule_water_changes()
+
+
+def clear_and_water_change():
+    schedule.clear("update")
+    controller.water_change()
+    schedule_updates()
+
+
+def schedule_water_changes():
+    water_change_times = Configuration(configuration_file_path).water_change_times()
+    progress_tracker.write_ln(
+        f"{Style.YELLOW}scheduling water changes for: {Style.BOLD}{Style.WHITE}{water_change_times}")
+    for water_change_time in water_change_times:
+        schedule.every().day.at(water_change_time).do(clear_and_water_change).tag("water_change")
+
+
+def start():
+    schedule_updates()
+    schedule_water_changes()
+    controller.start()
+    while True:
+        schedule.run_pending()
+        time.sleep(1)
+
+
+if __name__ == '__main__':
+    start()
