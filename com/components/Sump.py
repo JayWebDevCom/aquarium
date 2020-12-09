@@ -14,15 +14,20 @@ class UnexpectedWaterLevel(Exception):
         super().__init__(message)
 
 
-class LevelDetector:
+class Sump:
 
     def __init__(
-            self, name: str,
+            self,
+            empty_pump,
+            refill_pump,
+            return_pump,
             sensor: LevelSensor,
             levels_boundary: LevelsBoundary,
             sanitizer: ReadingsSanitizer,
             **kwargs):
-        self.name = name
+        self.empty_pump = empty_pump
+        self.refill_pump = refill_pump
+        self.return_pump = return_pump
         self.sensor = sensor
         self.levels_boundary = levels_boundary
         self.sanitizer = sanitizer
@@ -31,7 +36,7 @@ class LevelDetector:
         self.total_level = self.levels_boundary.empty_level - self.levels_boundary.full_level
 
     def percentage_changed(self) -> float:
-        current_level = self._get_checked_sump_level()
+        current_level = self._get_checked_level()
         difference = current_level - self.levels_boundary.full_level
         change: float = difference / self.total_level
 
@@ -43,18 +48,18 @@ class LevelDetector:
             raise UnexpectedWaterLevel(level)
         pass
 
-    def _get_checked_sump_level(self) -> float:
+    def _get_checked_level(self) -> float:
         temperatures_returned = [self.sensor.get_level() for _ in self.times_to_check_level]
         sump_level = self.sanitizer.sanitize(temperatures_returned)
         self._check(sump_level)
         return sump_level
 
-    def get_sump_state(self) -> Tuple[bool, str]:
-        sump_level = self._get_checked_sump_level()
+    def get_state(self) -> Tuple[bool, int]:
+        sump_level = self._get_checked_level()
         return sump_level <= self.levels_boundary.full_level, self.percent_full(sump_level)
 
-    def percent_full(self, sump_level) -> str:
+    def percent_full(self, sump_level) -> int:
         difference = sump_level - self.levels_boundary.full_level
         full_span = self.levels_boundary.empty_level - self.levels_boundary.full_level
         percent_full = 100 - (difference / full_span * 100)
-        return f"{int(percent_full)}%"
+        return int(percent_full)

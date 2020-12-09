@@ -1,4 +1,4 @@
-__package__ = "components"
+# __package__ = "components"
 
 
 class TemperatureSensor:
