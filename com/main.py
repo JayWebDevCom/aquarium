@@ -37,28 +37,28 @@ sanitizer = ReadingsSanitizer(levels_boundary, config.get("accuracy_allowance"))
 
 level_sensor = LevelSensor("level sensor", TimeOfFlightLevelStrategy())
 
-pump_out_channel = config.get("pump_out_channel")
-pump_in_channel = config.get("pump_in_channel")
-sump_pump_channel = config.get("sump_pump_channel")
+empty_channel = config.get("pump_out_channel")
+refill_channel = config.get("pump_in_channel")
+return_channel = config.get("sump_pump_channel")
 
-GPIO.setup([pump_out_channel, pump_in_channel, sump_pump_channel], GPIO.OUT)
+GPIO.setup([empty_channel, refill_channel, return_channel], GPIO.OUT)
 
 sump_temp = TemperatureSensor("sump temperature sensor", config.get("sump_temp_device_id"))
 tank_temp = TemperatureSensor("tank temperature sensor", config.get("tank_temp_device_id"))
 temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp)
 
-empty_pump = Switch("empty", pump_out_channel, progress_tracker)
-refill_pump = Switch("refill", pump_in_channel, progress_tracker)
-return_pump = Switch("return", sump_pump_channel, progress_tracker)
+empty_pump = Switch("empty", empty_channel, progress_tracker)
+refill_pump = Switch("refill", refill_channel, progress_tracker)
+return_pump = Switch("return", return_channel, progress_tracker)
 
 sump = Sump(empty_pump, refill_pump, return_pump,
-            level_sensor, levels_boundary, sanitizer,
+            level_sensor, temperature_detector, levels_boundary, sanitizer,
             times_to_check_level=config.get("times_to_check_level"),
             overfill_allowance=config.get("overfill_allowance"))
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 scripts = [f"{current_dir}/temperatureScript_both.py", f"{current_dir}/levelSensorWithTofScript.py"]
-controller = Controller(sump, temperature_detector, scripts, configuration_file_path, progress_tracker)
+controller = Controller(sump, scripts, configuration_file_path, progress_tracker)
 
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 

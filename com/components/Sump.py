@@ -22,6 +22,7 @@ class Sump:
             refill_pump,
             return_pump,
             sensor: LevelSensor,
+            temperature_detector,
             levels_boundary: LevelsBoundary,
             sanitizer: ReadingsSanitizer,
             **kwargs):
@@ -29,6 +30,7 @@ class Sump:
         self.refill_pump = refill_pump
         self.return_pump = return_pump
         self.sensor = sensor
+        self.temperature_detector = temperature_detector
         self.levels_boundary = levels_boundary
         self.sanitizer = sanitizer
         self.times_to_check_level = range(kwargs.pop("times_to_check_level"))
@@ -63,3 +65,6 @@ class Sump:
         full_span = self.levels_boundary.empty_level - self.levels_boundary.full_level
         percent_full = 100 - (difference / full_span * 100)
         return int(percent_full)
+
+    def temperature_difference(self) -> float:
+        return self.temperature_detector.temperature_difference()
