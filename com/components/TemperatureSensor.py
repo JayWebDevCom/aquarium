@@ -1,4 +1,3 @@
-# __package__ = "components"
 
 
 class TemperatureSensor:

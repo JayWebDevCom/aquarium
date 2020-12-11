@@ -3,14 +3,12 @@ from typing import Tuple
 from components.LevelsBoundary import LevelsBoundary
 from components.LevelSensor import LevelSensor
 from components.ReadingsSanitizer import ReadingsSanitizer
-from loguru import logger
 
 
 class UnexpectedWaterLevel(Exception):
     """Raised when the input value is too small or too large"""
 
     def __init__(self, message):
-        # Call the base class constructor with the parameters it needs
         super().__init__(message)
 
 
@@ -46,7 +44,6 @@ class Sump:
 
     def _check(self, level):
         if level > self.levels_boundary.empty_level or level < self.full_limit:
-            logger.error(f"raising UnexpectedWaterLevel: {level}")
             raise UnexpectedWaterLevel(level)
         pass
 
