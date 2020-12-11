@@ -72,6 +72,7 @@ class TestController(TestCase):
             call.return_pump.off(),
             call.empty_pump.on(),
             call.percentage_changed(),
+            call.refill_pump.off(),
             call.return_pump.off(),
             call.empty_pump.off()
         ]

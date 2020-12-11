@@ -50,6 +50,7 @@ class Controller:
             self.water_change_process(config.get('water_change_level'))
         except Exception as error:
             logger.error(f"{error.__class__.__name__} ex caught")
+            self.sump.refill_pump.off()
             self.sump.return_pump.off()
             self.sump.empty_pump.off()
             if config.get('environment') == 'production':
