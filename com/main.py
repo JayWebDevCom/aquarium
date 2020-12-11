@@ -58,7 +58,7 @@ sump = Sump(empty_pump, refill_pump, return_pump,
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 scripts = [f"{current_dir}/temperatureScript_both.py", f"{current_dir}/levelSensorWithTofScript.py"]
-controller = Controller(sump, scripts, configuration_file_path, progress_tracker)
+controller = Controller(sump, scripts, config, progress_tracker)
 
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 

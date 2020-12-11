@@ -14,12 +14,11 @@ class Controller:
             self,
             sump: Sump,
             scripts: List[str],
-            configuration_file_path: str,
+            config: Configuration,
             progress_tracker: ProgressTracker):
         self.sump = sump
         self.scripts = scripts
-        self.configuration_file = configuration_file_path
-        self.config = Configuration(configuration_file_path)
+        self.config = config
         self.level_check_interval = self.config.get("level_check_interval")
         self.progress_tracker = progress_tracker
 
@@ -46,14 +45,15 @@ class Controller:
         self.update()
 
     def water_change(self):
-        config = Configuration(self.configuration_file)
+        config = Configuration(self.config.get_file_path())
         try:
             self.water_change_process(config.get('water_change_level'))
         except Exception as error:
             logger.error(f"{error.__class__.__name__} ex caught")
             self.sump.return_pump.off()
             self.sump.empty_pump.off()
-            exit(1)
+            if config.get('environment') == 'production':
+                exit(1)
 
     @log_time_elapsed
     def water_change_process(self, percentage: float):
@@ -98,7 +98,7 @@ class Controller:
 
     @log_time_elapsed
     def wait_for_temperature_equalization(self):
-        config = Configuration(self.configuration_file)
+        config = Configuration(self.config.get_file_path())
         band = config.get("temperature_difference_band")
         interval = config.get("temp_check_interval")
 
