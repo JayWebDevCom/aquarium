@@ -18,5 +18,5 @@ jobs:
           python-version: '3.7'
           architecture: 'x64'
       - run: pip3 install -r requirements.txt
-      - run: coverage run --source=test -m unittest
+      - run: coverage run --source=./ -m unittest
       - run: coverage report -m
