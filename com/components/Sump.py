@@ -53,15 +53,15 @@ class Sump:
         self._check(sump_level)
         return sump_level
 
-    def get_state(self) -> Tuple[bool, int]:
+    def get_state(self) -> Tuple[bool, float]:
         sump_level = self._get_checked_level()
         return sump_level <= self.levels_boundary.full_level, self.percent_full(sump_level)
 
-    def percent_full(self, sump_level) -> int:
+    def percent_full(self, sump_level) -> float:
         difference = sump_level - self.levels_boundary.full_level
         full_span = self.levels_boundary.empty_level - self.levels_boundary.full_level
-        percent_full = 100 - (difference / full_span * 100)
-        return int(percent_full)
+        percent_full = 100 - (difference / full_span) * 100
+        return float(percent_full)
 
     def temperature_difference(self) -> float:
         return self.temperature_detector.temperature_difference()
