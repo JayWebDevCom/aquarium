@@ -52,3 +52,6 @@ class TestConfiguration(TestCase):
 
     def test_get_empty(self):
         self.assertEqual([], self.configuration.data()['empty'])
+
+    def test_get_file_path(self):
+        self.assertEqual(TestConfiguration.temp.name, self.configuration.get_file_path())

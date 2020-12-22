@@ -1,0 +1,5 @@
+coverage==5.3
+loguru==0.5.3
+numpy==1.19.4
+PyYAML==5.3.1
+schedule==0.6.0

@@ -25,3 +25,4 @@ level_check_interval: 3
 temp_check_interval: 60
 temperature_difference_band: 2.5
 water_change_level: 90
+environment: production
