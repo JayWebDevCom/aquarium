@@ -61,7 +61,7 @@ class Sump:
         difference = sump_level - self.levels_boundary.full_level
         full_span = self.levels_boundary.empty_level - self.levels_boundary.full_level
         percent_full = 100 - (difference / full_span) * 100
-        return float(percent_full)
+        return round(float(percent_full), 2)
 
     def temperature_difference(self) -> float:
         return self.temperature_detector.temperature_difference()

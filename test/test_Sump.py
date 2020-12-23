@@ -90,6 +90,6 @@ class TestSump(TestCase):
                 self.sump_with_float_readings.get_state()
 
     def test_percentage_full(self):
-        params = {20: 100, 30.1: 74.75, 40: 50, 60: 0}
+        params = {20: 100, 30.1: 74.75, 38.37: 54.08, 40: 50, 60: 0}
         for sump_level, expected in params.items():
             self.assertEqual(expected, self.sump.percent_full(sump_level))
