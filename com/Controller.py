@@ -32,11 +32,15 @@ class Controller:
             decorated(*args)
 
             ended = datetime.now()
+            formatted_time = ended.strftime("%H:%M")
             interval = ended - started
             interval_minutes_seconds = divmod(interval.total_seconds(), 60)
+
             progress_tracker.write_ln(f"{Style.YELLOW}{decorated.__name__} complete: "
                                       f"{Style.BOLD}{Style.WHITE}{int(interval_minutes_seconds[0])}m "
-                                      f"{int(interval_minutes_seconds[1])}s")
+                                      f"{int(interval_minutes_seconds[1])}s "
+                                      f"{Style.RESET}{Style.YELLOW}at "
+                                      f"{Style.BOLD}{Style.WHITE}{formatted_time} ")
 
         return wrapper
 
@@ -105,10 +109,15 @@ class Controller:
 
         while True:
             temperature_difference = self.sump.temperature_difference()
-            self._write(f"{Style.WHITE}{Style.BOLD}temperature difference: {temperature_difference}c of band: {band}c")
-
+            self._write(f"{Style.YELLOW}temperature difference: {Style.WHITE}{Style.BOLD}{temperature_difference}c{Style.RESET} "
+                        f"{Style.YELLOW}of band: {Style.WHITE}{Style.BOLD}{band}c")
+                        
             if temperature_difference > band:
-                time.sleep(interval)
+                for countdown in range(interval-1, -1, -1):
+                    self._write(
+                        f"{Style.YELLOW}temperature difference: {Style.WHITE}{Style.BOLD}{temperature_difference}c{Style.RESET} "
+                        f"{Style.YELLOW}of band: {Style.WHITE}{Style.BOLD}{band}c {countdown}")
+                    time.sleep(1)
             else:
                 break
 

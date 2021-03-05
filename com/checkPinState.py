@@ -16,4 +16,4 @@ def test_pin_state(pin: int):
         print('off')
 
 test_pin_state()
-GPIIO.cleanup(state)
+GPIIO.cleanup(pin_state)

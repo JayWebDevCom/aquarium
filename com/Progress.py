@@ -50,16 +50,16 @@ class ProgressBar:
 class ProgressTracker:
 
     def __init__(self):
-        self.written_value = ""
-        self.line_length = 40
+        self.line_length = 85
         self.space = " "
         self.prompt = f"{Style.DARK_GREY}{Style.BOLD}->{Style.RESET} "
 
     def write(self, to_write):
-        sys.stdout.write("\b" * len(self.written_value))
+        sys.stdout.write("\b" * self.line_length)
+        sys.stdout.write(self.space * self.line_length)
+        sys.stdout.write("\b" * self.line_length)
         write = f"{self.prompt}{to_write}{self.space * (self.line_length - len(to_write))}"
         sys.stdout.write(write)
-        self.written_value = write
         sys.stdout.flush()
 
     @staticmethod
