@@ -1,7 +1,9 @@
 import os
 import time
 
+import atexit
 import RPi.GPIO as GPIO
+import signal
 import schedule
 
 from AquariumLogger import AquariumLogger
@@ -99,5 +101,17 @@ def start():
         time.sleep(1)
 
 
+def handle_exit(*args):
+    empty_pump.off()
+    refill_pump.off()
+    return_pump.off()
+
+
+atexit.register(handle_exit)
+signal.signal(signal.SIGTERM, handle_exit)
+signal.signal(signal.SIGINT, handle_exit)
+
+
 if __name__ == '__main__':
     start()
+
