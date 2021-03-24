@@ -44,7 +44,7 @@ class TestController(TestCase):
     def test_executes_water_change(self):
         self.sump.percentage_changed = Mock(return_value=100)
         self.sump.get_state = Mock(return_value=(True, 100))
-        self.sump.temperature_difference = Mock(return_value=0)
+        self.sump.temperature_breakdown = Mock(return_value=([2, 3, 4], [3, 4, 5], 1))
 
         controller = Controller(self.sump, self.scripts, self.configuration, ProgressTracker())
         controller.water_change()
@@ -57,7 +57,7 @@ class TestController(TestCase):
             call.refill_pump.on(),
             call.get_state(),
             call.refill_pump.off(),
-            call.temperature_difference(),
+            call.temperature_breakdown(),
             call.return_pump.on()
         ]
 
@@ -78,3 +78,4 @@ class TestController(TestCase):
         ]
 
         self.sump.assert_has_calls(sump_calls, any_order=False)
+

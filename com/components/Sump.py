@@ -65,3 +65,7 @@ class Sump:
 
     def temperature_difference(self) -> float:
         return self.temperature_detector.temperature_difference()
+
+    def temperature_breakdown(self) -> Tuple[float, float, float]:
+        return self.temperature_detector.temperature_breakdown()
+

@@ -106,17 +106,21 @@ class Controller:
         config = Configuration(self.config.get_file_path())
         band = config.get("temperature_difference_band")
         interval = config.get("temp_check_interval")
+        yellow, white_bold, reset = Style.YELLOW, f"{Style.WHITE}{Style.BOLD}", Style.RESET
 
         while True:
-            temperature_difference = self.sump.temperature_difference()
-            self._write(f"{Style.YELLOW}temperature difference: {Style.WHITE}{Style.BOLD}{temperature_difference}c{Style.RESET} "
-                        f"{Style.YELLOW}of band: {Style.WHITE}{Style.BOLD}{band}c")
-                        
+            (sump_temps, tank_temps, temperature_difference) = self.sump.temperature_breakdown()
+            self._write(f"{yellow}temp diff: {white_bold}{temperature_difference}c{reset} "
+                        f"{yellow}band: {white_bold}{band}c{reset} "
+                        f"{yellow}s_temps: {white_bold}{sump_temps}{reset}, "
+                        f"{yellow}t_temps: {white_bold}{tank_temps}{reset}")
             if temperature_difference > band:
                 for countdown in range(interval-1, -1, -1):
                     self._write(
-                        f"{Style.YELLOW}temperature difference: {Style.WHITE}{Style.BOLD}{temperature_difference}c{Style.RESET} "
-                        f"{Style.YELLOW}of band: {Style.WHITE}{Style.BOLD}{band}c {countdown}")
+                        f"{yellow}temp diff: {white_bold}{temperature_difference}c{reset} "
+                        f"{yellow}band: {white_bold}{band}c {countdown}{reset} "
+                        f"{yellow}s_temps: {white_bold}{sump_temps}{reset}, "
+                        f"{yellow}t_temps: {white_bold}{tank_temps}{reset}")
                     time.sleep(1)
             else:
                 break
@@ -142,3 +146,4 @@ class Controller:
 
     def _write_finish(self):
         self.progress_tracker.finish()
+

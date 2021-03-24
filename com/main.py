@@ -45,7 +45,8 @@ GPIO.setup([empty_channel, refill_channel, return_channel], GPIO.OUT)
 
 sump_temp = TemperatureSensor("sump temperature sensor", config.get("sump_temp_device_id"))
 tank_temp = TemperatureSensor("tank temperature sensor", config.get("tank_temp_device_id"))
-temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp)
+temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp,
+                                           config.get("times_to_check_temp"))
 
 empty_pump = Switch("empty", empty_channel, progress_tracker)
 refill_pump = Switch("refill", refill_channel, progress_tracker)

@@ -43,9 +43,13 @@ class TestSump(TestCase):
         self.sump.empty_pump.on()
         self.helper.empty_pump.assert_has_calls([call.on()])
 
-    def test_calls_to_temperature_sensor(self):
+    def test_calls_to_temperature_sensor_difference(self):
         self.sump.temperature_difference()
         self.helper.temperature_detector.assert_has_calls([call.temperature_difference()])
+
+    def test_calls_to_temperature_sensor_breakdown(self):
+        self.sump.temperature_breakdown()
+        self.helper.temperature_detector.assert_has_calls([call.temperature_breakdown()])
 
     def test_percentage_changed_parameterized(self):
         params = {30: 25.0, 40: 50.0, 55: 87.5, 34.56: 36.4, 37.43: 43.57}
@@ -93,3 +97,4 @@ class TestSump(TestCase):
         params = {20: 100, 30.1: 74.75, 38.37: 54.08, 40: 50, 60: 0}
         for sump_level, expected in params.items():
             self.assertEqual(expected, self.sump.percent_full(sump_level))
+
