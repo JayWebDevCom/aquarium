@@ -44,7 +44,8 @@ class Sump:
 
     def _check(self, level):
         if level > self.levels_boundary.empty_level or level < self.full_limit:
-            raise UnexpectedWaterLevel(level)
+            message = f"level: {level}, {self.percent_full(level)}% full"
+            raise UnexpectedWaterLevel(message)
         pass
 
     def _get_checked_level(self) -> float:
