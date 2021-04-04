@@ -17,7 +17,7 @@ global sump_temp_sensor
 tank_temp_sensor = TemperatureSensor("tank sensor", config.get("tank_temp_device_id"))
 sump_temp_sensor = TemperatureSensor("sump sensor", config.get("sump_temp_device_id"))
 
-num = 3
+num = 2
 tank_temps = [round(tank_temp_sensor.get_temp(), 2) for _ in range(num)]
 sump_temps = [round(sump_temp_sensor.get_temp(), 2) for _ in range(num)]
 
