@@ -45,6 +45,7 @@ class Controller:
         return wrapper
 
     def start(self):
+        self.wait_for_temperature_equalization()
         self.sump.return_pump.on()
         self.update()
 
