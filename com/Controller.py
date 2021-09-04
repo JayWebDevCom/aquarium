@@ -110,7 +110,11 @@ class Controller:
         yellow, white_bold, reset = Style.YELLOW, f"{Style.WHITE}{Style.BOLD}", Style.RESET
 
         while True:
-            (sump_temps, tank_temps, temperature_difference) = self.sump.temperature_breakdown()
+            sump_update = self.sump.get_update()
+            sump_temps = sump_update.sump_temps
+            tank_temps = sump_update.tank_temps
+            temperature_difference = sump_update.temp_difference
+
             self._write(f"{yellow}temp diff: {white_bold}{temperature_difference}c{reset} "
                         f"{yellow}band: {white_bold}{band}c{reset} "
                         f"{yellow}s_temps: {white_bold}{sump_temps}{reset}, "

@@ -1,8 +1,9 @@
-from typing import Tuple
+from typing import Tuple, List
 
 from components.LevelsBoundary import LevelsBoundary
 from components.LevelSensor import LevelSensor
 from components.ReadingsSanitizer import ReadingsSanitizer
+from components.SumpUpdate import SumpUpdate
 
 
 class UnexpectedWaterLevel(Exception):
@@ -27,7 +28,7 @@ class Sump:
         self.empty_pump = empty_pump
         self.refill_pump = refill_pump
         self.return_pump = return_pump
-        self.sensor = sensor
+        self.level_sensor = sensor
         self.temperature_detector = temperature_detector
         self.levels_boundary = levels_boundary
         self.sanitizer = sanitizer
@@ -49,7 +50,7 @@ class Sump:
         pass
 
     def _get_checked_level(self) -> float:
-        temperatures_returned = [self.sensor.get_level() for _ in self.times_to_check_level]
+        temperatures_returned = [self.level_sensor.get_level() for _ in self.times_to_check_level]
         sump_level = self.sanitizer.sanitize(temperatures_returned)
         self._check(sump_level)
         return sump_level
@@ -64,9 +65,11 @@ class Sump:
         percent_full = 100 - (difference / full_span) * 100
         return round(float(percent_full), 2)
 
-    def temperature_difference(self) -> float:
-        return self.temperature_detector.temperature_difference()
-
-    def temperature_breakdown(self) -> Tuple[float, float, float]:
-        return self.temperature_detector.temperature_breakdown()
-
+    def get_update(self) -> SumpUpdate:
+        (sump_temps, tank_temps, temp_difference) = self.temperature_detector.temperature_breakdown()
+        return SumpUpdate(
+            sump_temps=sump_temps,
+            tank_temps=tank_temps,
+            temp_difference=temp_difference,
+            sump_level=self.level_sensor.get_level()
+        )
