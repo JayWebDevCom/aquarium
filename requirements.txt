@@ -3,3 +3,5 @@ loguru==0.5.3
 numpy==1.19.4
 PyYAML==5.4
 schedule==0.6.0
+click==8.0.3
+RPi.GPIO==0.7.0
