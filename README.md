@@ -39,6 +39,12 @@ $ pip3 install adafruit-circuitpython-vl53l0x
 $ python3 -m pip install --force-reinstall adafruit-blinka
 ```
 
+- initialize thermometers, restart pi after
+```bash
+$ sudo modprobe w1-gpio
+$ sudo modprobe w1-therm
+```
+
 ### configuration
 - place your _vl53l0x_ device suspended roughly 15cm above your sump water surface
 - configure by updating [com/config.yaml](com/config.yaml) with
@@ -82,6 +88,12 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
+#### example log output
+ - create text file `logs/log.log`
+ - `tail -f /home/pi/Documents/Projects/aquarium/logs/log.log`
+![tail log output] [log-output-image]
+
+[log-output-image]: images/log_output.png?raw=true "Tail Log Output"
 [scheduling-library]: https://github.com/dbader/schedule
 [unittest]: (https://docs.python.org/3/library/unittest.html)
 [side-effects]: https://docs.python.org/3/library/unittest.mock.html#quick-guide
