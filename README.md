@@ -91,9 +91,10 @@ WantedBy=multi-user.target
 #### example log output
  - create text file `logs/log.log`
  - `tail -f /home/pi/Documents/Projects/aquarium/logs/log.log`
-![tail log output] [log-output-image]
 
-[log-output-image]: images/log_output.png?raw=true "Tail Log Output"
+![tail log output](images/log_output.png?raw=true "Tail Log Output")
+
+
 [scheduling-library]: https://github.com/dbader/schedule
 [unittest]: (https://docs.python.org/3/library/unittest.html)
 [side-effects]: https://docs.python.org/3/library/unittest.mock.html#quick-guide
