@@ -88,6 +88,14 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
+### top-up or empty sump water by time
+```bash
+$ env/bin/python3 com/inPumpScript.py --time <num-seconds>
+$ env/bin/python3 com/outPumpScript.py --time <num-seconds>
+```
+a progress bar will be displayed
+![add water log](images/add_water_log.png?raw=true "Add Water Log")
+
 #### example log output
  - create text file `logs/log.log`
  - `tail -f /home/pi/Documents/Projects/aquarium/logs/log.log`
