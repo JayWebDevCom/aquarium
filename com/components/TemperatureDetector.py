@@ -26,8 +26,8 @@ class TemperatureDetector:
         self.num_sensor_readings = num_sensor_readings
 
     def temperature_breakdown(self) -> Tuple[List[int], List[int], float]:
-        sump_temps = [self._get_temp(self.sump_temp) for _ in range(self.num_readings)]
-        tank_temps = [self._get_temp(self.tank_temp) for _ in range(self.num_readings)]
+        sump_temps = [self.get_temp(self.sump_temp) for _ in range(self.num_readings)]
+        tank_temps = [self.get_temp(self.tank_temp) for _ in range(self.num_readings)]
 
         ave_sump_temp = reduce(lambda a, b: a + b, sump_temps) / self.num_readings
         ave_tank_temp = reduce(lambda a, b: a + b, tank_temps) / self.num_readings
