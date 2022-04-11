@@ -81,7 +81,7 @@ Description=aquarium
 Type=simple
 ExecStart=/home/pi/Documents/Projects/aquarium/env/bin/python3 /home/pi/Documents/Projects/aquarium/com/main.py
 StandardOutput=append:/home/pi/Documents/Projects/aquarium/logs/log.log
-StandardError=append:/home/pi/Documents/Projects/aquarium/logs/log-error.log
+StandardError=append:/home/pi/Documents/Projects/aquarium/logs/log.log
 Restart=on-failure
 
 [Install]
