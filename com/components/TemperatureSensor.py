@@ -16,7 +16,6 @@ class TemperatureSensor:
             try:
                 with open(self.db_device_filepath) as file:
                     text = file.read()
-                    print(text)
 
                 second_line = text.split("\n")[1]
                 temperature_data = second_line.split(" ")[9]
