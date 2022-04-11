@@ -1,6 +1,6 @@
 from typing import List
 from unittest import TestCase
-from unittest.mock import MagicMock
+from unittest.mock import MagicMock, Mock
 
 from numpy import average
 
@@ -57,6 +57,24 @@ class TestTemperatureDetector(TestCase):
 
             self.assertEqual(result, temperature_detector.temperature_breakdown())
 
+    def test_handles_sensor_exception(self):
+        sensor = TemperatureSensor("error sump", "foo")
+        detector = TemperatureDetector("test temperature detector", sensor, sensor)
+
+        sensor.get_temp = Mock(side_effect=IndexError())
+
+        with self.assertRaises(IndexError) as e:
+            detector.get_temp(sensor)
+        self.assertEqual("Couldn't get reading from error sump", str(e.exception))
+
+    def test_handles_sensor_exception_fewer_exceptions(self):
+        sensor = TemperatureSensor("error sump", "foo")
+        detector = TemperatureDetector("test temperature detector", sensor, sensor)
+
+        sensor.get_temp = Mock(side_effect=[IndexError(), IndexError(), IndexError(), IndexError(), 11.3])
+
+        self.assertEqual(detector.get_temp(sensor), 11.3)
+
 
 class TestTemperatures:
     sump: List[float]
@@ -65,4 +83,3 @@ class TestTemperatures:
     def __init__(self, sump: List[float], tank: List[float]):
         self.sump = sump
         self.tank = tank
-
