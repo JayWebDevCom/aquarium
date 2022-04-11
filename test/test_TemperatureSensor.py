@@ -8,7 +8,7 @@ from com.components.TemperatureSensor import TemperatureSensor
 class TestTemperatureSensor(TestCase):
 
     def test_handles_file_exception(self):
-        file = tempfile.NamedTemporaryFile(delete=False)
+        file = tempfile.NamedTemporaryFile()
 
         with open(file.name, 'w') as f:
             f.write("")
@@ -20,7 +20,7 @@ class TestTemperatureSensor(TestCase):
         self.assertEqual(f"Couldn't get reading from {file.name}", str(e.exception))
 
     def test_handles_sensor_exception_fewer_exceptions(self):
-        file = tempfile.NamedTemporaryFile(delete=False)
+        file = tempfile.NamedTemporaryFile()
 
         with open(file.name, 'w') as f:
             f.write("c1 01 4b 46 7f ff 0c 10 6d : crc=6d YES\n")
