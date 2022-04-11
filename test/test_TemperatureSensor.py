@@ -17,7 +17,7 @@ class TestTemperatureSensor(TestCase):
 
         with self.assertRaises(IndexError) as e:
             sensor.get_temp()
-        self.assertEqual(f"Couldn't get reading from T", str(e.exception))
+        self.assertEqual(f"Couldn't get reading from {file.name.split('/')[-2]}", str(e.exception))
 
     def test_handles_sensor_exception_fewer_exceptions(self):
         file = tempfile.NamedTemporaryFile()
