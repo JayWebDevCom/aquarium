@@ -5,7 +5,7 @@ from unittest import TestCase
 from com.components.TemperatureSensor import TemperatureSensor
 
 
-class TestTemperatureDetector(TestCase):
+class TestTemperatureSensor(TestCase):
 
     def test_handles_file_exception(self):
         file = tempfile.NamedTemporaryFile(delete=False)
