@@ -45,8 +45,10 @@ return_channel = config.get("sump_pump_channel")
 
 GPIO.setup([empty_channel, refill_channel, return_channel], GPIO.OUT)
 
-sump_temp = TemperatureSensor("sump temperature sensor", config.get("sump_temp_device_id"))
-tank_temp = TemperatureSensor("tank temperature sensor", config.get("tank_temp_device_id"))
+sump_db_device_filepath = f"/sys/bus/w1/devices/{config.get('sump_temp_device_id')}/w1_slave"
+tank_db_device_filepath = f"/sys/bus/w1/devices/{config.get('tank_temp_device_id')}/w1_slave"
+sump_temp = TemperatureSensor("sump temperature sensor", db_device_filepath=sump_db_device_filepath)
+tank_temp = TemperatureSensor("tank temperature sensor", db_device_filepath=tank_db_device_filepath)
 temperature_detector = TemperatureDetector("temperature detector", sump_temp, tank_temp,
                                            config.get("times_to_check_temp"))
 

@@ -14,8 +14,12 @@ config = Configuration(c_file)
 
 global tank_temp_sensor
 global sump_temp_sensor
-tank_temp_sensor = TemperatureSensor("tank sensor", config.get("tank_temp_device_id"))
-sump_temp_sensor = TemperatureSensor("sump sensor", config.get("sump_temp_device_id"))
+
+tank_db_device_filepath = f"/sys/bus/w1/devices/{config.get('tank_temp_device_id')}/w1_slave"
+sump_db_device_filepath = f"/sys/bus/w1/devices/{config.get('sump_temp_device_id')}/w1_slave"
+
+tank_temp_sensor = TemperatureSensor("tank temperature sensor", db_device_filepath=tank_db_device_filepath)
+sump_temp_sensor = TemperatureSensor("sump temperature sensor", db_device_filepath=sump_db_device_filepath)
 
 num = 2
 tank_temps = [round(tank_temp_sensor.get_temp(), 2) for _ in range(num)]
