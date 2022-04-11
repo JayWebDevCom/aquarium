@@ -24,8 +24,12 @@ class TemperatureSensor:
                 return celsius
 
             except IndexError as _:
-                logger.error(f"Unable to get temp from {self.db_device_filepath} at attempt {attempt}")
+                logger.error(f"Unable to get temp from {self._id(self.db_device_filepath)} at attempt {attempt}")
                 attempt += 1
                 pass
 
-        raise IndexError(f"Couldn't get reading from {self.db_device_filepath}")
+        raise IndexError(f"Couldn't get reading from {self._id(self.db_device_filepath)}")
+
+    @staticmethod
+    def _id(value: str) -> str:
+        return value.split("/")[-2]
