@@ -20,4 +20,4 @@ jobs:
           architecture: 'x64'
       - run: |
           pip install tox==3.25.0
-          tox
+          tox -v
