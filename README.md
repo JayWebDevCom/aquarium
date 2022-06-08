@@ -18,7 +18,7 @@
 
 - setup a virtual environment
 ```bash
-$ virtualenv --python=/usr/bin/python3 env
+$ python3 -m virtualenv env --python=python3.10
 $ activate
 ```
 
