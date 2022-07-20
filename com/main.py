@@ -86,6 +86,12 @@ def clear_and_tank_drain():
     schedule_everything()
 
 
+def clear_and_sump_refill():
+    schedule.clear()
+    controller.refill()
+    schedule_everything()
+
+
 def schedule_updates():
     for value in Configuration(configuration_file_path).update_times():
         schedule.every().hour.at(value).do(controller.update).tag("update")
@@ -110,7 +116,7 @@ def schedule_tank_drains_and_sump_refills():
     progress_tracker.write_ln(
         f"{Style.YELLOW}scheduling sump refills for: {Style.BOLD}{Style.WHITE}{sump_refill_times}")
     for sump_refill_times in sump_refill_times:
-        schedule.every().day.at(sump_refill_times).do(controller.refill).tag("sump_refill")
+        schedule.every().day.at(sump_refill_times).do(clear_and_sump_refill).tag("sump_refill")
 
 
 def start():
