@@ -42,6 +42,7 @@ level_sensor = LevelSensor("level sensor", TimeOfFlightLevelStrategy())
 empty_channel = config.get("pump_out_channel")
 refill_channel = config.get("pump_in_channel")
 return_channel = config.get("sump_pump_channel")
+tank_drain_channel = config.get("tank_drain_channel")
 
 GPIO.setup([empty_channel, refill_channel, return_channel], GPIO.OUT)
 
@@ -53,6 +54,7 @@ temperature_detector = TemperatureDetector("temperature detector", sump_temp, ta
 empty_pump = Switch("empty", empty_channel, progress_tracker)
 refill_pump = Switch("refill", refill_channel, progress_tracker)
 return_pump = Switch("return", return_channel, progress_tracker)
+tank_drain_valve = Switch("tank drain", tank_drain_channel, progress_tracker)
 
 sump = Sump(empty_pump, refill_pump, return_pump,
             level_sensor, temperature_detector, levels_boundary, sanitizer,
@@ -61,27 +63,32 @@ sump = Sump(empty_pump, refill_pump, return_pump,
 
 current_dir = os.path.dirname(os.path.abspath(__file__))
 scripts = [f"{current_dir}/temperatureScript_both.py", f"{current_dir}/levelSensorWithTofScript.py"]
-controller = Controller(sump, scripts, config, progress_tracker)
+controller = Controller(sump, scripts, config, progress_tracker, tank_drain_valve)
 
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 
 
-def schedule_updates():
-    for value in Configuration(configuration_file_path).update_times():
-        schedule.every().hour.at(value).do(clear_and_schedule).tag("update")
-
-
-def clear_and_schedule():
-    schedule.clear()
-    controller.update()
+def schedule_everything():
     schedule_updates()
     schedule_water_changes()
+    schedule_tank_drains_and_sump_refills()
 
 
 def clear_and_water_change():
-    schedule.clear("update")
+    schedule.clear()
     controller.water_change()
-    schedule_updates()
+    schedule_everything()
+
+
+def clear_and_tank_drain():
+    schedule.clear()
+    controller.drain_tank()
+    schedule_everything()
+
+
+def schedule_updates():
+    for value in Configuration(configuration_file_path).update_times():
+        schedule.every().hour.at(value).do(controller.update).tag("update")
 
 
 def schedule_water_changes():
@@ -92,9 +99,22 @@ def schedule_water_changes():
         schedule.every().day.at(water_change_time).do(clear_and_water_change).tag("water_change")
 
 
+def schedule_tank_drains_and_sump_refills():
+    tank_drain_times = Configuration(configuration_file_path).tank_drain_times()
+    progress_tracker.write_ln(
+        f"{Style.YELLOW}scheduling tank drains for: {Style.BOLD}{Style.WHITE}{tank_drain_times}")
+    for tank_drain_time in tank_drain_times:
+        schedule.every().day.at(tank_drain_time).do(clear_and_tank_drain).tag("tank_drain")
+
+    sump_refill_times = controller.calculate_sump_refill_times(tank_drain_times)
+    progress_tracker.write_ln(
+        f"{Style.YELLOW}scheduling sump refills for: {Style.BOLD}{Style.WHITE}{sump_refill_times}")
+    for sump_refill_times in sump_refill_times:
+        schedule.every().day.at(sump_refill_times).do(controller.refill).tag("sump_refill")
+
+
 def start():
-    schedule_updates()
-    schedule_water_changes()
+    schedule_everything()
     controller.start()
     while True:
         schedule.run_pending()
@@ -111,7 +131,5 @@ atexit.register(handle_exit)
 signal.signal(signal.SIGTERM, handle_exit)
 signal.signal(signal.SIGINT, handle_exit)
 
-
 if __name__ == '__main__':
     start()
-

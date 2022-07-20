@@ -9,6 +9,8 @@ water_change_times:
   - '15:01'
   - '18:01'
   - '21:01'
+tank_drain_times:
+  - '19:31'
 full_level: 26
 water_change_span: 16
 times_to_check_level: 9
@@ -18,6 +20,9 @@ tank_temp_device_id: '28-01191c6c5b42'
 sump_temp_device_id: '28-01191c5f02ae'
 pump_out_channel: 27
 pump_in_channel: 23
+tank_drain_channel: 5
+tank_drain_duration: 60
+tank_drain_multiplier: 60
 sump_pump_channel: 17
 level_check_interval: 3
 temp_check_interval: 60

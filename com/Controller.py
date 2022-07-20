@@ -1,5 +1,5 @@
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import List
 
 from loguru import logger
@@ -15,12 +15,14 @@ class Controller:
             sump: Sump,
             scripts: List[str],
             config: Configuration,
-            progress_tracker: ProgressTracker):
+            progress_tracker: ProgressTracker,
+            tank_drain_valve):
         self.sump = sump
         self.scripts = scripts
         self.config = config
         self.level_check_interval = self.config.get("level_check_interval")
         self.progress_tracker = progress_tracker
+        self.tank_drain_valve = tank_drain_valve
 
     def log_time_elapsed(decorated):
         def wrapper(*args):
@@ -58,6 +60,7 @@ class Controller:
             self.sump.refill_pump.off()
             self.sump.return_pump.off()
             self.sump.empty_pump.off()
+            self.tank_drain_valve.off()
             if config.get('environment') == 'production':
                 exit(1)
 
@@ -128,6 +131,26 @@ class Controller:
 
         self._write_finish()
 
+    @log_time_elapsed
+    def drain_tank(self):
+        config = Configuration(self.config.get_file_path())
+        tank_drain_duration = config.get('tank_drain_duration')
+        yellow, white_bold, reset = Style.YELLOW, f"{Style.WHITE}{Style.BOLD}", Style.RESET
+        try:
+            self.tank_drain_valve.on()
+            for countdown in range(tank_drain_duration - 1, -1, -1):
+                self._write(f"{yellow}drain time remaining: {white_bold}{countdown}c{reset}")
+                time.sleep(1)
+            self.tank_drain_valve.off()
+        except Exception as error:
+            logger.error(error)
+            self.sump.refill_pump.off()
+            self.sump.return_pump.off()
+            self.sump.empty_pump.off()
+            self.tank_drain_valve.off()
+            if config.get('environment') == 'production':
+                exit(1)
+
     def update(self):
         for script in self.scripts:
             with open(script, "r") as f:
@@ -148,3 +171,11 @@ class Controller:
     def _write_finish(self):
         self.progress_tracker.finish()
 
+    def calculate_sump_refill_times(self, drain_times: List[str]) -> List[str]:
+        config = Configuration(self.config.get_file_path())
+        simple_time_format = '%H:%M'
+        drain_duration, multiplier = config.get('tank_drain_multiplier'), config.get('tank_drain_duration')
+        formatted_drain_times = [datetime.strptime(t, simple_time_format) for t in drain_times]
+        formatted_refill_times = [t + timedelta(seconds=drain_duration * multiplier) for t in formatted_drain_times]
+        refill_times = [datetime.strftime(t, simple_time_format) for t in formatted_refill_times]
+        return refill_times
