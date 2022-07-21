@@ -115,8 +115,8 @@ def schedule_tank_drains_and_sump_refills():
     sump_refill_times = controller.calculate_sump_refill_times(tank_drain_times)
     progress_tracker.write_ln(
         f"{Style.YELLOW}scheduling sump refills for: {Style.BOLD}{Style.WHITE}{sump_refill_times}")
-    for sump_refill_times in sump_refill_times:
-        schedule.every().day.at(sump_refill_times).do(clear_and_sump_refill).tag("sump_refill")
+    for sump_refill_time in sump_refill_times:
+        schedule.every().day.at(sump_refill_time).do(clear_and_sump_refill).tag("sump_refill")
 
 
 def start():
