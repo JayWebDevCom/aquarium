@@ -1,6 +1,6 @@
 coverage==5.3
 loguru==0.5.3
-numpy==1.23.0
+numpy==1.21.6
 PyYAML==5.4
 schedule==0.6.0
 click==8.0.3
