@@ -44,7 +44,7 @@ refill_channel = config.get("pump_in_channel")
 return_channel = config.get("sump_pump_channel")
 tank_drain_channel = config.get("tank_drain_channel")
 
-GPIO.setup([empty_channel, refill_channel, return_channel], GPIO.OUT)
+GPIO.setup([empty_channel, refill_channel, return_channel, tank_drain_channel], GPIO.OUT)
 
 sump_temp = TemperatureSensor("sump temperature sensor", config.get("sump_temp_device_id"))
 tank_temp = TemperatureSensor("tank temperature sensor", config.get("tank_temp_device_id"))
