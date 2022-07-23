@@ -139,7 +139,7 @@ class Controller:
         try:
             self.tank_drain_valve.on()
             for countdown in range(tank_drain_duration - 1, -1, -1):
-                self._write(f"{yellow}drain time remaining: {white_bold}{countdown}{reset}")
+                self._write(f"{yellow}drain time remaining: {white_bold}{countdown} of duration: {tank_drain_duration}{reset}")
                 time.sleep(1)
             self._write_finish()
             self.tank_drain_valve.off()
