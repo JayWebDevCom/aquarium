@@ -14,6 +14,7 @@ tank_drain_times:
 full_level: 26
 water_change_span: 16
 times_to_check_level: 9
+times_to_check_temp: 2
 accuracy_allowance: 0.1
 overfill_allowance: 1.0
 tank_temp_device_id: '28-01191c6c5b42'
