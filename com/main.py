@@ -74,6 +74,12 @@ def schedule_everything():
     schedule_tank_drains_and_sump_refills()
 
 
+def update():
+    schedule.clear()
+    controller.update()
+    schedule_everything()
+
+
 def clear_and_water_change():
     schedule.clear()
     controller.water_change()
@@ -96,7 +102,7 @@ def clear_and_sump_refill():
 
 def schedule_updates():
     for value in Configuration(configuration_file_path).update_times():
-        schedule.every().hour.at(value).do(controller.update).tag("update")
+        schedule.every().hour.at(value).do(update).tag("update")
 
 
 def schedule_water_changes():
