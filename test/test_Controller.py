@@ -103,7 +103,7 @@ class TestController(TestCase):
 
         self.tank_drain_valve.assert_has_calls(tank_drain_calls, any_order=False)
 
-    def test_catches_exception_and_stops_pumps_on_Tank_drain(self):
+    def test_catches_exception_and_stops_pumps_on_tank_drain(self):
         self.tank_drain_valve.on = Mock(side_effect=Exception('test-exception'))
         controller = Controller(self.sump, self.scripts, self.configuration, ProgressTracker(), self.tank_drain_valve)
         controller.drain_tank()
@@ -122,6 +122,41 @@ class TestController(TestCase):
         ]
 
         self.sump.assert_has_calls(sump_calls, any_order=False)
+
+    def test_executes_refill_process(self):
+        self.sump.percentage_changed = Mock(return_value=100)
+        self.sump.get_state = Mock(return_value=(True, 100))
+        self.sump.temperature_breakdown = Mock(return_value=([2, 3, 4], [3, 4, 5], 1))
+
+        controller = Controller(self.sump, self.scripts, self.configuration, ProgressTracker(), self.tank_drain_valve)
+        controller.refill_tank_process()
+
+        sump_calls = [
+            call.return_pump.off(),
+            call.refill_pump.on(),
+            call.get_state(),
+            call.refill_pump.off(),
+            call.temperature_breakdown(),
+            call.return_pump.on()
+        ]
+
+        self.sump.assert_has_calls(sump_calls, any_order=False)
+
+    def test_catches_exception_and_stops_pumps_on_refill_tank_process(self):
+        sump = MagicMock()
+        sump.refill_pump.on = Mock(side_effect=UnexpectedWaterLevel(100))
+        controller = Controller(sump, self.scripts, self.configuration, ProgressTracker(), self.tank_drain_valve)
+        controller.refill_tank_process()
+
+        sump_calls = [
+            call.return_pump.off(),
+            call.refill_pump.on(),
+            call.refill_pump.off(),
+            call.return_pump.off(),
+            call.empty_pump.off()
+        ]
+
+        sump.assert_has_calls(sump_calls, any_order=False)
 
     def test_calculate_sump_refill_times(self):
         controller = Controller(self.sump, self.scripts, self.configuration, ProgressTracker(), self.tank_drain_valve)

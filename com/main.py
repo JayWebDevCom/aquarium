@@ -94,10 +94,7 @@ def clear_and_tank_drain():
 
 def clear_and_sump_refill():
     schedule.clear()
-    return_pump.off()
-    controller.refill()
-    controller.wait_for_temperature_equalization()
-    return_pump.on()
+    controller.refill_tank_process()
     schedule_everything()
 
 

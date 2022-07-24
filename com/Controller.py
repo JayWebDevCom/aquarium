@@ -139,7 +139,8 @@ class Controller:
         try:
             self.tank_drain_valve.on()
             for countdown in range(tank_drain_duration - 1, -1, -1):
-                self._write(f"{yellow}drain time remaining: {white_bold}{countdown} of duration: {tank_drain_duration}{reset}")
+                self._write(f"{yellow}drain time remaining: {white_bold}{countdown}{reset} "
+                            f"{yellow}of duration: {white_bold}{tank_drain_duration}{reset}")
                 time.sleep(1)
             self._write_finish()
             self.tank_drain_valve.off()
@@ -150,6 +151,22 @@ class Controller:
             self.sump.empty_pump.off()
             self.tank_drain_valve.off()
             if config.get('environment') == 'production':
+                exit(1)
+
+    @log_time_elapsed
+    def refill_tank_process(self):
+        try:
+            self.sump.return_pump.off()
+            self.refill()
+            self.wait_for_temperature_equalization()
+            self.sump.return_pump.on()
+        except Exception as error:
+            logger.error(error)
+            self.sump.refill_pump.off()
+            self.sump.return_pump.off()
+            self.sump.empty_pump.off()
+            self.tank_drain_valve.off()
+            if self.config.get('environment') == 'production':
                 exit(1)
 
     def update(self):
