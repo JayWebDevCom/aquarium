@@ -14,7 +14,7 @@ GPIO.setwarnings(False)
 
 @click.command()
 @click.option('--time', '-t', 'time_', default=0, help='How long to turn the switch on for')
-@click.option('--switch', '-s', 'switch_', help='Which switch to activate [pump_out, pump_in, tank_drain]')
+@click.option('--switch', '-s', 'switch_', required=True, help='Which switch to activate [pump_out, pump_in, tank_drain]')
 def switch(time_: int, switch_name: str):
     switches = {
         'pump_out': 27,
