@@ -20,7 +20,6 @@ class Controller:
         self.sump = sump
         self.scripts = scripts
         self.config = config
-        self.level_check_interval = self.config.get("level_check_interval")
         self.progress_tracker = progress_tracker
         self.tank_drain_valve = tank_drain_valve
 
@@ -75,13 +74,14 @@ class Controller:
     @log_time_elapsed
     def empty_by_percentage(self, percentage):
         self.sump.empty_pump.on()
+        interval = Configuration(self.config.file_path).get("level_check_interval")
 
         while True:
             percentage_changed = self.sump.percentage_changed()
             self._write(f"{Style.WHITE}{Style.BOLD}{percentage_changed}% changed of {percentage}%")
 
             if percentage_changed < percentage:
-                time.sleep(self.level_check_interval)
+                time.sleep(interval)
             else:
                 break
 
@@ -93,12 +93,14 @@ class Controller:
         self.sump.refill_pump.on()
         dots = self._generator([".  ", ".. ", "..."])
 
+        interval = Configuration(self.config.file_path).get("level_check_interval")
+
         while True:
             (is_full, percent_full) = self.sump.get_state()
             self._write(f"{Style.WHITE}{Style.BOLD}{percent_full}% full{dots.__next__()}")
 
             if not is_full:
-                time.sleep(self.level_check_interval)
+                time.sleep(interval)
             else:
                 break
 
