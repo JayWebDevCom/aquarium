@@ -137,6 +137,8 @@ def handle_exit(*args):
     empty_pump.off()
     refill_pump.off()
     return_pump.off()
+    logger.info("program terminating")
+    tank_drain_valve.off()
 
 
 atexit.register(handle_exit)
