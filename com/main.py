@@ -126,8 +126,8 @@ def schedule_tank_drains_and_sump_refills():
 
 
 def start():
-    schedule_everything()
     controller.start()
+    schedule_everything()
     while True:
         schedule.run_pending()
         time.sleep(1)
