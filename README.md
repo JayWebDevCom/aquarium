@@ -111,3 +111,17 @@ a progress bar will be displayed
 [systemctl]: https://www.liquidweb.com/kb/what-is-systemctl-an-in-depth-overview/
 [laser-distance-sensor]: https://www.hobbytronics.co.uk/vl53l0x
 [digital-temp-sensor]: https://shop.pimoroni.com/products/ds18b20-programmable-resolution-1-wire-digital-thermometer
+
+### configure log rotation with logrotate
+- add the following to `/etc/logrotate.comf`
+```bash
+/home/pi/Documents/Projects/aquarium/logs/log.log {
+    rotate 5
+    copytruncate
+    notifempty
+    compress
+    maxsize 100M
+    weekly
+}
+```
+
