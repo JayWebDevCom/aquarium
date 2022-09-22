@@ -14,6 +14,9 @@ class Configuration:
     def water_change_times(self):
         return self.aquarium['water_change_times']
 
+    def tank_drain_times(self):
+        return self.aquarium['tank_drain_times']
+
     def update_times(self):
         return self.aquarium['update_times']
 

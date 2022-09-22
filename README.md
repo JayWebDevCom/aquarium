@@ -53,6 +53,7 @@ $ sudo modprobe w1-therm
 - `full_level`: laser reading when your sump is operationally full
 - `water_change_span`: laser reading difference between `full_level`, and minimum sump water height when your sump is operationally empty i.e. empty but your pumps won't burn
 - `times_to_check_level`: an average reading is taken for sump level (water height) this is the number of laser readings to take tp calculate this average
+- `times_to_check_temp`: an average reading is taken for tank/sump temperatures; this is the number of thermometer readings to take to calculate this average
 - `overfill_allowance`: an error will be raised when readings are greater than `full_level`, or less than `full_level` minus `water_change_span` minus `overfill_allowance`
 - `accuracy_allowance`: laser readings are sanitized, this is a % that describes the upper and lower bounds of the sump levels for which readings should be discarded 
 - `level_check_interval`: interval in seconds between sump water height readings during a water-change
@@ -88,10 +89,11 @@ Restart=on-failure
 WantedBy=multi-user.target
 ```
 
-#### top-up or empty sump water by time
+#### top-up sump, empty the sump or drain tank by time
 ```bash
-$ env/bin/python3 com/inPumpScript.py --time <num-seconds>
-$ env/bin/python3 com/outPumpScript.py --time <num-seconds>
+$ env/bin/python3 com/switchScript.py --time <num-seconds> --switch pump_in
+$ env/bin/python3 com/switchScript.py --time <num-seconds> --switch pump_out
+$ env/bin/python3 com/switchScript.py --time <num-seconds> --switch tank_drain
 ```
 a progress bar will be displayed
 ![add water log](images/add_water_log.png?raw=true "Add Water Log")
