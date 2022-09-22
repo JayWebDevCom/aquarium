@@ -15,7 +15,8 @@ GPIO.setwarnings(False)
 @click.command()
 @click.option('--time', '-t', 'time_', default=0, help='How long to turn the switch on for')
 @click.option('--switch', '-s', 'switch_name', required=True, help='Which switch to activate [pump_out, pump_in, tank_drain]')
-def switch(time_: int, switch_name: str):
+@click.option('--cleanup', '-c', is_flag=True, help='Whether to run `GPIO.cleanup(channel)`')
+def switch(time_: int, switch_name: str, cleanup: str):
     switches = {
         'pump_out': 27,
         'pump_in': 23,
@@ -38,7 +39,10 @@ def switch(time_: int, switch_name: str):
     progress_bar.finish()
 
     s.off()
-    GPIO.cleanup(channel)
+
+    if cleanup:
+        print(f'cleaning up {channel}')
+        GPIO.cleanup(channel)
 
 
 switch()
