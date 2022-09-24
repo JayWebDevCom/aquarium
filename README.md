@@ -19,7 +19,7 @@
 - setup a virtual environment
 ```bash
 $ virtualenv --python=/usr/bin/python3 env
-$ activate
+$ source env/bin/activate
 ```
 
 - install library dependencies
@@ -66,14 +66,14 @@ $ sudo modprobe w1-therm
   - logged updates of sump height, sump temp and tank temp will occur every 15 mins
   - water changes will occur 5 times a day at; '09:01', '12:01', '15:01', '18:01', and '21:01'
   
-### run the application
+### run the application manually
 ```bash
 $ python3 com/main.py
 ```
 
 #### run as a service with [systemctl]
  - example configuration file when this project is located at `/home/pi/Documents/Projects/aquarium`
-
+ - add configuration to `/etc/systemd/system/aquarium.service`
 ```text
 [Unit]
 Description=aquarium
@@ -82,7 +82,7 @@ Description=aquarium
 Type=simple
 ExecStart=/home/pi/Documents/Projects/aquarium/env/bin/python3 /home/pi/Documents/Projects/aquarium/com/main.py
 StandardOutput=append:/home/pi/Documents/Projects/aquarium/logs/log.log
-StandardError=append:/home/pi/Documents/Projects/aquarium/logs/log.log
+StandardError=append:/home/pi/Documents/Projects/aquarium/logs/log-error.log
 Restart=on-failure
 
 [Install]
@@ -91,15 +91,13 @@ WantedBy=multi-user.target
 
 #### top-up sump, empty the sump or drain tank by time
 ```bash
-$ env/bin/python3 com/switchScript.py --time <num-seconds> --switch pump_in
-$ env/bin/python3 com/switchScript.py --time <num-seconds> --switch pump_out
-$ env/bin/python3 com/switchScript.py --time <num-seconds> --switch tank_drain
+$ env/bin/python3 com/switchScript.py -h
+$ env/bin/python3 com/switchScript.py --time <num-seconds> --switch <pump-name>
 ```
 a progress bar will be displayed
 ![add water log](images/add_water_log.png?raw=true "Add Water Log")
 
 #### example log output
- - create text file `logs/log.log`
  - `tail -f /home/pi/Documents/Projects/aquarium/logs/log.log`
 
 ![tail log output](images/log_output.png?raw=true "Tail Log Output")
