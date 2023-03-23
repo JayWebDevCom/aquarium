@@ -17,6 +17,6 @@ jobs:
         with:
           python-version: '3.7'
           architecture: 'x64'
-      - run: pip3 install --use-pep517 -r requirements.txt
+      - run: pip3 install -r requirements.txt rpi-gpio --pre
       - run: coverage run --source=./ -m unittest
       - run: coverage report -m
