@@ -15,8 +15,8 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v1
         with:
-          python-version: '3.7'
+          python-version: '3.9'
           architecture: 'x64'
-      - run: pip3 install -r requirements.txt
+      - run: pip3 install -r requirements.txt rpi-gpio --pre
       - run: coverage run --source=./ -m unittest
       - run: coverage report -m
