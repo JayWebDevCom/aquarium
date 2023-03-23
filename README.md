@@ -111,7 +111,7 @@ a progress bar will be displayed
 [digital-temp-sensor]: https://shop.pimoroni.com/products/ds18b20-programmable-resolution-1-wire-digital-thermometer
 
 ### configure log rotation with logrotate
-- add the following to `/etc/logrotate.comf`
+- add the following to `/etc/logrotate.conf`
 ```bash
 /home/pi/Documents/Projects/aquarium/logs/log.log {
     rotate 5
