@@ -10,6 +10,7 @@ from AquariumLogger import AquariumLogger
 from Configuration import Configuration
 from Controller import Controller
 from Progress import ProgressTracker, Style
+from Server import Server
 from components.LevelSensor import LevelSensor
 from components.LevelsBoundary import LevelsBoundary
 from components.ReadingsSanitizer import ReadingsSanitizer
@@ -128,6 +129,7 @@ def schedule_tank_drains_and_sump_refills():
 def start():
     controller.start()
     schedule_everything()
+    server.start()
     while True:
         schedule.run_pending()
         time.sleep(1)
