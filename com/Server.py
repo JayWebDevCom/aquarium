@@ -48,7 +48,7 @@ class Server:
         if request.method == 'GET':
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             config_json = json.dumps(up_to_date_config_data)
-            return Response(config_json), mimetype=Server.JSON)
+            return Response(config_json, mimetype=Server.JSON)
         else:
             content_type = request.headers['Content-Type']
             print(f"received content-type {content_type}")
