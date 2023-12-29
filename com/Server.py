@@ -20,6 +20,7 @@ class Server:
 
     def start(self):
         self.app.add_url_rule('/', view_func=self.ok)
+        self.app.add_url_rule('/config', view_func=self.config)
         self.app.add_url_rule('/times', view_func=self.times)
         self.app.add_url_rule('/breakdown', view_func=self.breakdown)
 
