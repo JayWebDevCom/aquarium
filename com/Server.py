@@ -14,6 +14,7 @@ class Server:
         self.progress_tracker = progress_tracker,
         self.controller = controller
         self.app = Flask(__name__)
+        self.app.debug = False
         self.host = host
         self.port = port
 
@@ -22,7 +23,7 @@ class Server:
         self.app.add_url_rule('/times', view_func=self.times)
         self.app.add_url_rule('/breakdown', view_func=self.breakdown)
 
-        self.app.run(host=self.host, port=self.port)
+        self.app.run(host=self.host, port=self.port, debug = False)
 
     def ok(self):
         return "OK"
