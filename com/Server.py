@@ -14,10 +14,14 @@ class Server:
     def start(self):
         app.run(debug = True)
 
+    @app.route('/')
+    def ok():
+        return "OK"
+
     @app.route('/times')
-    def times(self):
+    def times():
         return self.controller.times()
 
     @app.route('/breakdown')
-    def breakdown(self):
+    def breakdown():
         return self.controller.breakdown()
