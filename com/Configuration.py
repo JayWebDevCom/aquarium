@@ -1,4 +1,4 @@
-from yaml import safe_load
+from yaml import safe_load, dump
 
 
 class Configuration:
