@@ -19,9 +19,9 @@ class Server:
         return "OK"
 
     @app.route('/times')
-    def times():
+    def times(self):
         return self.controller.times()
 
     @app.route('/breakdown')
-    def breakdown():
+    def breakdown(self):
         return self.controller.breakdown()
