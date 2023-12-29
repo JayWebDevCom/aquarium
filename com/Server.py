@@ -1,4 +1,3 @@
-import json
 from flask import Flask
 from Controller import Controller
 
@@ -28,5 +27,4 @@ class Server:
         return self.controller.times()
 
     def breakdown(self):
-        val = self.controller.breakdown()
-        return json.dumps(val)
+        return self.controller.breakdown()
