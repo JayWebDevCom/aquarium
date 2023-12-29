@@ -13,8 +13,8 @@ class Server:
         self.app = Flask(__name__)
         # routes
         self.app.route('/')(self.ok)
-        self.app.times('/times')(self.times)
-        self.app.breakdown('/breakdown')(self.breakdown)
+        self.app.route('/times')(self.times)
+        self.app.route('/breakdown')(self.breakdown)
 
     def start(self):
         self.app.run(debug = True)
