@@ -20,8 +20,8 @@ class Server:
 
     def start(self):
         self.app.add_url_rule('/', view_func=self.ok)
-        self.app.add_url_rule('/config', methods=['GET, POST'], view_func=self.config)
-        self.app.add_url_rule('/times', methods=['GET'], view_func=self.times)
+        self.app.add_url_rule('/config', methods=['GET', 'POST'], view_func=self.config)
+        self.app.add_url_rule('/times', methods=['GET', 'POST'], view_func=self.times)
         self.app.add_url_rule('/breakdown', methods=['GET'], view_func=self.breakdown)
 
         self.app.run(host=self.host, port=self.port)
