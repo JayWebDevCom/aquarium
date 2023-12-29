@@ -1,4 +1,4 @@
-from yaml import safe_load, dump
+from yaml import yaml
 
 
 class Configuration:
@@ -7,7 +7,7 @@ class Configuration:
         self.file_path = file_path
         with open(self.file_path, 'r') as stream:
             try:
-                self.aquarium = safe_load(stream)
+                self.aquarium = yaml.safe_load(stream)
             except ImportError:
                 from yaml import Loader, Dumper
 
