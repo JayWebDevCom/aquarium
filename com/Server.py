@@ -1,9 +1,10 @@
 import json
-from flask import Flask
+from flask import Flask, Response
 from Controller import Controller
 
 
 class Server:
+    JSON = 'application/json'
     def __init__(
             self,
             controller: Controller,
@@ -22,10 +23,10 @@ class Server:
         self.app.run(host=self.host, port=self.port)
 
     def ok(self):
-        return "OK"
+        return Response("OK", mimetype='text/xml')
 
     def times(self):
-        return self.controller.times()
+        return Response(self.controller.times(), mimetype=JSON)
 
     def breakdown(self):
-        return json.dumps(self.controller.breakdown())
+        return Response(json.dumps(self.controller.breakdown()), mimetype=JSON)
