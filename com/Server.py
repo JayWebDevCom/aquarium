@@ -1,5 +1,5 @@
 import json
-from flask import Flask, Response
+from flask import Flask, Response, request
 from Configuration import Configuration
 from Controller import Controller
 
@@ -30,10 +30,34 @@ class Server:
         return Response("OK", mimetype='text/xml')
 
     def times(self):
-        return Response(json.dumps(self.controller.times()), mimetype=Server.JSON)
+        if request.method == 'GET':
+            return Response(json.dumps(self.controller.times()), mimetype=Server.JSON)
+        else:
+            content_type = request.headers['Content-Type']
+            print(f"received content-type {content_type}")
+            if (content_type == 'application/json'):
+                up_to_date_config_data = Configuration(self.configuration.file_path).data()
+                copy = dict(up_to_date_config_Data)
+                copy['water_change_times'] = json.loads(request.get_json())
+                self.configuration.write_data(copy)
+                return Response(f"written times {copy} ok", mimetype='text/xml')
+            else:
+                return Response(f"content-type not supported {content_type}", status=500,)
 
     def config(self):
-        return Response(json.dumps(self.configuration.data()), mimetype=Server.JSON)
+        if request.method == 'GET':
+            up_to_date_config_data = Configuration(self.configuration.file_path).data()
+            config_json = json.dumps(up_to_date_config_data)
+            return Response(config_json), mimetype=Server.JSON)
+        else:
+            content_type = request.headers['Content-Type']
+            print(f"received content-type {content_type}")
+            if (content_type == 'application/json'):
+                to_write_data = json.loads(request.get_json())
+                self.configuration.write_data(to_write_data)
+                return Response(f"written config {to_write_data} ok", mimetype='text/xml')
+            else:
+                return Response(f"content-type not supported {content_type}", status=500,)
 
     def breakdown(self):
         return Response(json.dumps(self.controller.breakdown()), mimetype=Server.JSON)
