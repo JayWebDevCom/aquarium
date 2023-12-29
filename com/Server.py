@@ -11,13 +11,14 @@ class Server:
             port = 5000):
         self.controller = controller
         self.app = Flask(__name__)
-        # routes
-        self.app.route('/')(self.ok)
-        self.app.route('/times')(self.times)
-        self.app.route('/breakdown')(self.breakdown)
+        self.host = host
+        self.port = port
 
     def start(self):
-        self.app.run(debug = True)
+        self.app.add_url_rule('/', view_func=ok)
+        self.app.add_url_rule('/times', view_func=times)
+        self.app.add_url_rule('/breakdown', view_func=breakdown)
+        self.app.run(host=self.host, port=self.port, debug = True)
 
     def ok():
         return "OK"
