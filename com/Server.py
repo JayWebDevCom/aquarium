@@ -6,7 +6,7 @@ from Controller import Controller
 class Server:
     def __init__(
             self,
-            controller: Controller)
+            controller: Controller):
         self.controller = controller
         app = Flask(__name)
 
