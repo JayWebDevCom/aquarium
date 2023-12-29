@@ -131,7 +131,7 @@ def start():
     controller.start()
     schedule_everything()
     threading.Thread(target=server.start).start()
-    progress_tracker.write_ln(f"{Style.BLUE}started server in separate thread")
+    progress_tracker.write_ln(f"{Style.LIGHT_BLUE}started server in separate thread")
     while True:
         schedule.run_pending()
         time.sleep(1)
