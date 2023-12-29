@@ -31,6 +31,5 @@ class Server:
         return self.controller.times()
 
     def breakdown(self):
-        val = self.controller.temperature_breakdown()
-        self.progress_tracker.write_ln(f"val is {val}")
+        val = self.controller.breakdown()
         return json.dumps(val)
