@@ -15,9 +15,10 @@ class Server:
         self.port = port
 
     def start(self):
-        self.app.add_url_rule('/', view_func=ok)
-        self.app.add_url_rule('/times', view_func=times)
-        self.app.add_url_rule('/breakdown', view_func=breakdown)
+        self.app.add_url_rule('/', view_func=self.ok)
+        self.app.add_url_rule('/times', view_func=self.times)
+        self.app.add_url_rule('/breakdown', view_func=self.breakdown)
+
         self.app.run(host=self.host, port=self.port, debug = True)
 
     def ok(self):
