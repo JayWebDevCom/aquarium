@@ -40,7 +40,7 @@ class Server:
             if (content_type == 'application/json'):
                 up_to_date_config_data = Configuration(self.configuration.file_path).data()
                 copy = dict(up_to_date_config_data)
-                copy['water_change_times'] = request.get_json()
+                copy['water_change_times'] = request.get_json()['water_change_times']
                 self.configuration.write_data(copy)
                 return Response(f"written times {copy} ok", mimetype='text/xml', status=201,)
             else:
