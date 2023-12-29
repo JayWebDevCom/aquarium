@@ -1,6 +1,6 @@
 import time
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Tuple
 
 from loguru import logger
 
