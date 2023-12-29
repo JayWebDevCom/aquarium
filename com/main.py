@@ -3,7 +3,7 @@ import time
 
 import atexit
 import RPi.GPIO as GPIO
-import thread
+import threading
 import signal
 import schedule
 
@@ -130,7 +130,7 @@ def schedule_tank_drains_and_sump_refills():
 def start():
     controller.start()
     schedule_everything()
-    thread.start_new_thread(server.start, ())
+    threading.Thread(target=server.start).start()
     progress_tracker.write_ln("server started in separate thread")
     while True:
         schedule.run_pending()
