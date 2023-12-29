@@ -1,17 +1,14 @@
 import json
 from flask import Flask
-from Progress import ProgressTracker
 from Controller import Controller
 
 
 class Server:
     def __init__(
             self,
-            progress_tracker: ProgressTracker,
             controller: Controller,
             host = '0.0.0.0',
             port = 5000):
-        self.progress_tracker = progress_tracker,
         self.controller = controller
         self.app = Flask(__name__)
         self.host = host
