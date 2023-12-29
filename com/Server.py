@@ -1,5 +1,6 @@
 import json
 from flask import Flask, Response
+from Configuration import Configuration
 from Controller import Controller
 
 
@@ -8,9 +9,11 @@ class Server:
     def __init__(
             self,
             controller: Controller,
+            config: Configuration,
             host = '0.0.0.0',
             port = 5000):
         self.controller = controller
+        self.config = config
         self.app = Flask(__name__)
         self.host = host
         self.port = port
@@ -27,6 +30,9 @@ class Server:
 
     def times(self):
         return Response(json.dumps(self.controller.times()), mimetype=Server.JSON)
+
+    def config(self):
+        return Response(json.dumps(self.config.data()), mimetype=Server.JSON)
 
     def breakdown(self):
         return Response(json.dumps(self.controller.breakdown()), mimetype=Server.JSON)
