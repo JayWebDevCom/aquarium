@@ -1,5 +1,6 @@
 import json
 from flask import Flask
+from Progress import ProgressTracker
 from Controller import Controller
 
 
