@@ -38,7 +38,7 @@ class Server:
             if (content_type == 'application/json'):
                 up_to_date_config_data = Configuration(self.configuration.file_path).data()
                 copy = dict(up_to_date_config_data)
-                copy['water_change_times'] = json.loads(request.get_json())
+                copy['water_change_times'] = request.get_json()
                 self.configuration.write_data(copy)
                 return Response(f"written times {copy} ok", mimetype='text/xml', status=201,)
             else:
@@ -53,7 +53,7 @@ class Server:
             content_type = request.headers['Content-Type']
             print(f"received content-type {content_type}")
             if (content_type == 'application/json'):
-                to_write_data = json.loads(request.get_json())
+                to_write_data = request.get_json()
                 self.configuration.write_data(to_write_data)
                 return Response(f"written times {to_write_data} ok", mimetype='text/xml', status=201,)
             else:
