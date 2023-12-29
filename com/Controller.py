@@ -204,4 +204,6 @@ class Controller:
         return []
 
     def breakdown(self) -> Tuple[float, float, float]:
-        return self.sump.temperature_breakdown()
+        val = self.sump.temperature_breakdown()
+        self.progress_tracker.write_ln(val)
+        return val
