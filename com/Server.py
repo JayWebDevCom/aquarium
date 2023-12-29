@@ -32,8 +32,8 @@ class Server:
     def times(self):
         if request.method == 'GET':
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
-            config_json = json.dumps(up_to_date_config_data)
-            return Response(config_json, mimetype=Server.JSON)
+            wc_times_json = json.dumps(up_to_date_config_data['water_change_times'])
+            return Response(wc_times_json, mimetype=Server.JSON)
         else:
             content_type = request.headers['Content-Type']
             print(f"received content-type {content_type}")
