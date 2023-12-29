@@ -18,5 +18,5 @@ class Server:
         return self.controller.times()
 
     @app.route('/breakdown')
-        def breakdown():
-            return self.controller.times()
+    def breakdown():
+        return self.controller.times()
