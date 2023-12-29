@@ -42,7 +42,7 @@ class Server:
                 copy = dict(up_to_date_config_data)
                 copy['water_change_times'] = request.get_json()['water_change_times']
                 self.configuration.write_data(copy)
-                return Response(f"written times {copy} ok", mimetype='text/xml', status=201,)
+                return Response(f"written times\n{copy['water_change_times']}", mimetype='text/xml', status=201,)
             else:
                 return Response(f"content-type not supported {content_type}", status=500,)
 
@@ -57,7 +57,7 @@ class Server:
             if (content_type == 'application/json'):
                 to_write_data = request.get_json()
                 self.configuration.write_data(to_write_data)
-                return Response(f"written times {to_write_data} ok", mimetype='text/xml', status=201,)
+                return Response(f"written data\n{to_write_data} ok", mimetype='text/xml', status=201,)
             else:
                 return Response(f"content-type not supported {content_type}", status=500,)
 
