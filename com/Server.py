@@ -11,13 +11,13 @@ class Server:
             controller: Controller):
         self.controller = controller
 
-    def start():
+    def start(self):
         app.run(debug = True)
 
     @app.route('/times')
-    def times():
+    def times(self):
         return self.controller.times()
 
     @app.route('/breakdown')
-    def breakdown():
+    def breakdown(self):
         return self.controller.breakdown()
