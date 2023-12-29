@@ -26,7 +26,7 @@ class Server:
         return Response("OK", mimetype='text/xml')
 
     def times(self):
-        return Response(self.controller.times(), mimetype=Server.JSON)
+        return Response(json.dumps(self.controller.times()), mimetype=Server.JSON)
 
     def breakdown(self):
         return Response(json.dumps(self.controller.breakdown()), mimetype=Server.JSON)
