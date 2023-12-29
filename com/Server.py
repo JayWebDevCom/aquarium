@@ -1,14 +1,16 @@
+import json
 from flask import Flask
-
 from Controller import Controller
 
 
 class Server:
     def __init__(
             self,
+            progress_tracker: ProgressTracker,
             controller: Controller,
             host = '0.0.0.0',
             port = 5000):
+        self.progress_tracker = progress_tracker,
         self.controller = controller
         self.app = Flask(__name__)
         self.host = host
@@ -28,4 +30,6 @@ class Server:
         return self.controller.times()
 
     def breakdown(self):
-        return self.controller.breakdown()
+        val = self.sump.temperature_breakdown()
+        self.progress_tracker.write_ln(f"val is {val}")
+        return json.dumps(val)

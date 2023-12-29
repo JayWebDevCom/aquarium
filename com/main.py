@@ -3,6 +3,7 @@ import time
 
 import atexit
 import RPi.GPIO as GPIO
+import thread
 import signal
 import schedule
 
@@ -65,7 +66,7 @@ sump = Sump(empty_pump, refill_pump, return_pump,
 current_dir = os.path.dirname(os.path.abspath(__file__))
 scripts = [f"{current_dir}/temperatureScript_both.py", f"{current_dir}/levelSensorWithTofScript.py"]
 controller = Controller(sump, scripts, config, progress_tracker, tank_drain_valve)
-server = Server(controller)
+server = Server(progress_tracker, controller)
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 
 
@@ -129,7 +130,8 @@ def schedule_tank_drains_and_sump_refills():
 def start():
     controller.start()
     schedule_everything()
-    server.start()
+    thread.start_new_thread(server.start, ())
+    progress_tracker.write_ln("server started in separate thread")
     while True:
         schedule.run_pending()
         time.sleep(1)
