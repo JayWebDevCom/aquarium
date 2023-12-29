@@ -29,6 +29,6 @@ class Configuration:
     def get_file_path(self):
         return self.file_path
 
-    def write_data(self, data: dict)
+    def write_data(self, data: dict):
         with open(self.file_path, 'w') as f:
             yaml.dump(data, f, default_flow_style=False)
