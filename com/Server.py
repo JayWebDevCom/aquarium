@@ -8,15 +8,15 @@ class Server:
             self,
             controller: Controller):
         self.controller = controller
-        app = Flask(__name)
+        self.app = Flask(__name__)
 
     def start():
-        app.run(debug = True)
+        self.app.run(debug = True)
 
     @app.route('/times')
-    def times()
+    def times():
         return self.controller.times()
 
     @app.route('/breakdown')
-        def breakdown()
+        def breakdown():
             return self.controller.times()
