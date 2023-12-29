@@ -13,10 +13,10 @@ class Server:
     def start():
         self.app.run(debug = True)
 
-    @app.route('/times')
+    @self.app.route('/times')
     def times():
         return self.controller.times()
 
-    @app.route('/breakdown')
+    @self.app.route('/breakdown')
     def breakdown():
         return self.controller.times()
