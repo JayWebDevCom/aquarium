@@ -6,7 +6,7 @@ from Controller import Controller
 class Server:
     def __init__(
             self,
-            controller: Controller
+            controller: Controller,
             host = '0.0.0.0',
             port = 5000):
         self.controller = controller
