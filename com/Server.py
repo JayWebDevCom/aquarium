@@ -20,7 +20,7 @@ class Server:
         self.app.add_url_rule('/breakdown', view_func=breakdown)
         self.app.run(host=self.host, port=self.port, debug = True)
 
-    def ok():
+    def ok(self):
         return "OK"
 
     def times(self):
