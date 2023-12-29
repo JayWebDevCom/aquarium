@@ -1,4 +1,4 @@
-from yaml import yaml
+import yaml
 
 
 class Configuration:
