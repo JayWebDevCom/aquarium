@@ -9,20 +9,20 @@ class Server:
     def __init__(
             self,
             controller: Controller,
-            config: Configuration,
+            configuration: Configuration,
             host = '0.0.0.0',
             port = 5000):
         self.controller = controller
-        self.config = config
+        self.configuration = configuration
         self.app = Flask(__name__)
         self.host = host
         self.port = port
 
     def start(self):
         self.app.add_url_rule('/', view_func=self.ok)
-        self.app.add_url_rule('/config', view_func=self.config)
-        self.app.add_url_rule('/times', view_func=self.times)
-        self.app.add_url_rule('/breakdown', view_func=self.breakdown)
+        self.app.add_url_rule('/config', methods=['GET, POST'], view_func=self.config)
+        self.app.add_url_rule('/times', methods=['GET'], view_func=self.times)
+        self.app.add_url_rule('/breakdown', methods=['GET'], view_func=self.breakdown)
 
         self.app.run(host=self.host, port=self.port)
 
@@ -33,7 +33,7 @@ class Server:
         return Response(json.dumps(self.controller.times()), mimetype=Server.JSON)
 
     def config(self):
-        return Response(json.dumps(self.config.data()), mimetype=Server.JSON)
+        return Response(json.dumps(self.configuration.data()), mimetype=Server.JSON)
 
     def breakdown(self):
         return Response(json.dumps(self.controller.breakdown()), mimetype=Server.JSON)
