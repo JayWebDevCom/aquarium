@@ -38,7 +38,8 @@ class Server:
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             up_to_date_config_data['water_change_times'] = request.get_json()['water_change_times']
             self.configuration.write_data(up_to_date_config_data)
-            return Response(up_to_date_config_data['water_change_times'], mimetype=Server.JSON, status=201,)
+            response_json = json.dumps(up_to_date_config_data['water_change_times'])
+            return Response(response_json, mimetype=Server.JSON, status=201,)
         else:
             return Response(f"content-type not supported {content_type}", status=500,)
 
@@ -50,7 +51,7 @@ class Server:
         elif request.headers['Content-Type'] == 'application/json':
              data = request.get_json()
              self.configuration.write_data(data)
-             return Response(data, mimetype=Server.JSON, status=201,)
+             return Response(json.dumps(data), mimetype=Server.JSON, status=201,)
         else:
              return Response(f"content-type not supported {content_type}", mimetype='text/xml', status=500,)
 
