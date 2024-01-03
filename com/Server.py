@@ -7,6 +7,7 @@ from Controller import Controller
 
 class Server:
     JSON = 'application/json'
+    TEXT = 'text/xml'
 
     def __init__(
             self,
@@ -33,32 +34,34 @@ class Server:
         return Response("OK", mimetype='text/xml')
 
     def times(self):
-        content_type = request.headers['Content-Type']
         if request.method == 'GET':
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             wc_times_json = json.dumps(up_to_date_config_data['water_change_times'])
             return Server.response_of(wc_times_json, Server.JSON, 200)
-        elif request.headers['Content-Type'] == 'application/json':
+
+        elif request.method == 'POST' and request.headers['Content-Type'] == 'application/json':
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             up_to_date_config_data['water_change_times'] = request.get_json()['water_change_times']
             self.configuration.write_data(up_to_date_config_data)
             response_json = json.dumps(up_to_date_config_data['water_change_times'])
             return Server.response_of(response_json, Server.JSON, 201)
+
         else:
-            return Server.response_of(f"content-type not supported {content_type}", Server.JSON, status=500)
+            return Server.response_of(f"request error for request: {request}", Server.TEXT, 500)
 
     def config(self):
-        content_type = request.headers['Content-Type']
         if request.method == 'GET':
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             config_json = json.dumps(up_to_date_config_data)
             return Server.response_of(config_json, Server.JSON, 200)
-        elif content_type == 'application/json':
+
+        elif request.method == 'POST' and request.headers['Content-Type'] == Server.JSON:
             data = request.get_json()
             self.configuration.write_data(data)
             return Server.response_of(json.dumps(data), mimetype=Server.JSON, status=201)
+
         else:
-            return Server.response_of(f"content-type not supported {content_type}", 'text/xml', 500)
+            return Server.response_of(f"request error for request: {request}", Server.TEXT, 500)
 
     def breakdown(self):
         return Server.response_of(json.dumps(self.controller.breakdown()), Server.JSON, 200)
