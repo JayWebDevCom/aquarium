@@ -1,6 +1,9 @@
 import json
+from http.client import HTTPException
 
 from flask import Flask, Response, request
+from werkzeug.exceptions import HTTPException
+
 from Configuration import Configuration
 from Controller import Controller
 
@@ -22,12 +25,15 @@ class Server:
         self.port = port
 
     def start(self):
+        self.create_app().run(host=self.host, port=self.port)
+
+    def create_app(self) -> object:
         self.app.add_url_rule('/', view_func=Server.ok)
         self.app.add_url_rule('/config', methods=['GET', 'POST'], view_func=self.config)
         self.app.add_url_rule('/times', methods=['GET', 'POST'], view_func=self.times)
         self.app.add_url_rule('/breakdown', methods=['GET'], view_func=self.breakdown)
-
-        self.app.run(host=self.host, port=self.port)
+        self.app.register_error_handler(HTTPException, self.handle_exception)
+        return self.app
 
     @staticmethod
     def ok():
@@ -39,7 +45,7 @@ class Server:
             wc_times_json = json.dumps(up_to_date_config_data['water_change_times'])
             return Server.response_of(wc_times_json, Server.JSON, 200)
 
-        elif request.method == 'POST' and request.headers['Content-Type'] == 'application/json':
+        elif request.method == 'POST' and request.headers['Content-Type'] == Server.JSON:
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             up_to_date_config_data['water_change_times'] = request.get_json()['water_change_times']
             self.configuration.write_data(up_to_date_config_data)
@@ -61,7 +67,7 @@ class Server:
             return Server.response_of(json.dumps(data), mimetype=Server.JSON, status=201)
 
         else:
-            return Server.response_of(f"request error for request: {request}", Server.TEXT, 500)
+            raise AquariumServerError()
 
     def breakdown(self):
         return Server.response_of(json.dumps(self.controller.breakdown()), Server.JSON, 200)
@@ -69,3 +75,20 @@ class Server:
     @staticmethod
     def response_of(message: str, mimetype: str, status: int):
         return Response(message, mimetype=mimetype, status=status)
+
+    @staticmethod
+    def handle_exception(e):
+        response = e.get_response()
+        response.data = json.dumps({
+            "code": e.code,
+            "name": e.name,
+            "description": e.description,
+        })
+        response.content_type = "application/json"
+        return response
+
+
+class AquariumServerError(HTTPException):
+    code = 500
+    name = "AquariumServerError"
+    description = "Bad POST, possible wrong Content-Type"
