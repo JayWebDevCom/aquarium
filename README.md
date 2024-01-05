@@ -102,14 +102,6 @@ a progress bar will be displayed
 
 ![tail log output](images/log_output.png?raw=true "Tail Log Output")
 
-
-[scheduling-library]: https://github.com/dbader/schedule
-[unittest]: (https://docs.python.org/3/library/unittest.html)
-[side-effects]: https://docs.python.org/3/library/unittest.mock.html#quick-guide
-[systemctl]: https://www.liquidweb.com/kb/what-is-systemctl-an-in-depth-overview/
-[laser-distance-sensor]: https://www.hobbytronics.co.uk/vl53l0x
-[digital-temp-sensor]: https://shop.pimoroni.com/products/ds18b20-programmable-resolution-1-wire-digital-thermometer
-
 ### configure log rotation with logrotate
 - add the following to `/etc/logrotate.conf`
 ```bash
@@ -123,3 +115,29 @@ a progress bar will be displayed
 }
 ```
 
+### update aquarium configuration over the webserver
+- set entire aquarium configuration [httpie][httpie]
+```shell
+http <pi_ip_address>:5000/config Content-Type:application/json @config.json # full configuration json file
+```
+
+- get water change times
+```shell
+http <pi_ip_address>:5000/times
+```
+
+- set water change times
+```shell
+http <pi_ip_address>:5000/times Content-Type:application/json @times.json # :water_change_times": [] json file
+http <pi_ip_address>:5000/times Content-Type:application/json water_change_times:=@times_list.json # read from json water_change_times value only file
+http <pi_ip_address>:5000/times Content-Type:application/json water_change_times:='["09:01","12:01","15:01"]' # inline json
+echo '{"water_change_times": ["09:01", "18:31"]}' | http POST <pi_ip_address>:5000/times
+```
+
+[scheduling-library]: https://github.com/dbader/schedule
+[unittest]: (https://docs.python.org/3/library/unittest.html)
+[side-effects]: https://docs.python.org/3/library/unittest.mock.html#quick-guide
+[systemctl]: https://www.liquidweb.com/kb/what-is-systemctl-an-in-depth-overview/
+[laser-distance-sensor]: https://www.hobbytronics.co.uk/vl53l0x
+[digital-temp-sensor]: https://shop.pimoroni.com/products/ds18b20-programmable-resolution-1-wire-digital-thermometer
+[httpie]: https://httpie.io/
