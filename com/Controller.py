@@ -200,8 +200,5 @@ class Controller:
         refill_times = [datetime.strftime(t, simple_time_format) for t in formatted_refill_times]
         return refill_times
 
-    def times(self) -> List[str]:
-        return []
-
-    def breakdown(self) -> Tuple[float, float, float]:
+    def temperature_breakdown(self) -> Tuple[float, float, float]:
         return self.sump.temperature_breakdown()

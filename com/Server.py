@@ -53,7 +53,7 @@ class Server:
             return Server.response_of(response_json, Server.JSON, 201)
 
         else:
-            return Server.response_of(f"request error for request: {request}", Server.TEXT, 500)
+            raise AquariumServerError()
 
     def config(self):
         if request.method == 'GET':
@@ -70,7 +70,7 @@ class Server:
             raise AquariumServerError()
 
     def breakdown(self):
-        return Server.response_of(json.dumps(self.controller.breakdown()), Server.JSON, 200)
+        return Server.response_of(json.dumps(self.controller.temperature_breakdown()), Server.JSON, 200)
 
     @staticmethod
     def response_of(message: str, mimetype: str, status: int):

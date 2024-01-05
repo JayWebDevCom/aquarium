@@ -1,4 +1,4 @@
-import yaml
+from yaml import safe_load, dump
 
 
 class Configuration:
@@ -7,7 +7,7 @@ class Configuration:
         self.file_path = file_path
         with open(self.file_path, 'r') as stream:
             try:
-                self.aquarium = yaml.safe_load(stream)
+                self.aquarium = safe_load(stream)
             except ImportError:
                 from yaml import Loader, Dumper
 
@@ -31,4 +31,4 @@ class Configuration:
 
     def write_data(self, data: dict):
         with open(self.file_path, 'w') as f:
-            yaml.dump(data, f, default_flow_style=False)
+            dump(data, f, default_flow_style=False)
