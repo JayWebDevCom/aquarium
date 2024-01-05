@@ -1,4 +1,5 @@
 import json
+from http import HTTPStatus
 from http.client import HTTPException
 
 from flask import Flask, Response, request
@@ -43,7 +44,7 @@ class Server:
         if request.method == 'GET':
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             wc_times_json = json.dumps(up_to_date_config_data['water_change_times'])
-            return Server.response_of(wc_times_json, Server.JSON, 200)
+            return Server.response_of(wc_times_json, Server.JSON, HTTPStatus.OK)
 
         elif request.method == 'POST' and request.headers['Content-Type'] == Server.JSON:
             new_water_change_times = request.get_json()['water_change_times']
@@ -53,7 +54,7 @@ class Server:
             up_to_date_config_data['water_change_times'] = new_water_change_times
             self.configuration.write_data(up_to_date_config_data)
             response_json = json.dumps(up_to_date_config_data['water_change_times'])
-            return Server.response_of(response_json, Server.JSON, 201)
+            return Server.response_of(response_json, Server.JSON, HTTPStatus.CREATED)
 
         else:
             raise AquariumServerError()
@@ -62,18 +63,18 @@ class Server:
         if request.method == 'GET':
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             config_json = json.dumps(up_to_date_config_data)
-            return Server.response_of(config_json, Server.JSON, 200)
+            return Server.response_of(config_json, Server.JSON, HTTPStatus.OK)
 
         elif request.method == 'POST' and request.headers['Content-Type'] == Server.JSON:
             data = request.get_json()
             self.configuration.write_data(data)
-            return Server.response_of(json.dumps(data), mimetype=Server.JSON, status=201)
+            return Server.response_of(json.dumps(data), mimetype=Server.JSON, status=HTTPStatus.CREATED)
 
         else:
             raise AquariumServerError()
 
     def breakdown(self):
-        return Server.response_of(json.dumps(self.controller.temperature_breakdown()), Server.JSON, 200)
+        return Server.response_of(json.dumps(self.controller.temperature_breakdown()), Server.JSON, HTTPStatus.OK)
 
     @staticmethod
     def response_of(message: str, mimetype: str, status: int):
@@ -92,12 +93,12 @@ class Server:
 
 
 class AquariumServerError(HTTPException):
-    code = 500
+    code = HTTPStatus.INTERNAL_SERVER_ERROR
     name = "AquariumServerError"
     description = "Bad POST, possible wrong Content-Type"
 
 
 class AquariumServerListError(HTTPException):
-    code = 500
+    code = HTTPStatus.INTERNAL_SERVER_ERROR
     name = "AquariumServerListError"
     description = "Bad POST, possible incorrect data type provided - list required"
