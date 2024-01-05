@@ -46,8 +46,11 @@ class Server:
             return Server.response_of(wc_times_json, Server.JSON, 200)
 
         elif request.method == 'POST' and request.headers['Content-Type'] == Server.JSON:
+            new_water_change_times = request.get_json()['water_change_times']
+            if not isinstance(new_water_change_times, list):
+                raise AquariumServerListError()
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
-            up_to_date_config_data['water_change_times'] = request.get_json()['water_change_times']
+            up_to_date_config_data['water_change_times'] = new_water_change_times
             self.configuration.write_data(up_to_date_config_data)
             response_json = json.dumps(up_to_date_config_data['water_change_times'])
             return Server.response_of(response_json, Server.JSON, 201)
@@ -92,3 +95,9 @@ class AquariumServerError(HTTPException):
     code = 500
     name = "AquariumServerError"
     description = "Bad POST, possible wrong Content-Type"
+
+
+class AquariumServerListError(HTTPException):
+    code = 500
+    name = "AquariumServerListError"
+    description = "Bad POST, possible incorrect data type provided - list required"
