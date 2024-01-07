@@ -128,10 +128,10 @@ http <pi_ip_address>:5000/times
 
 - set water change times
 ```shell
-http PUT <pi_ip_address>:5000/times Content-Type:application/json @times.json # :water_change_times": [] json file
-http PUT <pi_ip_address>:5000/times Content-Type:application/json water_change_times:=@times_list.json # read from json water_change_times value only file
-http PUT <pi_ip_address>:5000/times Content-Type:application/json water_change_times:='["09:01","12:01","15:01"]' # inline json
-echo '{"water_change_times": ["09:01", "18:31"]}' | http PUT <pi_ip_address>:5000/times
+http PATCH <pi_ip_address>:5000/times Content-Type:application/json @times.json # :water_change_times": [] json file
+http PATCH <pi_ip_address>:5000/times Content-Type:application/json water_change_times:=@times_list.json # read from json water_change_times value only file
+http PATCH <pi_ip_address>:5000/times Content-Type:application/json water_change_times:='["09:01","12:01","15:01"]' # inline json
+echo '{"water_change_times": ["09:01", "18:31"]}' | http PATCH <pi_ip_address>:5000/times
 ```
 
 [scheduling-library]: https://github.com/dbader/schedule
