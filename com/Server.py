@@ -54,7 +54,7 @@ class Server:
             up_to_date_config_data['water_change_times'] = new_water_change_times
             self.configuration.write_data(up_to_date_config_data)
             response_json = json.dumps(up_to_date_config_data['water_change_times'])
-            return Server.response_of(response_json, Server.JSON, HTTPStatus.CREATED)
+            return Server.response_of(response_json, Server.JSON, HTTPStatus.OK)
 
         else:
             raise AquariumServerError()
@@ -68,7 +68,7 @@ class Server:
         elif request.method == 'PUT' and request.headers['Content-Type'] == Server.JSON:
             data = request.get_json()
             self.configuration.write_data(data)
-            return Server.response_of(json.dumps(data), mimetype=Server.JSON, status=HTTPStatus.CREATED)
+            return Server.response_of(json.dumps(data), mimetype=Server.JSON, status=HTTPStatus.OK)
 
         else:
             raise AquariumServerError()
