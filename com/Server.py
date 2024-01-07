@@ -30,8 +30,8 @@ class Server:
 
     def create_app(self) -> object:
         self.app.add_url_rule('/', view_func=Server.ok)
-        self.app.add_url_rule('/config', methods=['GET', 'POST'], view_func=self.config)
-        self.app.add_url_rule('/times', methods=['GET', 'POST'], view_func=self.times)
+        self.app.add_url_rule('/config', methods=['GET', 'PUT'], view_func=self.config)
+        self.app.add_url_rule('/times', methods=['GET', 'PUT'], view_func=self.times)
         self.app.add_url_rule('/breakdown', methods=['GET'], view_func=self.breakdown)
         self.app.register_error_handler(HTTPException, self.handle_exception)
         return self.app
@@ -46,7 +46,7 @@ class Server:
             wc_times_json = json.dumps(up_to_date_config_data['water_change_times'])
             return Server.response_of(wc_times_json, Server.JSON, HTTPStatus.OK)
 
-        elif request.method == 'POST' and request.headers['Content-Type'] == Server.JSON:
+        elif request.method == 'PUT' and request.headers['Content-Type'] == Server.JSON:
             new_water_change_times = request.get_json()['water_change_times']
             if not isinstance(new_water_change_times, list):
                 raise AquariumServerListError()
@@ -65,7 +65,7 @@ class Server:
             config_json = json.dumps(up_to_date_config_data)
             return Server.response_of(config_json, Server.JSON, HTTPStatus.OK)
 
-        elif request.method == 'POST' and request.headers['Content-Type'] == Server.JSON:
+        elif request.method == 'PUT' and request.headers['Content-Type'] == Server.JSON:
             data = request.get_json()
             self.configuration.write_data(data)
             return Server.response_of(json.dumps(data), mimetype=Server.JSON, status=HTTPStatus.CREATED)
@@ -95,10 +95,10 @@ class Server:
 class AquariumServerError(HTTPException):
     code = HTTPStatus.INTERNAL_SERVER_ERROR
     name = "AquariumServerError"
-    description = "Bad POST, possible wrong Content-Type"
+    description = "Bad PUT, possible wrong Content-Type"
 
 
 class AquariumServerListError(HTTPException):
     code = HTTPStatus.INTERNAL_SERVER_ERROR
     name = "AquariumServerListError"
-    description = "Bad POST, possible incorrect data type provided - list required"
+    description = "Bad PUT, possible incorrect data type provided - list required"
