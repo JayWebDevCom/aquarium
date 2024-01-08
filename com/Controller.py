@@ -1,6 +1,6 @@
 import time
 from datetime import datetime, timedelta
-from typing import List
+from typing import List, Tuple
 
 from loguru import logger
 
@@ -199,3 +199,6 @@ class Controller:
         formatted_refill_times = [t + timedelta(seconds=drain_duration * multiplier) for t in formatted_drain_times]
         refill_times = [datetime.strftime(t, simple_time_format) for t in formatted_refill_times]
         return refill_times
+
+    def temperature_breakdown(self) -> Tuple[float, float, float]:
+        return self.sump.temperature_breakdown()

@@ -3,6 +3,7 @@ import time
 
 import atexit
 import RPi.GPIO as GPIO
+import threading
 import signal
 import schedule
 
@@ -10,6 +11,7 @@ from AquariumLogger import AquariumLogger
 from Configuration import Configuration
 from Controller import Controller
 from Progress import ProgressTracker, Style
+from Server import Server
 from components.LevelSensor import LevelSensor
 from components.LevelsBoundary import LevelsBoundary
 from components.ReadingsSanitizer import ReadingsSanitizer
@@ -64,7 +66,7 @@ sump = Sump(empty_pump, refill_pump, return_pump,
 current_dir = os.path.dirname(os.path.abspath(__file__))
 scripts = [f"{current_dir}/temperatureScript_both.py", f"{current_dir}/levelSensorWithTofScript.py"]
 controller = Controller(sump, scripts, config, progress_tracker, tank_drain_valve)
-
+server = Server(controller, config)
 logger.info(f"starting with full sump level: {full_level}, empty sump level: {empty_level}")
 
 
@@ -128,6 +130,8 @@ def schedule_tank_drains_and_sump_refills():
 def start():
     controller.start()
     schedule_everything()
+    threading.Thread(target=server.start).start()
+    progress_tracker.write_ln(f"{Style.LIGHT_BLUE}started server in separate thread")
     while True:
         schedule.run_pending()
         time.sleep(1)

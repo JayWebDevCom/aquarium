@@ -1,4 +1,4 @@
-from yaml import safe_load
+from yaml import safe_load, dump
 
 
 class Configuration:
@@ -28,3 +28,7 @@ class Configuration:
 
     def get_file_path(self):
         return self.file_path
+
+    def write_data(self, data: dict):
+        with open(self.file_path, 'w') as f:
+            dump(data, f, default_flow_style=False)
