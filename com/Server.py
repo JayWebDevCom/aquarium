@@ -4,6 +4,7 @@ from http.client import HTTPException
 
 from flask import Flask, Response, request
 from werkzeug.exceptions import HTTPException
+from waitress import serve
 
 from Configuration import Configuration
 from Controller import Controller
@@ -26,7 +27,7 @@ class Server:
         self.port = port
 
     def start(self):
-        self.create_app().run(host=self.host, port=self.port)
+        serve(self.create_app(), host=self.host, port=self.port)
 
     def create_app(self) -> object:
         self.app.add_url_rule('/', view_func=Server.ok)
