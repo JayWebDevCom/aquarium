@@ -1,32 +1,27 @@
-update_times:
-  - :00
-  - :15
-  - :30
-  - :45
-water_change_times:
-  - '09:01'
-  - '12:01'
-  - '15:01'
-  - '18:01'
-  - '21:01'
-tank_drain_times:
-  - '19:31'
-full_level: 26
-water_change_span: 16
+accuracy_allowance: 0.1
+environment: production
+full_level: 27
+level_check_interval: 5
+overfill_allowance: 1
+pump_in_channel: 23
+pump_out_channel: 27
+sump_pump_channel: 17
+sump_temp_device_id: 28-3c01f096e3df
+tank_drain_channel: 5
+tank_drain_duration: 10
+tank_drain_multiplier: 60
+tank_drain_times: []
+tank_temp_device_id: 28-3c01f096fc33
+temp_check_interval: 30
+temperature_difference_band: 2
 times_to_check_level: 9
 times_to_check_temp: 2
-accuracy_allowance: 0.1
-overfill_allowance: 1.0
-tank_temp_device_id: '28-01191c6c5b42'
-sump_temp_device_id: '28-01191c5f02ae'
-pump_out_channel: 27
-pump_in_channel: 23
-tank_drain_channel: 5
-tank_drain_duration: 60
-tank_drain_multiplier: 60
-sump_pump_channel: 17
-level_check_interval: 3
-temp_check_interval: 60
-temperature_difference_band: 2.5
-water_change_level: 90
-environment: production
+update_times:
+- :00
+- :15
+- :30
+- :45
+water_change_level: 95
+water_change_span: 20.5
+water_change_times:
+- 06:01
