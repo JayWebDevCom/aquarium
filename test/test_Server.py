@@ -101,7 +101,7 @@ class TestServer(TestCase):
             self.assertEqual('application/json', response.content_type)
             self.assertEqual(bytes(json.dumps(TestServer.configuration.data()), encoding='utf-8'), response.data)
 
-    def test_config_patch(self):
+    def test_config_put(self):
         with TestServer.server_app.test_client() as test_client:
             data = {
                 "list": [1, 2, 3],
@@ -110,14 +110,14 @@ class TestServer(TestCase):
                 },
                 "val": "foo"
             }
-            response = test_client.patch('/config', json=data)
+            response = test_client.put('/config', json=data)
 
             # response is as expected
             self.assertEqual(200, response.status_code)
             self.assertEqual('application/json', response.content_type)
             self.assertEqual(bytes(json.dumps(data), encoding='utf-8'), response.data)
 
-            # patch data is written to configuration
+            # put data is written to configuration
             up_to_date_config = Configuration(file_path=TestServer.configuration.file_path).data()
             self.assertEqual(data, up_to_date_config)
 
@@ -141,11 +141,11 @@ class TestServer(TestCase):
             up_to_date_config = Configuration(file_path=TestServer.configuration.file_path).data()
             self.assertEqual(initial_config_data, up_to_date_config)
 
-    def test_bad_patch(self):
+    def test_bad_put(self):
         with TestServer.server_app.test_client() as test_client:
             initial_config_data = TestServer.configuration.data()
             data = {"list": [1, 2, 3]}
-            response = test_client.patch('/config', data=data)
+            response = test_client.put('/config', data=data)
 
             # response is as expected
             self.assertEqual(500, response.status_code)

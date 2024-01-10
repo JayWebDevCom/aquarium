@@ -31,7 +31,7 @@ class Server:
 
     def create_app(self) -> object:
         self.app.add_url_rule('/', view_func=Server.ok)
-        self.app.add_url_rule('/config', methods=['GET', 'PATCH'], view_func=self.config)
+        self.app.add_url_rule('/config', methods=['GET', 'PUT'], view_func=self.config)
         self.app.add_url_rule('/times', methods=['GET', 'PATCH'], view_func=self.times)
         self.app.add_url_rule('/breakdown', methods=['GET'], view_func=self.breakdown)
         self.app.register_error_handler(HTTPException, self.handle_exception)
@@ -39,7 +39,7 @@ class Server:
 
     @staticmethod
     def ok():
-        return Response("OK", mimetype='text/xml')
+        return Response("OK", mimetype=Server.TEXT)
 
     def times(self):
         if request.method == 'GET':
@@ -66,7 +66,7 @@ class Server:
             config_json = json.dumps(up_to_date_config_data)
             return Server.response_of(config_json, Server.JSON, HTTPStatus.OK)
 
-        elif request.method == 'PATCH' and request.headers['Content-Type'] == Server.JSON:
+        elif request.method == 'PUT' and request.headers['Content-Type'] == Server.JSON:
             data = request.get_json()
             self.configuration.write_data(data)
             return Server.response_of(json.dumps(data), mimetype=Server.JSON, status=HTTPStatus.OK)
