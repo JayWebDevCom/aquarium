@@ -118,7 +118,7 @@ a progress bar will be displayed
 ### update aquarium configuration over the webserver
 - set entire aquarium configuration using [httpie][httpie]
 ```shell
-http <pi_ip_address>:5000/config Content-Type:application/json @config.json # full configuration json file
+http PUT <pi_ip_address>:5000/config Content-Type:application/json @config.json # full configuration json file
 ```
 
 - get water change times
