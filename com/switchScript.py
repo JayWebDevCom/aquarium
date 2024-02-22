@@ -21,7 +21,7 @@ def switch(time_: int, switch_name: str, cleanup: str):
     switches = {
         'pump_out': 27,
         'pump_in': 23,
-        'tank_drain': 5
+        'tank_drain': 16
     }
 
     channel = switches[switch_name]
