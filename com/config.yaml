@@ -1,13 +1,13 @@
 accuracy_allowance: 0.1
 environment: production
-full_level: 27
+full_level: 26
 level_check_interval: 5
 overfill_allowance: 1
 pump_in_channel: 23
 pump_out_channel: 27
 sump_pump_channel: 17
 sump_temp_device_id: 28-3c01f096e3df
-tank_drain_channel: 5
+tank_drain_channel: 16
 tank_drain_duration: 10
 tank_drain_multiplier: 60
 tank_drain_times: []
@@ -24,4 +24,8 @@ update_times:
 water_change_level: 95
 water_change_span: 20.5
 water_change_times:
-- 06:01
+- 09:01
+- '12:01'
+- '15:01'
+- '18:01'
+- '21:01'
