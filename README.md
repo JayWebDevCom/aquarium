@@ -114,11 +114,13 @@ a progress bar will be displayed
     weekly
 }
 ```
+### satisfy basic auth
+- add a user `username` value and `generate_password_hash(password)` value to the users list in in `config.yaml`
 
 ### update aquarium configuration over the webserver
 - set entire aquarium configuration using [httpie][httpie]
 ```shell
-http PUT <pi_ip_address>:5000/config Content-Type:application/json @config.json # full configuration json file
+http -a username:password PUT <pi_ip_address>:5000/config Content-Type:application/json @config.json # full configuration json file
 ```
 
 - get water change times
@@ -128,10 +130,10 @@ http <pi_ip_address>:5000/times
 
 - set water change times
 ```shell
-http PATCH <pi_ip_address>:5000/times Content-Type:application/json @times.json # :water_change_times": [] json file
-http PATCH <pi_ip_address>:5000/times Content-Type:application/json water_change_times:=@times_list.json # read from json water_change_times value only file
-http PATCH <pi_ip_address>:5000/times Content-Type:application/json water_change_times:='["09:01","12:01","15:01"]' # inline json
-echo '{"water_change_times": ["09:01", "18:31"]}' | http PATCH <pi_ip_address>:5000/times
+http -a username:password PATCH <pi_ip_address>:5000/times Content-Type:application/json @times.json # :water_change_times": [] json file
+http -a username:password PATCH <pi_ip_address>:5000/times Content-Type:application/json water_change_times:=@times_list.json # read from json water_change_times value only file
+http -a username:password PATCH <pi_ip_address>:5000/times Content-Type:application/json water_change_times:='["09:01","12:01","15:01"]' # inline json
+echo '{"water_change_times": ["09:01", "18:31"]}' | http -a username:password PATCH <pi_ip_address>:5000/times
 ```
 
 [scheduling-library]: https://github.com/dbader/schedule

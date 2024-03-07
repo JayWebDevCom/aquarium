@@ -3,8 +3,10 @@ from http import HTTPStatus
 from http.client import HTTPException
 
 from flask import Flask, Response, request
-from werkzeug.exceptions import HTTPException
+from flask_httpauth import HTTPBasicAuth
 from waitress import serve
+from werkzeug.exceptions import HTTPException
+from werkzeug.security import check_password_hash
 
 from Configuration import Configuration
 from Controller import Controller
@@ -13,6 +15,8 @@ from Controller import Controller
 class Server:
     JSON = 'application/json'
     TEXT = 'text/xml'
+    configuration: Configuration
+    auth = HTTPBasicAuth()
 
     def __init__(
             self,
@@ -35,12 +39,15 @@ class Server:
         self.app.add_url_rule('/times', methods=['GET', 'PATCH'], view_func=self.times)
         self.app.add_url_rule('/breakdown', methods=['GET'], view_func=self.breakdown)
         self.app.register_error_handler(HTTPException, self.handle_exception)
+        Server.configuration = self.configuration
         return self.app
 
     @staticmethod
+    @auth.login_required
     def ok():
         return Response("OK", mimetype=Server.TEXT)
 
+    @auth.login_required
     def times(self):
         if request.method == 'GET':
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
@@ -60,6 +67,7 @@ class Server:
         else:
             raise AquariumServerError()
 
+    @auth.login_required
     def config(self):
         if request.method == 'GET':
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
@@ -74,8 +82,17 @@ class Server:
         else:
             raise AquariumServerError()
 
+    @auth.login_required()
     def breakdown(self):
         return Server.response_of(json.dumps(self.controller.temperature_breakdown()), Server.JSON, HTTPStatus.OK)
+
+    @staticmethod
+    @auth.verify_password
+    def verify_password(username, password):
+        for user in Server.configuration.get('users'):
+            if user["username"] == username:
+                return check_password_hash(user["password"], password)
+        return False
 
     @staticmethod
     def response_of(message: str, mimetype: str, status: int):

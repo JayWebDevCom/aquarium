@@ -1,11 +1,13 @@
 import json
 import os
 import tempfile
+from base64 import b64encode
 from typing import Any, Union, IO
 from unittest import TestCase
 from unittest.mock import Mock, MagicMock
 
 import yaml
+from werkzeug.security import generate_password_hash
 
 from Configuration import Configuration
 from Controller import Controller
@@ -13,33 +15,41 @@ from Server import Server
 
 
 class TestServer(TestCase):
-    temp: Union[IO[bytes], IO[Any]]
+    tempfile: Union[IO[bytes], IO[Any]]
     server_app: object
     configuration: Configuration
+    password = 'test-password'
     configuration_data = {
         'update_times': [':00', ':15', ':30', ':45'],
         'water_change_times': ['1', '2', '3'],
         'overfill_allowance': 2.5,
         'inner': {'value': 'inner-value'},
-        'empty': []
+        'empty': [],
+        'users': [
+            {
+                'username': 'test-user',
+                'password': generate_password_hash(password)
+            }
+        ]
+
     }
+    credentials = b64encode(f"{configuration_data['users'][0]['username']}:{password}".encode('ascii')).decode()
 
     @classmethod
     def setUp(cls):
-        TestServer.temp = tempfile.NamedTemporaryFile(delete=False)
-        TestServer.configuration = Configuration(TestServer.temp.name)
+        TestServer.tempfile = tempfile.NamedTemporaryFile(delete=False)
+        with open(TestServer.tempfile.name, 'w') as file:
+            yaml.dump(TestServer.configuration_data, file)
+        TestServer.configuration = Configuration(TestServer.tempfile.name)
+
         mock = MagicMock()
         controller = Controller(sump=mock, scripts=[], config=TestServer.configuration,
                                 progress_tracker=mock, tank_drain_valve=mock)
         TestServer.server_app = Server(controller, TestServer.configuration).create_app()
-        with open(TestServer.temp.name, 'w') as file:
-            yaml.dump(TestServer.configuration_data, file)
-
-        TestServer.configuration = Configuration(TestServer.temp.name)
 
     @classmethod
     def tearDownClass(cls):
-        os.remove(TestServer.temp.name)
+        os.remove(TestServer.tempfile.name)
 
     def test_breakdown_page(self):
         mock_controller = MagicMock()
@@ -54,21 +64,21 @@ class TestServer(TestCase):
         server_app = Server(mock_controller, TestServer.configuration).create_app()
 
         with server_app.test_client() as test_client:
-            response = test_client.get('/breakdown')
+            response = test_client.get('/breakdown', headers={"Authorization": f"Basic {TestServer.credentials}"})
             self.assertEqual(200, response.status_code)
             self.assertEqual('application/json', response.content_type)
             self.assertEqual(bytes(json.dumps(breakdown_data), encoding='utf-8'), response.data)
 
     def test_home_page(self):
         with TestServer.server_app.test_client() as test_client:
-            response = test_client.get('/')
+            response = test_client.get('/', headers={"Authorization": f"Basic {TestServer.credentials}"})
             self.assertEqual('text/xml; charset=utf-8', response.content_type)
             self.assertEqual(200, response.status_code)
             self.assertEqual(bytes('OK', encoding='utf-8'), response.data)
 
     def test_times(self):
         with TestServer.server_app.test_client() as test_client:
-            response = test_client.get('/times')
+            response = test_client.get('/times', headers={"Authorization": f"Basic {TestServer.credentials}"})
             self.assertEqual(200, response.status_code)
             self.assertEqual('application/json', response.content_type)
             current_water_change_times = TestServer.configuration.water_change_times()
@@ -83,7 +93,8 @@ class TestServer(TestCase):
                 },
                 "water_change_times": ["one", "two", "three"]
             }
-            response = test_client.patch('/times', json=data)
+            response = test_client.patch('/times', json=data,
+                                         headers={"Authorization": f"Basic {TestServer.credentials}"})
 
             # response is as expected
             self.assertEqual(200, response.status_code)
@@ -96,7 +107,7 @@ class TestServer(TestCase):
 
     def test_config_get(self):
         with TestServer.server_app.test_client() as test_client:
-            response = test_client.get('/config')
+            response = test_client.get('/config', headers={"Authorization": f"Basic {TestServer.credentials}"})
             self.assertEqual(200, response.status_code)
             self.assertEqual('application/json', response.content_type)
             self.assertEqual(bytes(json.dumps(TestServer.configuration.data()), encoding='utf-8'), response.data)
@@ -110,7 +121,8 @@ class TestServer(TestCase):
                 },
                 "val": "foo"
             }
-            response = test_client.put('/config', json=data)
+            response = test_client.put('/config', json=data,
+                                       headers={"Authorization": f"Basic {TestServer.credentials}"})
 
             # response is as expected
             self.assertEqual(200, response.status_code)
@@ -124,7 +136,7 @@ class TestServer(TestCase):
     def test_error_page(self):
         with TestServer.server_app.test_client() as test_client:
             initial_config_data = TestServer.configuration.data()
-            response = test_client.get('/error')
+            response = test_client.get('/error', headers={"Authorization": f"Basic {TestServer.credentials}"})
 
             # response is as expected
             self.assertEqual(404, response.status_code)
@@ -145,7 +157,8 @@ class TestServer(TestCase):
         with TestServer.server_app.test_client() as test_client:
             initial_config_data = TestServer.configuration.data()
             data = {"list": [1, 2, 3]}
-            response = test_client.put('/config', data=data)
+            response = test_client.put('/config', data=data,
+                                       headers={"Authorization": f"Basic {TestServer.credentials}"})
 
             # response is as expected
             self.assertEqual(500, response.status_code)
@@ -164,7 +177,8 @@ class TestServer(TestCase):
         with TestServer.server_app.test_client() as test_client:
             initial_config_data = TestServer.configuration.data()
             data = {"water_change_times": "not a list"}
-            response = test_client.patch('/times', json=data)
+            response = test_client.patch('/times', json=data,
+                                         headers={"Authorization": f"Basic {TestServer.credentials}"})
 
             # response is as expected
             self.assertEqual(500, response.status_code)
