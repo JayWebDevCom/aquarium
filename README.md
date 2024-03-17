@@ -116,7 +116,10 @@ a progress bar will be displayed
 ```
 ### satisfy basic auth
 - add a user `username` value and `generate_password_hash(password)` value to the users list in in `config.yaml`
-
+```shell
+http -a username:password 192.168.1.14:5000/config | jq '.water_change_times'
+http 192.168.1.14:5000/config "Authorization: Basic <base84-encoded-credentials>" | jq '.water_change_times'
+```
 ### update aquarium configuration over the webserver
 - set entire aquarium configuration using [httpie][httpie]
 ```shell
@@ -134,6 +137,7 @@ http -a username:password PATCH <pi_ip_address>:5000/times Content-Type:applicat
 http -a username:password PATCH <pi_ip_address>:5000/times Content-Type:application/json water_change_times:=@times_list.json # read from json water_change_times value only file
 http -a username:password PATCH <pi_ip_address>:5000/times Content-Type:application/json water_change_times:='["09:01","12:01","15:01"]' # inline json
 echo '{"water_change_times": ["09:01", "18:31"]}' | http -a username:password PATCH <pi_ip_address>:5000/times
+http 192.168.1.14:5000/config "Authorization: Basic $(echo -ne 'username:password' | base64)" | jq '.water_change_times'
 ```
 
 [scheduling-library]: https://github.com/dbader/schedule
