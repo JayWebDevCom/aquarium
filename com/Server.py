@@ -37,6 +37,7 @@ class Server:
         self.app.add_url_rule('/', view_func=Server.ok)
         self.app.add_url_rule('/config', methods=['GET', 'PUT'], view_func=self.config)
         self.app.add_url_rule('/times', methods=['GET', 'PATCH'], view_func=self.times)
+        self.app.add_url_rule('/drains', methods=['GET', 'PATCH'], view_func=self.drains)
         self.app.add_url_rule('/breakdown', methods=['GET'], view_func=self.breakdown)
         self.app.register_error_handler(HTTPException, self.handle_exception)
         Server.configuration = self.configuration
@@ -62,6 +63,26 @@ class Server:
             up_to_date_config_data['water_change_times'] = new_water_change_times
             self.configuration.write_data(up_to_date_config_data)
             response_json = json.dumps(up_to_date_config_data['water_change_times'])
+            return Server.response_of(response_json, Server.JSON, HTTPStatus.OK)
+
+        else:
+            raise AquariumServerError()
+
+    @auth.login_required
+    def drains(self):
+        if request.method == 'GET':
+            up_to_date_config_data = Configuration(self.configuration.file_path).data()
+            td_times_json = json.dumps(up_to_date_config_data['tank_drain_times'])
+            return Server.response_of(td_times_json, Server.JSON, HTTPStatus.OK)
+
+        elif request.method == 'PATCH' and request.headers['Content-Type'] == Server.JSON:
+            new_tank_drain_times = request.get_json()['tank_drain_times']
+            if not isinstance(new_tank_drain_times, list):
+                raise AquariumServerListError()
+            up_to_date_config_data = Configuration(self.configuration.file_path).data()
+            up_to_date_config_data['tank_drain_times'] = new_tank_drain_times
+            self.configuration.write_data(up_to_date_config_data)
+            response_json = json.dumps(up_to_date_config_data['tank_drain_times'])
             return Server.response_of(response_json, Server.JSON, HTTPStatus.OK)
 
         else:
