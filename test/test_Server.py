@@ -22,6 +22,7 @@ class TestServer(TestCase):
     configuration_data = {
         'update_times': [':00', ':15', ':30', ':45'],
         'water_change_times': ['1', '2', '3'],
+        'tank_drain_times': ['4', '5', '6'],
         'overfill_allowance': 2.5,
         'inner': {'value': 'inner-value'},
         'empty': [],
@@ -104,6 +105,35 @@ class TestServer(TestCase):
             # patch data is written to configuration
             up_to_date_config = Configuration(file_path=TestServer.configuration.file_path).data()
             self.assertEqual(data['water_change_times'], up_to_date_config['water_change_times'])
+
+    def test_drains(self):
+        with TestServer.server_app.test_client() as test_client:
+            response = test_client.get('/drains', headers={"Authorization": f"Basic {TestServer.credentials}"})
+            self.assertEqual(200, response.status_code)
+            self.assertEqual('application/json', response.content_type)
+            current_water_change_times = TestServer.configuration.tank_drain_times()
+            self.assertEqual(bytes(json.dumps(current_water_change_times), encoding='utf-8'), response.data)
+
+    def test_drains_patch(self):
+        with TestServer.server_app.test_client() as test_client:
+            data = {
+                "val": "foo",
+                "obj": {
+                    "key": "val"
+                },
+                "tank_drain_times": ["three", "four", "five"]
+            }
+            response = test_client.patch('/drains', json=data,
+                                         headers={"Authorization": f"Basic {TestServer.credentials}"})
+
+            # response is as expected
+            self.assertEqual(200, response.status_code)
+            self.assertEqual('application/json', response.content_type)
+            self.assertEqual(bytes(json.dumps(data['tank_drain_times']), encoding='utf-8'), response.data)
+
+            # patch data is written to configuration
+            up_to_date_config = Configuration(file_path=TestServer.configuration.file_path).data()
+            self.assertEqual(data['tank_drain_times'], up_to_date_config['tank_drain_times'])
 
     def test_config_get(self):
         with TestServer.server_app.test_client() as test_client:
