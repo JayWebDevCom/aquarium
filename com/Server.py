@@ -1,6 +1,8 @@
 import json
+from datetime import datetime
 from http import HTTPStatus
 from http.client import HTTPException
+from typing import List
 
 from flask import Flask, Response, request
 from flask_httpauth import HTTPBasicAuth
@@ -57,7 +59,7 @@ class Server:
 
         elif request.method == 'PATCH' and request.headers['Content-Type'] == Server.JSON:
             new_water_change_times = request.get_json()['water_change_times']
-            if not isinstance(new_water_change_times, list):
+            if not isinstance(new_water_change_times, list) or not Server.are_valid_times(new_water_change_times):
                 raise AquariumServerListError()
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             up_to_date_config_data['water_change_times'] = new_water_change_times
@@ -77,7 +79,7 @@ class Server:
 
         elif request.method == 'PATCH' and request.headers['Content-Type'] == Server.JSON:
             new_tank_drain_times = request.get_json()['tank_drain_times']
-            if not isinstance(new_tank_drain_times, list):
+            if not isinstance(new_tank_drain_times, list) or not Server.are_valid_times(new_tank_drain_times):
                 raise AquariumServerListError()
             up_to_date_config_data = Configuration(self.configuration.file_path).data()
             up_to_date_config_data['tank_drain_times'] = new_tank_drain_times
@@ -130,6 +132,15 @@ class Server:
         response.content_type = "application/json"
         return response
 
+    @staticmethod
+    def are_valid_times(times_list: List[str]) -> bool:
+        for time in times_list:
+            try:
+                datetime.strptime(time, '%H:%M')
+            except ValueError as e:
+                return False
+        return True
+
 
 class AquariumServerError(HTTPException):
     code = HTTPStatus.INTERNAL_SERVER_ERROR
@@ -140,4 +151,4 @@ class AquariumServerError(HTTPException):
 class AquariumServerListError(HTTPException):
     code = HTTPStatus.INTERNAL_SERVER_ERROR
     name = "AquariumServerListError"
-    description = "Bad PATCH, possible incorrect data type provided - list required"
+    description = "Bad PATCH, possible incorrect data type provided - list[str] required"

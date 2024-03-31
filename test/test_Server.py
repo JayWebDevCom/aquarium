@@ -2,7 +2,7 @@ import json
 import os
 import tempfile
 from base64 import b64encode
-from typing import Any, Union, IO
+from typing import Any, Union, IO, List
 from unittest import TestCase
 from unittest.mock import Mock, MagicMock
 
@@ -92,7 +92,7 @@ class TestServer(TestCase):
                 "obj": {
                     "key": "val"
                 },
-                "water_change_times": ["one", "two", "three"]
+                "water_change_times": ["06:01", "07:01", "08:46"]
             }
             response = test_client.patch('/times', json=data,
                                          headers={"Authorization": f"Basic {TestServer.credentials}"})
@@ -121,7 +121,7 @@ class TestServer(TestCase):
                 "obj": {
                     "key": "val"
                 },
-                "tank_drain_times": ["three", "four", "five"]
+                "tank_drain_times": ["11:01", "13:01", "17:59"]
             }
             response = test_client.patch('/drains', json=data,
                                          headers={"Authorization": f"Basic {TestServer.credentials}"})
@@ -216,9 +216,36 @@ class TestServer(TestCase):
             self.assertEqual(bytes(json.dumps({
                 "code": 500,
                 "name": "AquariumServerListError",
-                "description": "Bad PATCH, possible incorrect data type provided - list required"
+                "description": "Bad PATCH, possible incorrect data type provided - list[str] required"
             }), encoding='utf-8'), response.data)
 
             # patch data is not written to configuration
             up_to_date_config = Configuration(file_path=TestServer.configuration.file_path).data()
             self.assertEqual(initial_config_data, up_to_date_config)
+
+    def test_non_deserializable_water_change_times(self):
+        self.run_validate_test("times", "water_change_times", ["07:p31", "25:01"])
+
+    def test_non_deserializable_tank_drain_times(self):
+        self.run_validate_test("drains", "tank_drain_times", ["21:61", "07:-31"])
+
+    def run_validate_test(self, path: str, key_name: str, values: List[str]):
+        for test_time in values:
+            with TestServer.server_app.test_client() as test_client:
+                initial_config_data = TestServer.configuration.data()
+                data = {key_name: ["18:31", test_time]}
+                response = test_client.patch(f'/{path}', json=data,
+                                             headers={"Authorization": f"Basic {TestServer.credentials}"})
+
+                # response is as expected
+                self.assertEqual(500, response.status_code)
+                self.assertEqual('application/json', response.headers["Content-Type"])
+                self.assertEqual(bytes(json.dumps({
+                    "code": 500,
+                    "name": "AquariumServerListError",
+                    "description": "Bad PATCH, possible incorrect data type provided - list[str] required"
+                }), encoding='utf-8'), response.data)
+
+                # patch data is not written to configuration
+                up_to_date_config = Configuration(file_path=TestServer.configuration.file_path).data()
+                self.assertEqual(initial_config_data, up_to_date_config)
