@@ -25,4 +25,4 @@ date_time = datetime.now().strftime("%H:%M")
 
 progress_tracker.write_ln(f"{Style.WHITE}{Style.BOLD}{date_time}:{Style.RESET}{Style.GREEN} "
                           f"level: {Style.BOLD}{Style.WHITE}{'{:.2f}'.format(average_level)}{Style.RESET}{Style.GREEN} "
-                          f"full %: {Style.BOLD}{Style.WHITE}{'{:.2f}'.format(percent_full)} ")
+                          f"full: {Style.BOLD}{Style.WHITE}{'{:.2f}'.format(percent_full)}{Style.RESET}%")
