@@ -3,9 +3,12 @@ from datetime import datetime
 from functools import reduce
 
 from Progress import ProgressTracker, Style
+from components.LevelSensor import LevelSensor
+from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
 
 global level_sensor
 
+level_sensor = LevelSensor("test level sensor", TimeOfFlightLevelStrategy())
 progress_tracker = ProgressTracker()
 
 number_of_times_to_check_level = 7
