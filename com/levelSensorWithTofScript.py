@@ -6,7 +6,7 @@ from functools import reduce
 from Progress import ProgressTracker, Style
 from components.LevelSensor import LevelSensor
 from components.TimeOfFlightLevelStrategy import TimeOfFlightLevelStrategy
-from com.Configuration import Configuration
+from Configuration import Configuration
 
 global level_sensor
 
