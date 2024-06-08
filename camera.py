@@ -36,11 +36,6 @@ class StreamingOutput(object):
 
 
 class StreamingHandler(server.BaseHTTPRequestHandler):
-    def __init__(self, request: _RequestType, client_address: _RetAddress, server: BaseServer):
-        super().__init__(request, client_address, server)
-        self.file = None
-        self.b_img = None
-
     def do_GET(self):
         if self.path == '/':
             self.send_response(301)
@@ -48,13 +43,6 @@ class StreamingHandler(server.BaseHTTPRequestHandler):
             self.end_headers()
         elif self.path == '/favicon.ico':
             self.path = './static/favicon.ico'
-            self.send_response(200)
-            self.send_header('Content-Type', 'text/html')
-            self.end_headers()
-            self.file = open(self.path, "rb")
-            self.b_img = self.file.read()
-            self.file.close()
-
         elif self.path == '/index.html':
             content = PAGE.encode('utf-8')
             self.send_response(200)
