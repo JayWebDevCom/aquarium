@@ -1,11 +1,14 @@
+from functools import reduce
 from typing import List
 from unittest import TestCase
 from unittest.mock import MagicMock
 
-from numpy import average
-
 from com.components.TemperatureDetector import TemperatureDetector
 from com.components.TemperatureSensor import TemperatureSensor
+
+
+def average(values: List[float]) -> float:
+    return reduce(lambda a, b: a + b, values) / len(values)
 
 
 class TestTemperatureDetector(TestCase):
@@ -65,4 +68,3 @@ class TestTemperatures:
     def __init__(self, sump: List[float], tank: List[float]):
         self.sump = sump
         self.tank = tank
-
