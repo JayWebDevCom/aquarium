@@ -24,7 +24,7 @@ $ source env/bin/activate
 
 - install library dependencies
 ```bash
-$ python3 -m pip install -r requirements.txt rpi-gpio==0.7.0 --pre
+$ python3 -m pip install -r requirements.txt rpi-gpio --pre
 ```
 
 - run the test suite
