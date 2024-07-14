@@ -17,6 +17,6 @@ jobs:
         with:
           python-version: '3.9'
           architecture: 'x64'
-      - run: pip3 install -r requirements.txt rpi-gpio --pre
+      - run: pip3 install -r requirements.txt rpi-gpio==0.7.0 --pre
       - run: coverage run --source=./ -m unittest
       - run: coverage report -m
