@@ -1,6 +1,5 @@
 from components.LevelStrategy import LevelStrategy
-import board
-import busio
+from adafruit_extended_bus import ExtendedI2C as I2C
 import adafruit_vl53l0x
 
 
@@ -9,7 +8,7 @@ class TimeOfFlightLevelStrategy(LevelStrategy):
 
     def __init__(self, name: str = "time of flight VL53L0X adafruit"):
         super().__init__(name)
-        i2c = busio.I2C(board.SCL, board.SDA)
+        i2c = I2C(1)
         self.vl53 = adafruit_vl53l0x.VL53L0X(i2c)
         self.vl53.measurement_timing_budget = 40000
 

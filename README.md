@@ -34,9 +34,8 @@ $ python3 -m unittest discover
 
 - install dependencies
 ```bash
-$ pip3 install busio
-$ pip3 install adafruit-circuitpython-vl53l0x
-$ python3 -m pip install --force-reinstall adafruit-blinka
+env/bin/pip3 install adafruit-extended-bus==1.0.2
+env/bin/pip3 install install adafruit-circuitpython-vl53l0x==3.6.11
 ```
 
 - initialize thermometers, restart pi after
