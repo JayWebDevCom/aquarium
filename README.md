@@ -34,6 +34,7 @@ $ python3 -m unittest discover
 
 - install dependencies
 ```bash
+env/bin/pip3 install picamera==1.13
 env/bin/pip3 install adafruit-extended-bus==1.0.2
 env/bin/pip3 install install adafruit-circuitpython-vl53l0x==3.6.11
 ```
