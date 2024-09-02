@@ -1,6 +1,8 @@
-from components.LevelStrategy import LevelStrategy
-from adafruit_extended_bus import ExtendedI2C as I2C
 import adafruit_vl53l0x
+from adafruit_extended_bus import ExtendedI2C as I2C
+from loguru import logger
+
+from components.LevelStrategy import LevelStrategy
 
 
 class TimeOfFlightLevelStrategy(LevelStrategy):
@@ -13,4 +15,7 @@ class TimeOfFlightLevelStrategy(LevelStrategy):
         self.vl53.measurement_timing_budget = 40000
 
     def get_level(self) -> float:
-        return self.vl53.range / 10
+        try:
+            return self.vl53.range / 10
+        except Exception as error:
+            logger.error(error)
