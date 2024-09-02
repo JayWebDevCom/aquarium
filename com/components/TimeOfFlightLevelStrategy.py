@@ -18,4 +18,6 @@ class TimeOfFlightLevelStrategy(LevelStrategy):
         try:
             return self.vl53.range / 10
         except Exception as error:
+            logger.info("exception")
             logger.error(error)
+            return 27.0
