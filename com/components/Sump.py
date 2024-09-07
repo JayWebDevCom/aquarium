@@ -49,8 +49,8 @@ class Sump:
         pass
 
     def _get_checked_level(self) -> float:
-        temperatures_returned = [self.sensor.get_level() for _ in self.times_to_check_level]
-        sump_level = self.sanitizer.sanitize(temperatures_returned)
+        sump_levels = [self.sensor.get_level() for _ in self.times_to_check_level]
+        sump_level = self.sanitizer.sanitize(sump_levels)
         self._check(sump_level)
         return sump_level
 
