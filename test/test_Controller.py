@@ -47,6 +47,7 @@ class TestController(TestCase):
     def test_executes_water_change(self):
         self.sump.percentage_changed = Mock(return_value=100)
         self.sump.get_state = Mock(return_value=(True, 100))
+        self.sump.get_full_limit = Mock(return_value=101.10)
         self.sump.temperature_breakdown = Mock(return_value=([2, 3, 4], [3, 4, 5], 1))
 
         controller = Controller(self.sump, self.scripts, self.configuration, ProgressTracker(), self.tank_drain_valve)
@@ -59,6 +60,7 @@ class TestController(TestCase):
             call.empty_pump.off(),
             call.refill_pump.on(),
             call.get_state(),
+            call.get_full_limit(),
             call.refill_pump.off(),
             call.temperature_breakdown(),
             call.return_pump.on()
@@ -126,6 +128,7 @@ class TestController(TestCase):
     def test_executes_refill_process(self):
         self.sump.percentage_changed = Mock(return_value=100)
         self.sump.get_state = Mock(return_value=(True, 100))
+        self.sump.get_full_limit = Mock(return_value=101.20)
         self.sump.temperature_breakdown = Mock(return_value=([2, 3, 4], [3, 4, 5], 1))
 
         controller = Controller(self.sump, self.scripts, self.configuration, ProgressTracker(), self.tank_drain_valve)
@@ -135,6 +138,7 @@ class TestController(TestCase):
             call.return_pump.off(),
             call.refill_pump.on(),
             call.get_state(),
+            call.get_full_limit(),
             call.refill_pump.off(),
             call.temperature_breakdown(),
             call.return_pump.on()

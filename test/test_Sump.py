@@ -98,3 +98,9 @@ class TestSump(TestCase):
         for sump_level, expected in params.items():
             self.assertEqual(expected, self.sump.percent_full(sump_level))
 
+    def test_get_full_limit(self):
+        params = {0: 100, 1: 104.88, 2: 109.76, -1: 95.12}
+        for allowance, percentage in params.items():
+            levels_boundary = LevelsBoundary(20.5, 60.5)
+            sump = self.helper.sump_of(levels_boundary, allowance)
+            self.assertEqual(percentage, sump.get_full_limit())

@@ -97,7 +97,8 @@ class Controller:
 
         while True:
             (is_full, percent_full) = self.sump.get_state()
-            self._write(f"{Style.WHITE}{Style.BOLD}{percent_full}% full{dots.__next__()}")
+            self._write(f"{Style.WHITE}{Style.BOLD}{percent_full}% full, "
+                        f"{self.sump.get_full_limit()}% limit{dots.__next__()}")
 
             if not is_full:
                 time.sleep(interval)
