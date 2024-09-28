@@ -70,3 +70,8 @@ class Sump:
     def temperature_breakdown(self) -> Tuple[float, float, float]:
         return self.temperature_detector.temperature_breakdown()
 
+    def get_full_limit(self) -> float:
+        overfill_delta = self.levels_boundary.full_level - self.full_limit
+        overfill_height = overfill_delta + self.levels_boundary.full_level
+        percentage_full_limit = overfill_height / self.levels_boundary.full_level * 100
+        return round(float(percentage_full_limit), 2)
