@@ -9,6 +9,10 @@ from Progress import ProgressTracker, Style
 from components.Sump import Sump
 
 
+def colour_text(colour: str, text: str) -> str:
+    return f"{Style.RESET}{colour}{text}{Style.RESET}"
+
+
 class Controller:
     def __init__(
             self,
@@ -94,11 +98,16 @@ class Controller:
         dots = self._generator([".  ", ".. ", "..."])
 
         interval = Configuration(self.config.file_path).get("level_check_interval")
+        sump_full_limit_percentage = self.sump.get_full_limit()
 
         while True:
             (is_full, percent_full) = self.sump.get_state()
-            self._write(f"{Style.WHITE}{Style.BOLD}{percent_full}% full, "
-                        f"{self.sump.get_full_limit()}% limit{dots.__next__()}")
+            white_full = colour_text(f"{Style.WHITE}{Style.BOLD}", f"{percent_full}")
+            yellow_full = colour_text(Style.YELLOW, "% full")
+            white_fill = colour_text(f"{Style.WHITE}{Style.BOLD}", f"{sump_full_limit_percentage}")
+            yellow_fill = colour_text(Style.YELLOW, f"% limit{dots.__next__()}")
+
+            self._write(f"output is: {white_full}{yellow_full} {white_fill}{yellow_fill}")
 
             if not is_full:
                 time.sleep(interval)
