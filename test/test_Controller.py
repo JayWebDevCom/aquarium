@@ -59,8 +59,8 @@ class TestController(TestCase):
             call.percentage_changed(),
             call.empty_pump.off(),
             call.refill_pump.on(),
-            call.get_state(),
             call.get_full_limit(),
+            call.get_state(),
             call.refill_pump.off(),
             call.temperature_breakdown(),
             call.return_pump.on()
@@ -137,8 +137,8 @@ class TestController(TestCase):
         sump_calls = [
             call.return_pump.off(),
             call.refill_pump.on(),
-            call.get_state(),
             call.get_full_limit(),
+            call.get_state(),
             call.refill_pump.off(),
             call.temperature_breakdown(),
             call.return_pump.on()
