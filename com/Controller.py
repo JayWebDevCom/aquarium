@@ -107,7 +107,7 @@ class Controller:
             white_fill = colour_text(f"{Style.WHITE}{Style.BOLD}", f"{sump_full_limit_percentage}")
             yellow_fill = colour_text(Style.YELLOW, f"% limit{dots.__next__()}")
 
-            self._write(f"output is: {white_full}{yellow_full} {white_fill}{yellow_fill}")
+            self._write(f"{white_full}{yellow_full} {white_fill}{yellow_fill}")
 
             if not is_full:
                 time.sleep(interval)
