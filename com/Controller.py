@@ -102,10 +102,10 @@ class Controller:
 
         while True:
             (is_full, percent_full) = self.sump.get_state()
-            white_full = colour_text(f"{Style.WHITE}{Style.BOLD}", f"{percent_full}")
-            yellow_full = colour_text(Style.YELLOW, "% full")
-            white_fill = colour_text(f"{Style.WHITE}{Style.BOLD}", f"{sump_full_limit_percentage}")
-            yellow_fill = colour_text(Style.YELLOW, f"% limit{dots.__next__()}")
+            white_full = colour_text(f"{Style.WHITE}{Style.BOLD}", f"{percent_full}%")
+            yellow_full = colour_text(Style.YELLOW, " full")
+            white_fill = colour_text(f"{Style.WHITE}{Style.BOLD}", f"{sump_full_limit_percentage}%")
+            yellow_fill = colour_text(Style.YELLOW, f" limit{dots.__next__()}")
 
             self._write(f"{white_full}{yellow_full} {white_fill}{yellow_fill}")
 
