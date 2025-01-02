@@ -55,3 +55,19 @@ class TestConfiguration(TestCase):
 
     def test_get_file_path(self):
         self.assertEqual(TestConfiguration.temp.name, self.configuration.get_file_path())
+
+    def test_write_data(self):
+        # assert initial state to positively demonstrate a change in state
+        self.assertEqual(TestConfiguration.configuration_data, self.configuration.data())
+
+        # update state
+        test_data = {"name": "test"}
+        self.configuration.write_data(test_data)
+
+        # assert initial object is unchanged
+        self.assertEqual(TestConfiguration.configuration_data, self.configuration.data())
+
+        # instantiate a new instance because file data is only read at instantiation
+        # not at every data() demand
+        new_config = Configuration(self.configuration.file_path)
+        self.assertEqual(test_data, new_config.data())
