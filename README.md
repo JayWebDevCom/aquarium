@@ -138,6 +138,13 @@ http -a username:password PATCH <pi_ip_address>:5000/times Content-Type:applicat
 http -a username:password PATCH <pi_ip_address>:5000/times Content-Type:application/json water_change_times:='["09:01","12:01","15:01"]' # inline json
 echo '{"water_change_times": ["09:01", "18:31"]}' | http -a username:password PATCH <pi_ip_address>:5000/times
 http 192.168.1.14:5000/config "Authorization: Basic $(echo -ne 'username:password' | base64)" | jq '.water_change_times'
+
+curl -s \
+ --header "Authorization: Basic $(echo -ne 'user:pass' | base64)" \
+ --header "Content-Type: application/json" \
+ --request PATCH \
+ --data '{"water_change_times": ["09:01", "12:01"]}' \
+  http://pi4.pihole:5000/times
 ```
 
 [scheduling-library]: https://github.com/dbader/schedule
