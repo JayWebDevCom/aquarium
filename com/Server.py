@@ -137,7 +137,7 @@ class Server:
         for time in times_list:
             try:
                 datetime.strptime(time, '%H:%M')
-            except ValueError as e:
+            except ValueError:
                 return False
         return True
 
